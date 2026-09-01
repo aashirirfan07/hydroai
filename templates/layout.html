@@ -55,7 +55,179 @@
     <div class="cyber-grid-backdrop"></div>
     <div class="scanline-overlay"></div>
 
-    <!-- Floating Liquid Glass Navbar -->
+    
+    <!-- 🚨 STICKY ZERO-API-KEY EMERGENCY DISPATCH TOP BAR (ALWAYS VISIBLE AT TOP) -->
+    <div id="stickyQuickDispatchBar" class="sticky-quick-dispatch-bar">
+        <div class="sticky-bar-inner">
+            <div class="sticky-bar-brand">
+                <span class="pulse-beacon" style="background: #38bdf8; width: 8px; height: 8px;"></span>
+                <span><strong>AUTO-DISPATCH:</strong></span>
+            </div>
+            
+            <!-- Quick SMS Form -->
+            <form onsubmit="sendTopBarSms(event); return false;" class="sticky-form">
+                <input type="tel" id="topBarPhoneInput" placeholder="📱 Phone (e.g. +91 98765 43210)" required class="sticky-input">
+                <button type="submit" id="btnTopBarSms" class="sticky-btn sticky-btn-sms">
+                    🚀 SMS Alert
+                </button>
+            </form>
+
+            <span class="sticky-divider">|</span>
+
+            <!-- Quick Email Form -->
+            <form onsubmit="sendTopBarEmail(event); return false;" class="sticky-form">
+                <input type="email" id="topBarEmailInput" placeholder="✉️ Email (e.g. name@gmail.com)" required class="sticky-input">
+                <button type="submit" id="btnTopBarEmail" class="sticky-btn sticky-btn-email">
+                    🚀 Email Alert
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <style>
+    .sticky-quick-dispatch-bar {
+        background: rgba(3, 7, 18, 0.95);
+        border-bottom: 1px solid rgba(56, 189, 248, 0.4);
+        padding: 0.35rem 1rem;
+        position: sticky;
+        top: 0;
+        z-index: 100001;
+        backdrop-filter: blur(15px);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
+    }
+    .sticky-bar-inner {
+        max-width: 1400px;
+        margin: auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+    .sticky-bar-brand {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        font-family: var(--font-mono);
+        font-size: 0.75rem;
+        color: #38bdf8;
+    }
+    .sticky-form {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+    }
+    .sticky-input {
+        background: rgba(0, 0, 0, 0.6);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: #ffffff;
+        padding: 0.25rem 0.65rem;
+        border-radius: 9999px;
+        font-family: var(--font-mono);
+        font-size: 0.78rem;
+        width: 175px;
+    }
+    .sticky-input:focus {
+        border-color: #38bdf8;
+        outline: none;
+    }
+    .sticky-btn {
+        padding: 0.25rem 0.75rem;
+        border-radius: 9999px;
+        font-family: var(--font-mono);
+        font-size: 0.75rem;
+        font-weight: 800;
+        cursor: pointer;
+        border: none;
+        color: #ffffff;
+        transition: all 0.2s ease;
+    }
+    .sticky-btn-sms {
+        background: #0284c7;
+        box-shadow: 0 0 10px rgba(2, 132, 199, 0.5);
+    }
+    .sticky-btn-sms:hover { background: #38bdf8; color: #000000; }
+    .sticky-btn-email {
+        background: #059669;
+        box-shadow: 0 0 10px rgba(5, 150, 105, 0.5);
+    }
+    .sticky-btn-email:hover { background: #34d399; color: #000000; }
+    .sticky-divider { color: rgba(255, 255, 255, 0.2); }
+    @media (max-width: 768px) {
+        .sticky-bar-inner { gap: 0.5rem; justify-content: flex-start; overflow-x: auto; flex-wrap: nowrap; }
+        .sticky-input { width: 140px; }
+    }
+    </style>
+
+    <script>
+    async function sendTopBarSms(e) {
+        e.preventDefault();
+        const phone = document.getElementById('topBarPhoneInput').value;
+        const btn = document.getElementById('btnTopBarSms');
+        btn.disabled = true;
+        btn.innerText = '📡 Sending...';
+        if (typeof playTactileClick === 'function') playTactileClick();
+
+        try {
+            const res = await fetch('/api/send-instant-sms', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    phone_number: phone,
+                    station_name: 'Kedarnath Mandakini Gorge',
+                    threat_level: 'CRITICAL RED • IMMEDIATE EVACUATION',
+                    precip_rate: '88.0 mm/h',
+                    lead_time: '3.8 Hours',
+                    notes: 'Immediate flood evacuation directive.'
+                })
+            });
+            const data = await res.json();
+            if (typeof playSuccessChime === 'function') playSuccessChime();
+            alert(`✅ PHONE ALERT SENT (ZERO API KEY REQUIRED)!\n\nSent to: ${phone}\nTracking: ${data.tracking_id}`);
+            btn.innerText = '✅ Sent!';
+            setTimeout(() => { btn.disabled = false; btn.innerText = '🚀 SMS Alert'; }, 2000);
+        } catch(err) {
+            window.open(`sms:${phone}?body=🚨 FLOOD ALERT: Kedarnath Gorge. Evacuate immediately.`, '_blank');
+            btn.disabled = false;
+            btn.innerText = '🚀 SMS Alert';
+        }
+    }
+
+    async function sendTopBarEmail(e) {
+        e.preventDefault();
+        const email = document.getElementById('topBarEmailInput').value;
+        const btn = document.getElementById('btnTopBarEmail');
+        btn.disabled = true;
+        btn.innerText = '📡 Sending...';
+        if (typeof playTactileClick === 'function') playTactileClick();
+
+        try {
+            const res = await fetch('/api/send-instant-email', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    recipient_email: email,
+                    station_name: 'Kedarnath Mandakini Gorge',
+                    threat_level: 'CRITICAL RED • IMMEDIATE EVACUATION',
+                    precip_rate: '88.0 mm/h',
+                    lead_time: '3.8 Hours',
+                    notes: 'Emergency disaster situation brief.'
+                })
+            });
+            const data = await res.json();
+            if (typeof playSuccessChime === 'function') playSuccessChime();
+            alert(`✅ REAL EMAIL SENT (ZERO API KEY REQUIRED)!\n\nSent to: ${email}\nTracking: ${data.email_id}`);
+            btn.innerText = '✅ Sent!';
+            setTimeout(() => { btn.disabled = false; btn.innerText = '🚀 Email Alert'; }, 2000);
+        } catch(err) {
+            window.open(`mailto:${email}?subject=🚨 FLOOD ALERT&body=Critical flood alert for Kedarnath Gorge.`, '_blank');
+            btn.disabled = false;
+            btn.innerText = '🚀 Email Alert';
+        }
+    }
+    </script>
+
+<!-- Floating Liquid Glass Navbar -->
     
     <!-- MotionSites Future-State Live Intelligence Ticker Ribbon -->
     <div class="future-state-ticker-wrap">
