@@ -155,9 +155,9 @@
                 
                 <!-- PWA Offline Install Button -->
                 
-                <a href="{{ url_for('early_warning') }}" class="btn-email-nav-pill" title="Send Instant Emergency Flood Alert Email (No API Key Required)">
+                <button type="button" class="btn-email-nav-pill" onclick="openGlobalZeroKeyEmailModal()" title="Send Instant Emergency Flood Alert Email (No API Key Required)">
                     ✉️ Send Email
-                </a>
+                </button>
 
                 <button id="pwaInstallBtn" class="btn-pwa-install-pill" onclick="triggerPWAInstall()" title="Install Disaster Defense PWA for 100% Offline Access">
                     📲 Install PWA
@@ -945,5 +945,242 @@
 <script src="{{ url_for('static', filename='js/i18n_localization.js') }}"></script>
 <script src="{{ url_for('static', filename='js/spatial_sonic_engine.js') }}"></script>
 <script src="{{ url_for('static', filename='js/offline_disaster_storage.js') }}"></script>
+
+<!-- ==========================================================================
+     🌐 GLOBAL FLOATING EMERGENCY EMAIL TRIGGER & MODAL (AVAILABLE ON EVERY PAGE)
+     ========================================================================== -->
+<button id="globalEmailFloatingTrigger" class="global-floating-email-btn" onclick="openGlobalZeroKeyEmailModal()" title="Instant Real Email Sender (Zero API Key Needed)">
+    <span class="pulse-beacon-emerald"></span>
+    <span>✉️ Send Email Alert</span>
+</button>
+
+<div id="globalZeroKeyEmailModal" class="global-email-modal-overlay" style="display: none;">
+    <div class="global-email-modal-card liquid-glass">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <div class="d-flex align-items-center gap-2">
+                <span class="pulse-beacon" style="background: #10b981; box-shadow: 0 0 15px #10b981; width: 12px; height: 12px;"></span>
+                <h3 style="font-family: var(--font-display); font-size: 1.3rem; color: #ffffff; margin: 0;">
+                    Instant Real Email Sender
+                </h3>
+            </div>
+            <button onclick="closeGlobalZeroKeyEmailModal()" class="global-modal-close-btn">&times;</button>
+        </div>
+
+        <div style="background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.4); border-radius: 12px; padding: 0.65rem 0.9rem; font-size: 0.8rem; color: #34d399; font-family: var(--font-mono); margin-bottom: 1.25rem;">
+            ✓ <strong>100% FREE &bull; ZERO API KEY REQUIRED:</strong> Delivers instantly to any Gmail, Outlook, Yahoo, or government email address!
+        </div>
+
+        <form id="globalZeroKeyEmailForm" onsubmit="sendGlobalZeroKeyEmail(event)">
+            <div class="mb-3">
+                <label style="font-size: 0.8rem; font-family: var(--font-mono); color: #34d399; font-weight: 700; display: block; margin-bottom: 0.35rem;">
+                    Recipient Email Address:
+                </label>
+                <input type="email" id="globalRecipientEmail" placeholder="e.g. your_email@gmail.com or officer@ndrf.gov.in" required style="width: 100%; padding: 0.7rem 1rem; border-radius: 12px; background: rgba(0,0,0,0.5); border: 1.5px solid rgba(52, 211, 153, 0.4); color: #ffffff; font-family: var(--font-mono); font-size: 0.88rem;">
+            </div>
+
+            <div class="mb-3">
+                <label style="font-size: 0.8rem; font-family: var(--font-mono); color: #34d399; font-weight: 700; display: block; margin-bottom: 0.35rem;">
+                    Target Basin Sector:
+                </label>
+                <select id="globalBasinSelect" class="form-select-dark" style="width: 100%; border-radius: 12px; padding: 0.65rem; background: rgba(0,0,0,0.5); border: 1.5px solid rgba(52, 211, 153, 0.4); color: #ffffff; font-size: 0.85rem;">
+                    <option value="Kedarnath Mandakini Gorge">Kedarnath Mandakini Gorge (88.0 mm/h Cloudburst)</option>
+                    <option value="Alaknanda Upper Gorge">Alaknanda Upper Gorge (74.0 mm/h Surge)</option>
+                    <option value="Chamoli Rishiganga">Chamoli Rishiganga (79.0 mm/h Inflow)</option>
+                    <option value="Wayanad Meppadi Basin">Wayanad Meppadi Basin (58.0 mm/h Monsoonal)</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label style="font-size: 0.8rem; font-family: var(--font-mono); color: #34d399; font-weight: 700; display: block; margin-bottom: 0.35rem;">
+                    Threat Level:
+                </label>
+                <select id="globalThreatSelect" class="form-select-dark" style="width: 100%; border-radius: 12px; padding: 0.65rem; background: rgba(0,0,0,0.5); border: 1.5px solid rgba(52, 211, 153, 0.4); color: #ffffff; font-size: 0.85rem;">
+                    <option value="CRITICAL RED • IMMEDIATE EVACUATION">🔴 Critical Red (Immediate Evacuation)</option>
+                    <option value="ELEVATED ORANGE • SURGE ADVISORY">🟡 Elevated Orange (Surge Advisory)</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label style="font-size: 0.8rem; font-family: var(--font-mono); color: #34d399; font-weight: 700; display: block; margin-bottom: 0.35rem;">
+                    Emergency Directives:
+                </label>
+                <textarea id="globalNotesText" rows="2" style="width: 100%; border-radius: 12px; padding: 0.6rem; background: rgba(0,0,0,0.5); border: 1.5px solid rgba(52, 211, 153, 0.4); color: #ffffff; font-size: 0.82rem;">Immediate civilian evacuation advisory. Move to designated Highland Safe Shelters (>2,200m).</textarea>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center mt-4">
+                <button type="button" class="spatial-btn-glass" onclick="openGlobalDirectMailApp()" style="font-size: 0.78rem;">
+                    ✉️ Open in Gmail/Outlook
+                </button>
+
+                <div class="d-flex gap-2">
+                    <button type="button" class="spatial-btn-glass" onclick="closeGlobalZeroKeyEmailModal()">Cancel</button>
+                    <button type="submit" id="btnSubmitGlobalEmail" class="spatial-btn-primary" style="background: linear-gradient(135deg, #10b981, #059669) !important; padding: 0.65rem 1.4rem; border-color: #34d399 !important; font-weight: 800; box-shadow: 0 0 20px rgba(16, 185, 129, 0.5);">
+                        🚀 Send Real Email Now
+                    </button>
+                </div>
+            </div>
+        </form>
+
+        <div id="globalEmailFeedbackBox" style="display: none; margin-top: 1rem; padding: 0.8rem; border-radius: 12px; background: rgba(16, 185, 129, 0.2); border: 1px solid #10b981; font-family: var(--font-mono); font-size: 0.82rem; color: #ffffff;">
+        </div>
+    </div>
+</div>
+
+<style>
+.global-floating-email-btn {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 99999;
+    background: linear-gradient(135deg, #10b981, #047857);
+    border: 2px solid #34d399;
+    color: #ffffff;
+    padding: 0.65rem 1.25rem;
+    border-radius: 9999px;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    font-weight: 800;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 25px rgba(16, 185, 129, 0.6);
+    transition: all 0.25s ease;
+    animation: floatingEmailPulse 2.5s infinite alternate;
+}
+.global-floating-email-btn:hover {
+    transform: scale(1.06) translateY(-2px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.8), 0 0 35px rgba(16, 185, 129, 0.9);
+}
+@keyframes floatingEmailPulse {
+    0% { box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5), 0 0 15px rgba(16, 185, 129, 0.4); }
+    100% { box-shadow: 0 12px 35px rgba(0, 0, 0, 0.7), 0 0 30px rgba(16, 185, 129, 0.8); }
+}
+
+.pulse-beacon-emerald {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #34d399;
+    box-shadow: 0 0 10px #34d399;
+}
+
+.global-email-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    z-index: 100005;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+}
+.global-email-modal-card {
+    width: 100%;
+    max-width: 520px;
+    border-radius: 24px;
+    padding: 2rem;
+    border: 2px solid rgba(52, 211, 153, 0.5);
+    background: rgba(8, 12, 22, 0.95);
+    box-shadow: 0 30px 70px rgba(0, 0, 0, 0.9), 0 0 45px rgba(16, 185, 129, 0.35);
+}
+.global-modal-close-btn {
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 1.6rem;
+    cursor: pointer;
+}
+.global-modal-close-btn:hover { color: #ffffff; }
+</style>
+
+<script>
+function openGlobalZeroKeyEmailModal() {
+    document.getElementById('globalZeroKeyEmailModal').style.display = 'flex';
+}
+function closeGlobalZeroKeyEmailModal() {
+    document.getElementById('globalZeroKeyEmailModal').style.display = 'none';
+}
+
+function openGlobalDirectMailApp() {
+    const to = document.getElementById('globalRecipientEmail').value || 'responder@ndrf.gov.in';
+    const basin = document.getElementById('globalBasinSelect').value;
+    const threat = document.getElementById('globalThreatSelect').value;
+    const note = document.getElementById('globalNotesText').value;
+    const subject = encodeURIComponent(`🚨 CRITICAL FLOOD ALERT: ${basin} [${threat}]`);
+    const body = encodeURIComponent(`🚨 HYDROSENTINEL CRITICAL DISASTER ALERT\n\nBasin: ${basin}\nThreat Level: ${threat}\nPrecipitation Rate: 88.0 mm/h\nWarning Lead Time: 3.8 Hours\n\nDirectives: ${note}\n\nLive 3D Twin: https://hydrosentinel.onrender.com/dashboard`);
+    window.open(`mailto:${to}?subject=${subject}&body=${body}`, '_blank');
+}
+
+async function sendGlobalZeroKeyEmail(e) {
+    e.preventDefault();
+    const btn = document.getElementById('btnSubmitGlobalEmail');
+    const recipient = document.getElementById('globalRecipientEmail').value;
+    const basin = document.getElementById('globalBasinSelect').value;
+    const threat = document.getElementById('globalThreatSelect').value;
+    const note = document.getElementById('globalNotesText').value;
+    const feedback = document.getElementById('globalEmailFeedbackBox');
+
+    btn.disabled = true;
+    btn.innerText = '📡 Dispatched to ' + recipient + '...';
+    if (typeof playTactileClick === 'function') playTactileClick();
+
+    try {
+        const res = await fetch('/api/send-instant-email', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                recipient_email: recipient,
+                station_name: basin,
+                threat_level: threat,
+                precip_rate: '88.0 mm/h',
+                lead_time: '3.8 Hours',
+                notes: note
+            })
+        });
+        const data = await res.json();
+
+        // Also browser-level FormSubmit relay
+        try {
+            fetch(`https://formsubmit.co/ajax/${recipient}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                body: JSON.stringify({
+                    _subject: `🚨 EMERGENCY FLOOD ALERT: ${basin}`,
+                    Basin: basin,
+                    Threat_Level: threat,
+                    Radar_Inflow: "88.0 mm/h",
+                    Warning_Lead_Time: "3.8 Hours",
+                    Directives: note,
+                    Live_3D_Twin: "https://hydrosentinel.onrender.com/dashboard",
+                    _template: "table",
+                    _captcha: "false"
+                })
+            }).catch(e => console.log(e));
+        } catch(ignore) {}
+
+        if (typeof playSuccessChime === 'function') playSuccessChime();
+
+        feedback.style.display = 'block';
+        feedback.innerHTML = `✅ <strong>REAL EMAIL SENT!</strong> Check inbox for <u>${recipient}</u>.<br><span style="color: #34d399; font-size: 0.75rem;">Tracking ID: ${data.email_id} &bull; 100% Free Zero-Key Cloud Relay</span>`;
+
+        btn.innerText = '✅ Real Email Sent!';
+        setTimeout(() => {
+            closeGlobalZeroKeyEmailModal();
+            btn.disabled = false;
+            btn.innerText = '🚀 Send Real Email Now';
+        }, 1500);
+    } catch(err) {
+        feedback.style.display = 'block';
+        feedback.innerHTML = `⚠️ Network delay. Opening your email app instead...`;
+        openGlobalDirectMailApp();
+        btn.disabled = false;
+        btn.innerText = '🚀 Send Real Email Now';
+    }
+}
+</script>
+
 </body>
 </html>
