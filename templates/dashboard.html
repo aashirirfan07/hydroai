@@ -1,0 +1,323 @@
+{% extends 'layout.html' %}
+
+{% block title %}Real-Time 3D Digital Twin & Sensor Telemetry - HydroSentinel AI™{% endblock %}
+
+{% block content %}
+<div class="dashboard-topbar">
+    <div class="station-selector-wrapper">
+        <label for="stationSelect"> Active Catchment Station:</label>
+        <select class="form-select-dark" id="stationSelect" onchange="switchStation(this.value)">
+            <option value="STN-KL-01" {% if current_station == 'STN-KL-01' %}selected{% endif %}>STN-KL-01: Kullu Catchment (HP)</option>
+            <option value="STN-AL-02" {% if current_station == 'STN-AL-02' %}selected{% endif %}>STN-AL-02: Alaknanda Gorge (Garhwal)</option>
+            <option value="STN-TS-03" {% if current_station == 'STN-TS-03' %}selected{% endif %}>STN-TS-03: Teesta River Basin (Sikkim)</option>
+            <option value="STN-WG-04" {% if current_station == 'STN-WG-04' %}selected{% endif %}>STN-WG-04: Western Ghats (Kerala)</option>
+            <option value="STN-KD-05" {% if current_station == 'STN-KD-05' %}selected{% endif %}>STN-KD-05: Kedarnath Mandakini (Rudraprayag)</option>
+            <option value="STN-CH-06" {% if current_station == 'STN-CH-06' %}selected{% endif %}>STN-CH-06: Chamoli Rishiganga (Joshimath)</option>
+            <option value="STN-WY-07" {% if current_station == 'STN-WY-07' %}selected{% endif %}>STN-WY-07: Wayanad Meppadi (Western Ghats)</option>
+            <option value="STN-DZ-08" {% if current_station == 'STN-DZ-08' %}selected{% endif %}>STN-DZ-08: Dzukou Valley (Nagaland)</option>
+        </select>
+    </div>
+
+    <div class="stream-mode-toggle-group">
+        <label> Ingestion Mode:</label>
+        <div class="mode-pill-toggle">
+            <button class="pill-toggle-btn {% if current_mode == 'stream' %}active{% endif %}" onclick="switchMode('stream')">
+                <span class="live-dot-pulse"></span> Dynamic Stream (3.5s)
+            </button>
+            <button class="pill-toggle-btn {% if current_mode == 'api' %}active{% endif %}" onclick="switchMode('api')">
+                 Live Open-Meteo API
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Tabs Navigation -->
+<div class="dashboard-tab-bar">
+    <button class="tab-btn active" onclick="switchDashboardTab('twin')"> 3D Digital Twin</button>
+    <button class="tab-btn" onclick="switchDashboardTab('alert_sender')"> Phone & Email Alert Sender</button>
+    <button class="tab-btn" onclick="switchDashboardTab('xai')"> XAI Attribution Radar</button>
+    <button class="tab-btn" onclick="switchDashboardTab('safe_zones')"> Safe Zones & Evacuation</button>
+</div>
+
+<!-- TAB 1: 3D DIGITAL TWIN -->
+<div id="tab-twin" class="tab-content active">
+    <div class="dashboard-main-grid">
+        <!-- Left Panel: Real-Time Hydrometric Stream -->
+        <div class="panel left-panel">
+            <div class="panel-header">
+                <h3> Live Telemetry Stream</h3>
+                <span class="live-indicator"><span class="blink-dot"></span> LIVE</span>
+            </div>
+
+            <!-- Widget 1: Rainfall -->
+            <div class="telemetry-widget">
+                <div class="widget-header">
+                    <span class="widget-title"> Precip Intensity</span>
+                    <span class="widget-value text-amber" id="w_rainfall">{{ data.telemetry.rainfall_intensity_mm_hr }} mm/h</span>
+                </div>
+                <div class="chart-container-sm">
+                    <canvas id="rainfallSparkline"></canvas>
+                </div>
+            </div>
+
+            <!-- Widget 2: River Stage -->
+            <div class="telemetry-widget">
+                <div class="widget-header">
+                    <span class="widget-title"> River Water Stage</span>
+                    <span class="widget-value text-cyan" id="w_river_stage">{{ data.telemetry.river_water_level_m }} m</span>
+                </div>
+                <div class="chart-container-sm">
+                    <canvas id="riverStageSparkline"></canvas>
+                </div>
+            </div>
+
+            <!-- Widget 3: Soil Saturation -->
+            <div class="telemetry-widget">
+                <div class="widget-header">
+                    <span class="widget-title"> Soil Saturation</span>
+                    <span class="widget-value text-neon-green" id="w_soil_moisture">{{ data.telemetry.soil_moisture_percentage }}%</span>
+                </div>
+                <div class="chart-container-sm">
+                    <canvas id="soilMoistureSparkline"></canvas>
+                </div>
+            </div>
+
+            <!-- Widget 4: Flow Velocity -->
+            <div class="telemetry-widget">
+                <div class="widget-header">
+                    <span class="widget-title"> Kinetic Velocity</span>
+                    <span class="widget-value text-amber" id="w_flow_velocity">{{ data.telemetry.river_flow_velocity_mps }} m/s</span>
+                </div>
+                <div class="chart-container-sm">
+                    <canvas id="velocitySparkline"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Center 3D Viewport Panel -->
+        <div class="panel center-panel">
+            <div class="three-d-sub-toolbar">
+                <div class="mode-btn-group">
+                    <span class="toolbar-label"> Render:</span>
+                    <button class="btn-3d-mode active" onclick="set3DRenderMode('realistic')">Realistic</button>
+                    <button class="btn-3d-mode" onclick="set3DRenderMode('lidar')">LiDAR</button>
+                    <button class="btn-3d-mode" onclick="set3DRenderMode('thermal')">Thermal</button>
+                    <button class="btn-3d-mode" onclick="set3DRenderMode('wireframe')">Wireframe</button>
+                </div>
+
+                <div class="atmo-btn-group">
+                    <span class="toolbar-label"> FX:</span>
+                    <button class="btn-3d-atmo active" onclick="set3DAtmosphere('cloudburst')">Rain</button>
+                    <button class="btn-3d-atmo" onclick="set3DAtmosphere('overcast')">Fog</button>
+                    <button class="btn-3d-atmo" onclick="set3DAtmosphere('clear')">Clear</button>
+                </div>
+                <div class="sim-actions-group" style="display: flex; gap: 0.5rem; margin-left: auto;">
+                    <button id="btnToggleFlightMode" class="btn-pilot-drone-glow" onclick="toggleInteractiveDroneFlight()" title="Pilot 3D Inspection Drone with WASD keys">
+                        🎮 Pilot Drone (WASD)
+                    </button>
+                    <button class="btn-evac-sim-glow" onclick="initEvacuationSim()" title="Run AI Boids Crowd Evacuation Simulation">
+                        🏃 Run Evac Sim
+                    </button>
+                </div>
+            </div>
+
+            
+    <!-- 🎮 Playable 3D Drone Flight HUD Overlay -->
+    <div id="droneFlightHudOverlay" class="drone-flight-hud" style="display: none;">
+        <div class="hud-corner-top-left">
+            <div class="hud-brand-pill">⚡ FLIGHT TELEMETRY &bull; F-17 SENTINEL UAV</div>
+            <div class="hud-stat-line">ALTITUDE: <strong id="hudValAlt">120m AGL</strong></div>
+            <div class="hud-stat-line">AIRSPEED: <strong id="hudValSpd">32 kts</strong></div>
+            <div class="hud-stat-line" id="hudValCoords">LAT: 30.7320 N | LON: 79.0660 E</div>
+        </div>
+
+        <div class="hud-corner-top-right">
+            <div id="hudCamBadge" class="hud-cam-pill">📷 CHASE CAM (V to FPV)</div>
+            <div class="hud-flight-guide">
+                <span>[W/S] Pitch & Speed</span>
+                <span>[A/D] Turn Yaw</span>
+                <span>[SPACE/SHIFT] Climb/Dive</span>
+                <span>[V] Toggle Cam</span>
+            </div>
+        </div>
+
+        <div class="hud-flight-reticle">
+            <div class="reticle-circle"></div>
+            <div class="reticle-horizon"></div>
+        </div>
+
+        <div id="hudHazardWarning" class="hud-hazard-alert" style="display: none;">
+            ⚠️ TERRAIN PROXIMITY ALERT - PULL UP
+        </div>
+    </div>
+
+        <div id="threeDViewportContainer" class="terrain-3d-viewport"></div>
+
+            <div class="flood-slider-bar">
+                <div class="slider-info">
+                    <span> Dynamic Flood Stage Level:</span>
+                    <strong class="text-cyan font-mono" id="floodHeightVal">3.8 m</strong>
+                </div>
+                <div class="slider-control-row">
+                    <input type="range" min="0" max="15" step="0.1" value="3.8" id="floodWaterSlider" oninput="onFloodSliderChange(this.value)">
+                </div>
+            </div>
+
+            <div class="terrain-footer-bar">
+                <div class="terrain-legend">
+                    <div class="scale-bar"></div>
+                    <div class="scale-labels"><span>Gorge Bed (1,280m)</span><span>Summit (2,450m)</span></div>
+                </div>
+                <div class="terrain-stats">
+                    <span> 30×30 Dem Mesh</span>
+                    <span> 60 FPS WebGL</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel: Risk Score Gauge -->
+        <div class="panel right-panel">
+            <div class="panel-header">
+                <h3> AI Risk Severity</h3>
+                <span class="badge" id="riskBadge" style="background: {{ data.prediction.color }}; color: #000; font-weight: 800;">
+                    {{ data.prediction.alert_level }}
+                </span>
+            </div>
+
+            <div class="gauge-container">
+                <div class="circular-meter">
+                    <svg viewBox="0 0 200 110" class="gauge-svg">
+                        <path d="M 20,100 A 80,80 0 0,1 180,100" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="18" stroke-linecap="round"/>
+                        <path id="gaugeArc" d="M 20,100 A 80,80 0 0,1 180,100" fill="none" stroke="{{ data.prediction.color }}" stroke-width="18" stroke-linecap="round" stroke-dasharray="251.2" stroke-dashoffset="60"/>
+                    </svg>
+                    <div class="gauge-center-text">
+                        <span class="gauge-number" id="riskScoreNumber">{{ data.prediction.flood_risk_score }}</span>
+                        <span class="gauge-sublabel">Severity / 1200</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="telemetry-widget">
+                <div class="widget-header">
+                    <span class="widget-title"> 24h Peak Risk Probability</span>
+                    <span class="widget-value text-amber font-mono" id="prob24hVal">{{ data.prediction.flood_probability_24h }}%</span>
+                </div>
+                <div class="chart-container-md">
+                    <canvas id="probForecastChart"></canvas>
+                </div>
+            </div>
+
+            <div class="evacuation-banner" id="evacBanner" style="background: {{ data.prediction.color }}22; border-color: {{ data.prediction.color }};">
+                <div class="evac-icon" style="color: {{ data.prediction.color }};">
+                    
+                </div>
+                <div class="evac-text">
+                    <strong style="color: {{ data.prediction.color }};" id="evacStatusText">
+                        {% if data.prediction.evacuation_recommended %}EVACUATION PROTOCOL ACTIVE{% else %}NOMINAL / MONITORING{% endif %}
+                    </strong>
+                    <p id="evacSubText">{{ data.prediction.alert_status }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- TAB 2: PHONE & EMAIL ALERT SENDER -->
+<div id="tab-alert_sender" class="tab-content">
+    <div class="alert-sender-container-grid">
+        <div class="card p-4">
+            <div class="card-header mb-3">
+                <h3> Dispatch Multi-Channel Emergency Broadcast</h3>
+                <span class="badge badge-danger">High-Priority Alert</span>
+            </div>
+
+            <div class="modal-station-pill mb-3">
+                <span>Target Basin: <strong>{{ data.station.name }} ({{ current_station }})</strong></span>
+                <span>Active Risk Score: <strong class="text-danger">{{ data.prediction.flood_risk_score }} / 1200</strong></span>
+            </div>
+
+            <div class="quick-contact-group mb-3">
+                <label> Recipient Mobile Numbers (SMS / WhatsApp):</label>
+                <input type="text" id="alertPhoneInput" class="modal-input" value="+91 98765 43210, +91 91234 56789" placeholder="+91 9876543210, +91 9123456789">
+                <div class="preset-badges mt-2">
+                    <button type="button" class="badge-btn" onclick="addPhonePreset('NDRF Quick Team', '+91 94120 00111')">+ NDRF Command</button>
+                    <button type="button" class="badge-btn" onclick="addPhonePreset('District Magistrate', '+91 94120 00222')">+ District Magistrate</button>
+                    <button type="button" class="badge-btn" onclick="addPhonePreset('SDRF Emergency', '+91 94120 00333')">+ SDRF Rescue</button>
+                </div>
+            </div>
+
+            <div class="quick-contact-group mb-3">
+                <label> Recipient Email Addresses (Civil Defense SMTP):</label>
+                <input type="text" id="alertEmailInput" class="modal-input" value="emergency.command@gov.in, rescue.team@ndma.gov.in" placeholder="ops@ndma.gov.in, dm-gorge@state.gov.in">
+                <div class="preset-badges mt-2">
+                    <button type="button" class="badge-btn" onclick="addEmailPreset('State EOC', 'eoc@state.gov.in')">+ State EOC</button>
+                    <button type="button" class="badge-btn" onclick="addEmailPreset('WMO Hydrology', 'hydrology@wmo.int')">+ WMO Desk</button>
+                </div>
+            </div>
+
+            <div class="quick-contact-group mb-4">
+                <label> Custom Emergency Advisory Message:</label>
+                <textarea id="alertCustomMsg" class="modal-textarea" rows="3">URGENT: Flash flood surge advisory active for Alaknanda Upper Gorge. Water stage breaching 5.4m. Initiate evacuation of low-lying floodplains.</textarea>
+            </div>
+
+            <div class="dispatch-actions-row">
+                <button type="button" class="btn btn-primary btn-lg" onclick="executeAlertDispatch()"> Transmit SMS & Email Alert</button>
+                <button type="button" class="btn btn-outline" onclick="openWhatsAppRelay()"> Send via WhatsApp</button>
+            </div>
+
+            <div id="alertDispatchResultNotice" class="mt-3"></div>
+        </div>
+
+        <div class="card p-4">
+            <div class="card-header mb-3">
+                <h3> Broadcast Gateways</h3>
+                <span class="badge badge-success">Online (4/4)</span>
+            </div>
+            <div class="gateway-status-list">
+                <div class="gateway-item"><div class="gw-left"><div><strong>GSM/LTE Cell Tower Geo-Fence</strong><small>Latency: 142ms</small></div></div><span class="badge badge-success">ACTIVE</span></div>
+                <div class="gateway-item"><div class="gw-left"><div><strong>NDMA Secure SMTP Relay</strong><small>Latency: 210ms</small></div></div><span class="badge badge-success">ACTIVE</span></div>
+                <div class="gateway-item"><div class="gw-left"><div><strong>Acoustic Valley Sirens (135 dB)</strong><small>Array: 12 Solar Sirens</small></div></div><span class="badge badge-success">READY</span></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- TAB 3: XAI ATTRIBUTION -->
+<div id="tab-xai" class="tab-content">
+    <div class="card p-4">
+        <div class="card-header mb-3">
+            <h3> Explainable AI (XAI) SHAP Radar Attribution</h3>
+            <span class="badge badge-info">Real-Time Decomposed Weights</span>
+        </div>
+        <div class="chart-container-large">
+            <canvas id="xaiRadarChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<!-- TAB 4: SAFE ZONES -->
+<div id="tab-safe_zones" class="tab-content">
+    <div class="card p-4">
+        <div class="card-header mb-3">
+            <h3> Designated Safe Zones & Evacuation Altitudes</h3>
+            <span class="badge badge-success">NDRF Verified</span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 1rem;">
+            {% for sz in data.safe_zones %}
+            <div class="safe-zone-mini">
+                <div>
+                    <strong> {{ sz.name }}</strong>
+                    <small>Elevation: {{ sz.elevation_m }}m | Distance: {{ sz.distance_km }} km</small>
+                </div>
+                <span class="badge badge-info">{{ sz.capacity }} Persons</span>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/three_terrain.js') }}"></script>
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+<script src="{{ url_for('static', filename='js/tactile_knobs.js') }}"></script>
+<script src="{{ url_for('static', filename='js/interactive_drone_flight.js') }}"></script>
+{% endblock %}

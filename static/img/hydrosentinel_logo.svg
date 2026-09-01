@@ -1,0 +1,146 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" width="100%" height="100%">
+  <defs>
+    <!-- Multi-tier chromatic radial glow -->
+    <radialGradient id="chromaGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#00f0ff" stop-opacity="0.45"/>
+      <stop offset="35%" stop-color="#05ffa1" stop-opacity="0.25"/>
+      <stop offset="70%" stop-color="#8b5cf6" stop-opacity="0.12"/>
+      <stop offset="100%" stop-color="#020806" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Core 3D Crystal Droplet Gradient -->
+    <linearGradient id="crystalDrop" x1="10%" y1="0%" x2="90%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="18%" stop-color="#00f0ff"/>
+      <stop offset="55%" stop-color="#05ffa1"/>
+      <stop offset="85%" stop-color="#0d9488"/>
+      <stop offset="100%" stop-color="#6366f1"/>
+    </linearGradient>
+
+    <!-- Cyber Shield Outer Gradient -->
+    <linearGradient id="shieldRim" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00f0ff"/>
+      <stop offset="30%" stop-color="#ffffff"/>
+      <stop offset="60%" stop-color="#05ffa1"/>
+      <stop offset="100%" stop-color="#a855f7"/>
+    </linearGradient>
+
+    <!-- Facet Dark Shade Gradient -->
+    <linearGradient id="facetDark" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="rgba(3, 18, 14, 0.95)"/>
+      <stop offset="100%" stop-color="rgba(6, 32, 24, 0.85)"/>
+    </linearGradient>
+
+    <!-- Mountain Crest Iridescence -->
+    <linearGradient id="peakGrad" x1="50%" y1="0%" x2="50%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="40%" stop-color="#6ee7b7"/>
+      <stop offset="100%" stop-color="#042f2e"/>
+    </linearGradient>
+
+    <!-- Wave Surge Gradient -->
+    <linearGradient id="surgeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#00f0ff"/>
+      <stop offset="50%" stop-color="#05ffa1"/>
+      <stop offset="100%" stop-color="#3b82f6"/>
+    </linearGradient>
+
+    <!-- Glowing Filters -->
+    <filter id="superBloom" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="12" result="blur1"/>
+      <feGaussianBlur stdDeviation="24" result="blur2"/>
+      <feMerge>
+        <feMergeNode in="blur2"/>
+        <feMergeNode in="blur1"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <filter id="coreStarGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="6" result="glow"/>
+      <feMerge>
+        <feMergeNode in="glow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- 1. Ambient Background Halo -->
+  <circle cx="300" cy="300" r="280" fill="url(#chromaGlow)"/>
+
+  <!-- 2. Outer Cybernetic Gyro Rings -->
+  <circle cx="300" cy="300" r="255" fill="none" stroke="url(#shieldRim)" stroke-width="2.5" stroke-dasharray="16 12 4 12" opacity="0.65"/>
+  <circle cx="300" cy="300" r="235" fill="none" stroke="#00f0ff" stroke-width="1.2" stroke-dasharray="6 8" opacity="0.35"/>
+
+  <!-- 3. Satellite Telemetry Beacon Orbit Nodes -->
+  <circle cx="300" cy="45" r="7" fill="#ffffff" filter="url(#coreStarGlow)"/>
+  <circle cx="555" cy="300" r="7" fill="#00f0ff" filter="url(#coreStarGlow)"/>
+  <circle cx="300" cy="555" r="7" fill="#05ffa1" filter="url(#coreStarGlow)"/>
+  <circle cx="45" cy="300" r="7" fill="#a855f7" filter="url(#coreStarGlow)"/>
+
+  <!-- 4. Sentinel Outer Shield Geometry -->
+  <path d="M 300,75 L 480,150 C 480,340 365,470 300,515 C 235,470 120,340 120,150 Z"
+        fill="url(#facetDark)"
+        stroke="url(#shieldRim)"
+        stroke-width="7"
+        filter="url(#superBloom)"/>
+
+  <!-- 5. Inset Glass Specular Ridge -->
+  <path d="M 300,95 L 455,162 C 455,325 352,440 300,480 C 248,440 145,325 145,162 Z"
+        fill="none"
+        stroke="rgba(255, 255, 255, 0.28)"
+        stroke-width="2"/>
+
+  <!-- 6. Left Shield Shadow Facet -->
+  <path d="M 300,95 L 145,162 C 145,325 248,440 300,480 Z"
+        fill="rgba(0, 240, 255, 0.04)"/>
+
+  <!-- 7. Right Shield Specular Facet -->
+  <path d="M 300,95 L 455,162 C 455,325 352,440 300,480 Z"
+        fill="rgba(5, 255, 161, 0.06)"/>
+
+  <!-- 8. Geometric 3D Mountain Summit (Himalayan Peak) -->
+  <polygon points="300,140 395,295 345,295 300,225 255,295 205,295"
+           fill="url(#peakGrad)"
+           filter="url(#coreStarGlow)"/>
+
+  <!-- 3D Mountain Light Ridge -->
+  <polygon points="300,140 300,225 345,295 395,295"
+           fill="#ffffff"
+           opacity="0.32"/>
+
+  <!-- 9. Dynamic Hydro-Surge Vortex Wave (Flowing Under Mountain) -->
+  <path d="M 160,335 C 215,270 270,375 330,315 C 380,265 415,300 435,335 C 415,395 360,445 300,472 C 240,445 185,395 160,335 Z"
+        fill="url(#surgeGrad)"
+        opacity="0.92"
+        filter="url(#superBloom)"/>
+
+  <!-- Wave Foam Luminescent Highlight Line -->
+  <path d="M 180,345 C 230,295 275,385 330,335 C 375,295 405,320 422,348"
+        fill="none"
+        stroke="#ffffff"
+        stroke-width="4.5"
+        stroke-linecap="round"
+        opacity="0.85"/>
+
+  <path d="M 210,370 C 255,335 290,400 335,365 C 365,340 385,355 400,375"
+        fill="none"
+        stroke="#00f0ff"
+        stroke-width="2.5"
+        stroke-linecap="round"
+        opacity="0.7"/>
+
+  <!-- 10. Central AI Neural Optical Core (The Sentinel Eye) -->
+  <circle cx="300" cy="265" r="22" fill="url(#crystalDrop)" filter="url(#superBloom)"/>
+  <circle cx="300" cy="265" r="11" fill="#ffffff"/>
+
+  <!-- 11. Cross Optical Star Rays -->
+  <line x1="300" y1="230" x2="300" y2="185" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round" filter="url(#coreStarGlow)"/>
+  <line x1="300" y1="300" x2="300" y2="345" stroke="#00f0ff" stroke-width="3" stroke-linecap="round" filter="url(#coreStarGlow)"/>
+  <line x1="265" y1="265" x2="220" y2="265" stroke="#05ffa1" stroke-width="3" stroke-linecap="round" filter="url(#coreStarGlow)"/>
+  <line x1="335" y1="265" x2="380" y2="265" stroke="#00f0ff" stroke-width="3" stroke-linecap="round" filter="url(#coreStarGlow)"/>
+
+  <!-- Diagonal Satellite Rays -->
+  <line x1="275" y1="240" x2="245" y2="210" stroke="#05ffa1" stroke-width="2" stroke-linecap="round" opacity="0.75"/>
+  <line x1="325" y1="240" x2="355" y2="210" stroke="#00f0ff" stroke-width="2" stroke-linecap="round" opacity="0.75"/>
+</svg>

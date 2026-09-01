@@ -1,0 +1,15 @@
+__pycache__/
+*.py[cod]
+*$py.class
+artifacts/*.pkl
+artifacts/*.csv
+artifacts/metrics.json
+logs/
+.pytest_cache/
+.env
+.venv
+env/
+venv/
+*.egg-info/
+dist/
+build/

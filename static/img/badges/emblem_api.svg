@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <defs>
+    <linearGradient id="g8" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fbbf24"/>
+      <stop offset="100%" stop-color="#f59e0b"/>
+    </linearGradient>
+    <filter id="glow8">
+      <feGaussianBlur stdDeviation="2.5" result="b"/>
+      <feComposite in="SourceGraphic" in2="b" operator="over"/>
+    </filter>
+  </defs>
+  <rect x="8" y="10" width="48" height="44" rx="10" stroke="url(#g8)" stroke-width="2" fill="rgba(7,14,28,0.9)" filter="url(#glow8)"/>
+  <circle cx="16" cy="18" r="2.5" fill="#f43f5e"/>
+  <circle cx="23" cy="18" r="2.5" fill="#fbbf24"/>
+  <circle cx="30" cy="18" r="2.5" fill="#10b981"/>
+  <!-- Terminal Prompt Command -->
+  <path d="M16 32 L 24 38 L 16 44" stroke="#00f0ff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <line x1="28" y1="44" x2="42" y2="44" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"/>
+</svg>

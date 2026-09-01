@@ -1,0 +1,294 @@
+{% extends 'layout.html' %}
+{% block title %}3D Earth Satellite Constellation Tracker - HydroSentinel AI™{% endblock %}
+
+{% block content %}
+<div class="satellites-viewport-container">
+    <!-- Header Topbar -->
+    <div class="view-header-bar">
+        <div class="header-left-title">
+            <span class="pulse-beacon"></span>
+            <h2 class="text-h2" style="margin: 0; font-size: 1.35rem; color: #ffffff;">Earth Observation Satellite Constellation Tracker</h2>
+        </div>
+        <div class="d-flex gap-2">
+            <a href="/api/export-intelligence-briefing" target="_blank" class="spatial-btn-primary" style="padding: 0.4rem 1.1rem; font-size: 0.82rem;">
+                📥 Commander SITREP Brief
+            </a>
+            <button class="spatial-btn-glass" onclick="loadSatelliteData()" style="padding: 0.4rem 1rem; font-size: 0.82rem;">
+                🔄 Refresh Ephemeris
+            </button>
+        </div>
+    </div>
+
+    <!-- Main 3D Satellite Globe & Telemetry Cockpit Grid -->
+    <div class="sat-3d-main-grid">
+        <!-- Center/Left: 3D Earth Globe Canvas Card -->
+        <div class="sat-globe-card liquid-glass">
+            <div class="globe-top-hud">
+                <div class="locked-sat-pill">
+                    <span class="dot-green"></span>
+                    <span id="selectedSatNameDisplay">GLOBAL RESCUE CONSTELLATION</span>
+                </div>
+                
+                <div class="globe-hud-controls">
+                    <button id="btnToggleFootprints" class="hud-pill-btn active" onclick="toggleFootprints()">📡 Swath Cones: ON</button>
+                    <div class="speed-selector-group">
+                        <button class="speed-pill-btn active" onclick="setOrbitTimelapse(1.0)">1x</button>
+                        <button class="speed-pill-btn" onclick="setOrbitTimelapse(5.0)">5x</button>
+                        <button class="speed-pill-btn" onclick="setOrbitTimelapse(20.0)">20x</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3D Three.js WebGL Container -->
+            <div id="satellite3DGlobeContainer" class="sat-webgl-viewport"></div>
+
+            <div class="globe-bottom-chips">
+                <button class="sat-chip-btn" onclick="lockCameraToSatellite('ALL')">🌐 Full Orbit View</button>
+                <button class="sat-chip-btn chip-gpm" onclick="lockCameraToSatellite('GPM')">🛰️ NASA GPM</button>
+                <button class="sat-chip-btn chip-s1a" onclick="lockCameraToSatellite('S1A')">🛰️ Sentinel-1A SAR</button>
+                <button class="sat-chip-btn chip-insat" onclick="lockCameraToSatellite('INSAT')">🛰️ ISRO INSAT-3DR</button>
+                <button class="sat-chip-btn chip-swot" onclick="lockCameraToSatellite('SWOT')">🛰️ SWOT Altimetry</button>
+            </div>
+        </div>
+
+        <!-- Right Side: Satellite Constellation Cards & Ephemeris Pass Times -->
+        <div class="sat-telemetry-sidebar">
+            <div class="sidebar-panel-card liquid-glass">
+                <div class="panel-header-title">
+                    <span>📡 ACTIVE ORBITERS IN RESONANCE</span>
+                    <span class="badge badge-normal">6 LOCKED</span>
+                </div>
+
+                <div id="satellitesGrid" class="satellites-mini-cards-list">
+                    <div class="sat-card-mini" onclick="lockCameraToSatellite('GPM')">
+                        <div class="sat-mini-head">
+                            <strong>NASA GPM Core</strong>
+                            <span class="badge badge-normal">407 km</span>
+                        </div>
+                        <p class="sat-mini-desc">Dual-Frequency Precipitation Radar (Ku/Ka band) measuring cloudburst inflow.</p>
+                    </div>
+
+                    <div class="sat-card-mini" onclick="lockCameraToSatellite('S1A')">
+                        <div class="sat-mini-head">
+                            <strong>Sentinel-1A SAR</strong>
+                            <span class="badge badge-normal">693 km</span>
+                        </div>
+                        <p class="sat-mini-desc">C-band Synthetic Aperture Radar penetrating clouds to map inundated riverbeds.</p>
+                    </div>
+
+                    <div class="sat-card-mini" onclick="lockCameraToSatellite('INSAT')">
+                        <div class="sat-mini-head">
+                            <strong>ISRO INSAT-3DR</strong>
+                            <span class="badge badge-normal">35,786 km</span>
+                        </div>
+                        <p class="sat-mini-desc">Geostationary meteorological sounding for rapid Himalayan convective storm tracking.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Overpass Table -->
+            <div class="sidebar-panel-card liquid-glass" style="margin-top: 1rem;">
+                <div class="panel-header-title">
+                    <span>⏱️ UPCOMING HIMALAYAN PASSES</span>
+                </div>
+                <div class="table-responsive">
+                    <table class="sensor-table">
+                        <thead>
+                            <tr>
+                                <th>SATELLITE</th>
+                                <th>PASS WINDOW</th>
+                                <th>SWATH</th>
+                            </tr>
+                        </thead>
+                        <tbody id="satTableBody">
+                            <tr>
+                                <td><strong>NASA GPM</strong></td>
+                                <td><span class="text-cyan">In 42 Mins</span></td>
+                                <td>245 km</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Sentinel-1A</strong></td>
+                                <td><span class="text-purple">In 1h 15m</span></td>
+                                <td>250 km</td>
+                            </tr>
+                            <tr>
+                                <td><strong>SWOT Radar</strong></td>
+                                <td><span class="text-amber">In 2h 40m</span></td>
+                                <td>120 km</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* 3D Satellite Earth Globe Styles */
+.satellites-viewport-container {
+    max-width: 1400px;
+    margin: 1.5rem auto;
+    padding: 0 1rem;
+}
+
+.sat-3d-main-grid {
+    display: grid;
+    grid-template-columns: 1.35fr 0.65fr;
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+}
+@media (max-width: 1024px) {
+    .sat-3d-main-grid { grid-template-columns: 1fr; }
+}
+
+.sat-globe-card {
+    border-radius: 28px;
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.globe-top-hud {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+.locked-sat-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.82rem;
+    font-weight: 700;
+    font-family: var(--font-mono);
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    padding: 0.35rem 0.85rem;
+    border-radius: 9999px;
+}
+.globe-hud-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+.hud-pill-btn {
+    background: rgba(56, 189, 248, 0.15);
+    border: 1px solid rgba(56, 189, 248, 0.4);
+    color: #38bdf8;
+    padding: 0.3rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-family: var(--font-mono);
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.speed-selector-group {
+    display: inline-flex;
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 9999px;
+    padding: 2px;
+    gap: 2px;
+}
+.speed-pill-btn {
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.5);
+    padding: 0.25rem 0.6rem;
+    border-radius: 9999px;
+    font-size: 0.72rem;
+    font-family: var(--font-mono);
+    font-weight: 700;
+    cursor: pointer;
+}
+.speed-pill-btn.active {
+    background: rgba(255, 255, 255, 0.2);
+    color: #ffffff;
+}
+
+.sat-webgl-viewport {
+    width: 100%;
+    height: 520px;
+    border-radius: 20px;
+    overflow: hidden;
+    background: radial-gradient(circle at center, #07172c 0%, #02040a 100%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.globe-bottom-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    justify-content: center;
+}
+.sat-chip-btn {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: #ffffff;
+    padding: 0.4rem 0.9rem;
+    border-radius: 9999px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.sat-chip-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(56, 189, 248, 0.5);
+    transform: translateY(-2px);
+}
+.chip-gpm:hover { border-color: #38bdf8; box-shadow: 0 0 15px rgba(56, 189, 248, 0.4); }
+.chip-s1a:hover { border-color: #c084fc; box-shadow: 0 0 15px rgba(192, 132, 252, 0.4); }
+.chip-insat:hover { border-color: #34d399; box-shadow: 0 0 15px rgba(52, 211, 153, 0.4); }
+
+/* Sidebar Panels */
+.sat-telemetry-sidebar {
+    display: flex;
+    flex-direction: column;
+}
+.sidebar-panel-card {
+    padding: 1.25rem;
+    border-radius: 24px;
+}
+.panel-header-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #38bdf8;
+    margin-bottom: 1rem;
+}
+
+.sat-card-mini {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 0.85rem 1rem;
+    margin-bottom: 0.65rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.sat-card-mini:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(56, 189, 248, 0.4);
+    transform: translateX(4px);
+}
+.sat-mini-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.25rem;
+}
+.sat-mini-head strong { font-size: 0.88rem; color: #ffffff; }
+.sat-mini-desc { font-size: 0.78rem; color: rgba(255, 255, 255, 0.6); margin: 0; line-height: 1.4; }
+</style>
+
+<script src="{{ url_for('static', filename='js/satellite_3d_globe.js') }}"></script>
+{% endblock %}

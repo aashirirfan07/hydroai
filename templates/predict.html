@@ -1,0 +1,304 @@
+{% extends 'layout.html' %}
+{% block title %}HydroSentinel AI™ - Multi-Source Scenario Simulation Engine{% endblock %}
+{% block content %}
+<div class="simulator-wrapper">
+    <div class="simulator-header">
+        <div class="section-title">
+            <h2> Multi-Source Scenario Simulation & Stress-Test Engine</h2>
+            <p>Simulate extreme cloudbursts, saturated bedrock, and catchment surges to test regional flash flood susceptibility in real time.</p>
+        </div>
+    </div>
+
+    {% if error %}
+    <div class="alert-box alert-box-danger mb-3">
+        
+        <span><strong>Error:</strong> {{ error }}</span>
+    </div>
+    {% endif %}
+
+    <div class="simulator-grid">
+        <!-- Input Form Card -->
+        <div class="card form-card">
+            <div class="card-header">
+                <h3> 10-Point Multi-Source Telemetry Inputs</h3>
+                <span class="badge badge-info"> Real-Time Calibrated</span>
+            </div>
+
+            <form action="{{ url_for('predict_datapoint') }}" method="POST" class="form-body">
+                <!-- Group 1: Meteorological -->
+                <div class="form-group-section">
+                    <div class="group-title"> 1. Meteorological & Satellite Radar</div>
+                    <div class="input-row">
+                        <div class="form-field">
+                            <label for="rainfall_intensity_mm_hr">Rainfall Intensity (mm/hr): <span id="val_rainfall" class="font-mono text-amber">65.0</span></label>
+                            <input type="number" step="0.1" min="0" max="250" name="rainfall_intensity_mm_hr" id="rainfall_intensity_mm_hr" 
+                                   value="{{ form_data.rainfall_intensity_mm_hr if form_data else '65.0' }}" oninput="updateLiveSimPreview()" required>
+                            <small class="field-hint">Cloudburst threshold: &gt;50 mm/hr</small>
+                        </div>
+                        <div class="form-field">
+                            <label for="cumulative_rainfall_24h_mm">Cumulative 24h Rainfall (mm): <span id="val_cum_rainfall" class="font-mono text-cyan">145.0</span></label>
+                            <input type="number" step="0.1" min="0" max="600" name="cumulative_rainfall_24h_mm" id="cumulative_rainfall_24h_mm" 
+                                   value="{{ form_data.cumulative_rainfall_24h_mm if form_data else '145.0' }}" oninput="updateLiveSimPreview()" required>
+                            <small class="field-hint">Total 24h basin accumulation</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Group 2: Soil -->
+                <div class="form-group-section">
+                    <div class="group-title"> 2. IoT Soil Saturation & Vegetation Buffer</div>
+                    <div class="input-row">
+                        <div class="form-field">
+                            <label for="soil_moisture_percentage">Soil Moisture Saturation (%): <span id="val_soil" class="font-mono text-amber">85.0</span></label>
+                            <input type="number" step="0.1" min="0" max="100" name="soil_moisture_percentage" id="soil_moisture_percentage" 
+                                   value="{{ form_data.soil_moisture_percentage if form_data else '85.0' }}" oninput="updateLiveSimPreview()" required>
+                            <small class="field-hint">Saturated bedrock: &gt;80%</small>
+                        </div>
+                        <div class="form-field">
+                            <label for="vegetation_ndvi">Vegetation Index (NDVI): <span id="val_ndvi" class="font-mono text-neon-green">0.42</span></label>
+                            <input type="number" step="0.01" min="0" max="1" name="vegetation_ndvi" id="vegetation_ndvi" 
+                                   value="{{ form_data.vegetation_ndvi if form_data else '0.42' }}" oninput="updateLiveSimPreview()" required>
+                            <small class="field-hint">Canopy buffer (0.1 to 0.9)</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Group 3: River -->
+                <div class="form-group-section">
+                    <div class="group-title"> 3. River Gauge & Surge Hydrometry</div>
+                    <div class="input-row">
+                        <div class="form-field">
+                            <label for="river_water_level_m">River Water Stage (m): <span id="val_stage" class="font-mono text-cyan">4.85</span></label>
+                            <input type="number" step="0.01" min="0" max="15" name="river_water_level_m" id="river_water_level_m" 
+                                   value="{{ form_data.river_water_level_m if form_data else '4.85' }}" oninput="updateLiveSimPreview()" required>
+                            <small class="field-hint">Baseline: 1.0 - 2.0m</small>
+                        </div>
+                        <div class="form-field">
+                            <label for="river_flow_velocity_mps">Flow Velocity (m/s): <span id="val_velocity" class="font-mono text-amber">4.20</span></label>
+                            <input type="number" step="0.01" min="0" max="12" name="river_flow_velocity_mps" id="river_flow_velocity_mps" 
+                                   value="{{ form_data.river_flow_velocity_mps if form_data else '4.20' }}" oninput="updateLiveSimPreview()" required>
+                            <small class="field-hint">Rapid stream speed</small>
+                        </div>
+                        <div class="form-field">
+                            <label for="upstream_basin_surge_rate">Upstream Surge Rate (m³/s²): <span id="val_surge" class="font-mono text-danger">2.40</span></label>
+                            <input type="number" step="0.01" min="0" max="10" name="upstream_basin_surge_rate" id="upstream_basin_surge_rate" 
+                                   value="{{ form_data.upstream_basin_surge_rate if form_data else '2.40' }}" oninput="updateLiveSimPreview()" required>
+                            <small class="field-hint">Inflow acceleration</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Group 4: Topography -->
+                <div class="form-group-section">
+                    <div class="group-title"> 4. Topography & Catchment Morphology</div>
+                    <div class="input-row">
+                        <div class="form-field">
+                            <label for="elevation_m">Elevation (m A.S.L.)</label>
+                            <input type="number" step="1" min="100" max="5000" name="elevation_m" id="elevation_m" 
+                                   value="{{ form_data.elevation_m if form_data else '1650' }}" required>
+                            <small class="field-hint">Station altitude</small>
+                        </div>
+                        <div class="form-field">
+                            <label for="slope_gradient_deg">Slope Gradient (deg)</label>
+                            <input type="number" step="0.1" min="1" max="65" name="slope_gradient_deg" id="slope_gradient_deg" 
+                                   value="{{ form_data.slope_gradient_deg if form_data else '36.5' }}" required>
+                            <small class="field-hint">Mountain gorge incline</small>
+                        </div>
+                        <div class="form-field">
+                            <label for="drainage_density_km_km2">Drainage Density (km/km²)</label>
+                            <input type="number" step="0.1" min="0.5" max="8" name="drainage_density_km_km2" id="drainage_density_km_km2" 
+                                   value="{{ form_data.drainage_density_km_km2 if form_data else '3.4' }}" required>
+                            <small class="field-hint">Stream convergence</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Presets -->
+                <div class="preset-scenarios">
+                    <span class="preset-label"> Instant Stress-Test Presets:</span>
+                    <button type="button" class="badge-btn" onclick="loadPreset('cloudburst')">☁️ Extreme Cloudburst</button>
+                    <button type="button" class="badge-btn" onclick="loadPreset('monsoon')">🌧️ Peak Monsoon</button>
+                    <button type="button" class="badge-btn" onclick="loadPreset('moderate')">🌤️ Moderate Risk</button>
+                    <button type="button" class="badge-btn" onclick="loadPreset('safe')">✅ Normal Baseline</button>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary btn-lg btn-block">
+                         Run Ensemble AI Inference & Predict Flood Risk
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Output Results Card -->
+        <div class="card results-card">
+            <div class="card-header">
+                <h3> AI Model Prediction Output</h3>
+                {% if results %}
+                <span class="badge" style="background: {{ results.color }}; color: #000; font-weight: 800;">{{ results.alert_level }}</span>
+                {% else %}
+                <span class="badge badge-secondary" id="liveSimBadge">Instant Preview Active</span>
+                {% endif %}
+            </div>
+
+            <div class="results-body">
+                {% if results %}
+                <div class="prediction-hero-score" style="border-color: {{ results.color }};">
+                    <div class="score-label">Flash Flood Risk Severity Index</div>
+                    <div class="score-number" style="color: {{ results.color }};">{{ results.flood_risk_score }} <small>/ 1200</small></div>
+                    <div class="score-status" style="background: {{ results.color }}22; color: {{ results.color }};">
+                         {{ results.alert_status }}
+                    </div>
+                </div>
+
+                <div class="prediction-stats-grid">
+                    <div class="pstat-item">
+                        <span class="pstat-label">24h Peak Probability</span>
+                        <span class="pstat-val text-amber">{{ results.flood_probability_24h }}%</span>
+                    </div>
+                    <div class="pstat-item">
+                        <span class="pstat-label">Evacuation Order</span>
+                        <span class="pstat-val {% if results.evacuation_recommended %}text-danger{% else %}text-neon-green{% endif %}">
+                            {% if results.evacuation_recommended %}IMMEDIATE EVACUATION{% else %}NO EVACUATION{% endif %}
+                        </span>
+                    </div>
+                    <div class="pstat-item">
+                        <span class="pstat-label">Threat Classification</span>
+                        <span class="pstat-val text-cyan">{{ results.threat_level }}</span>
+                    </div>
+                    <div class="pstat-item">
+                        <span class="pstat-label">Model Engine</span>
+                        <span class="pstat-val text-neon-green">Gradient Boosting</span>
+                    </div>
+                </div>
+
+                <div class="forecast-curve-container mt-4">
+                    <h4> 24-Hour Projected Surge Curve</h4>
+                    <canvas id="predictForecastChart" style="height: 180px;"></canvas>
+                </div>
+
+                <div class="payload-breakdown mt-4">
+                    <h4> JSON Telemetry Response Payload</h4>
+                    <pre class="code-block"><code>{{ results | tojson(indent=2) }}</code></pre>
+                </div>
+
+                {% else %}
+                <div id="livePreviewContainer">
+                    <div class="prediction-hero-score" style="border-color: #00f0ff;">
+                        <div class="score-label">Estimated Live Risk Score</div>
+                        <div class="score-number text-cyan" id="liveScoreEst">742 <small>/ 1200</small></div>
+                        <div class="score-status" style="background: rgba(0,240,255,0.15); color: #00f0ff;" id="liveStatusEst">
+                             HIGH FLOOD SURGE ADVISORY
+                        </div>
+                    </div>
+
+                    <div class="prediction-stats-grid">
+                        <div class="pstat-item">
+                            <span class="pstat-label">Estimated Probability</span>
+                            <span class="pstat-val text-amber" id="liveProbEst">68.5%</span>
+                        </div>
+                        <div class="pstat-item">
+                            <span class="pstat-label">Surge Velocity Vector</span>
+                            <span class="pstat-val text-cyan" id="liveSurgeEst">4.2 m/s</span>
+                        </div>
+                    </div>
+
+                    <div class="empty-features mt-4">
+                        <div class="ef-item"><span>Gradient Boosting Ensemble (R² = 0.9858)</span></div>
+                        <div class="ef-item"><span>24-Hour Surge Probability Curve</span></div>
+                        <div class="ef-item"><span>SHAP-Derived XAI Attribution</span></div>
+                        <div class="ef-item"><span>Full JSON Payload Export</span></div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function loadPreset(name) {
+    const presets = {
+        cloudburst: { rainfall_intensity_mm_hr: 120, cumulative_rainfall_24h_mm: 350, soil_moisture_percentage: 95, vegetation_ndvi: 0.25, river_water_level_m: 6.5, river_flow_velocity_mps: 5.8, upstream_basin_surge_rate: 3.5, elevation_m: 1850, slope_gradient_deg: 42, drainage_density_km_km2: 4.2 },
+        monsoon: { rainfall_intensity_mm_hr: 75, cumulative_rainfall_24h_mm: 200, soil_moisture_percentage: 88, vegetation_ndvi: 0.38, river_water_level_m: 5.2, river_flow_velocity_mps: 4.1, upstream_basin_surge_rate: 2.4, elevation_m: 1500, slope_gradient_deg: 35, drainage_density_km_km2: 3.5 },
+        moderate: { rainfall_intensity_mm_hr: 35, cumulative_rainfall_24h_mm: 80, soil_moisture_percentage: 65, vegetation_ndvi: 0.55, river_water_level_m: 3.0, river_flow_velocity_mps: 2.2, upstream_basin_surge_rate: 1.0, elevation_m: 1200, slope_gradient_deg: 28, drainage_density_km_km2: 2.5 },
+        safe: { rainfall_intensity_mm_hr: 12, cumulative_rainfall_24h_mm: 25, soil_moisture_percentage: 40, vegetation_ndvi: 0.72, river_water_level_m: 1.5, river_flow_velocity_mps: 1.0, upstream_basin_surge_rate: 0.3, elevation_m: 800, slope_gradient_deg: 18, drainage_density_km_km2: 1.8 }
+    };
+    const p = presets[name];
+    if (!p) return;
+    Object.keys(p).forEach(k => {
+        const el = document.getElementById(k);
+        if (el) el.value = p[k];
+    });
+    updateLiveSimPreview();
+}
+
+function updateLiveSimPreview() {
+    const rain = parseFloat(document.getElementById('rainfall_intensity_mm_hr')?.value || 65);
+    const soil = parseFloat(document.getElementById('soil_moisture_percentage')?.value || 85);
+    const stage = parseFloat(document.getElementById('river_water_level_m')?.value || 4.85);
+
+    // Update value labels
+    const vRain = document.getElementById('val_rainfall'); if (vRain) vRain.textContent = rain.toFixed(1);
+    const vSoil = document.getElementById('val_soil'); if (vSoil) vSoil.textContent = soil.toFixed(1);
+    const vStage = document.getElementById('val_stage'); if (vStage) vStage.textContent = stage.toFixed(2);
+
+    // Calculate dynamic estimate
+    const estimatedScore = Math.min(1200, Math.round((rain * 3.8) + (soil * 4.2) + (stage * 55)));
+    const estimatedProb = Math.min(99.5, Math.max(5.0, ((estimatedScore / 1200) * 100))).toFixed(1);
+
+    const scoreEl = document.getElementById('liveScoreEst');
+    const probEl = document.getElementById('liveProbEst');
+    const statusEl = document.getElementById('liveStatusEst');
+
+    if (scoreEl) scoreEl.innerHTML = `${estimatedScore} <small>/ 1200</small>`;
+    if (probEl) probEl.textContent = `${estimatedProb}%`;
+    if (statusEl) {
+        if (estimatedScore > 850) {
+            statusEl.innerHTML = ` CRITICAL EVACUATION SURGE`;
+            statusEl.style.color = '#ef4444';
+            statusEl.style.background = 'rgba(239,68,68,0.2)';
+        } else if (estimatedScore > 550) {
+            statusEl.innerHTML = ` HIGH FLOOD SURGE ADVISORY`;
+            statusEl.style.color = '#f59e0b';
+            statusEl.style.background = 'rgba(245,158,11,0.2)';
+        } else {
+            statusEl.innerHTML = ` NORMAL / LOW FLOOD RISK`;
+            statusEl.style.color = '#05ffa1';
+            statusEl.style.background = 'rgba(5,255,161,0.2)';
+        }
+    }
+}
+
+{% if results %}
+const ctx = document.getElementById('predictForecastChart').getContext('2d');
+new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: {{ results.forecast_timeline_hours | tojson }},
+        datasets: [{
+            label: 'Surge Probability (%)',
+            data: {{ results.forecast_probability_curve | tojson }},
+            borderColor: '{{ results.color }}',
+            backgroundColor: '{{ results.color }}22',
+            borderWidth: 3,
+            fill: true,
+            tension: 0.4,
+            pointRadius: 3
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+            y: { min: 0, max: 100, grid: { color: 'rgba(255,255,255,0.06)' }, ticks: { color: '#94a3b8' } },
+            x: { grid: { display: false }, ticks: { color: '#94a3b8' } }
+        }
+    }
+});
+{% endif %}
+</script>
+{% endblock %}

@@ -1,0 +1,274 @@
+{% extends 'layout.html' %}
+{% block title %}HydroSentinel AI™ - Developer API Hub (Admin Zone){% endblock %}
+
+{% block content %}
+<!-- Restricted Visitor Security Clearance Gate -->
+<div id="restrictedAdminGate" style="{% if is_admin %}display: none;{% else %}display: block;{% endif %} max-width: 550px; margin: 3.5rem auto; text-align: center;">
+    <div class="card p-4 liquid-glass" style="border: 1px solid rgba(244, 63, 94, 0.4); box-shadow: 0 20px 60px rgba(0,0,0,0.8), 0 0 30px rgba(244, 63, 94, 0.2);">
+        <div style="width: 60px; height: 60px; border-radius: 50%; background: rgba(244, 63, 94, 0.15); border: 1px solid rgba(244, 63, 94, 0.5); display: flex; align-items: center; justify-content: center; margin: 0 auto 1.2rem auto;">
+            
+        </div>
+        <h2 style="font-weight: 900; color: #ffffff; margin-bottom: 0.4rem;">Restricted Admin Zone</h2>
+        <p style="font-size: 0.88rem; color: #94a3b8; margin-bottom: 1.5rem;">The Developer API Hub & Ingestion Gateway is restricted to verified platform administrators. Public visitor access is prohibited.</p>
+
+        <form id="adminAuthForm" onsubmit="handleAdminAuth(event)">
+            <div style="margin-bottom: 1.2rem; text-align: left;">
+                <label style="font-size: 0.78rem; font-weight: 700; color: #f43f5e;"> Enter Master Passkey:</label>
+                <input type="password" id="adminPasskeyInput" required placeholder="••••••••••••" style="width: 100%; background: rgba(255,255,255,0.06); border: 1px solid rgba(244,63,94,0.3); border-radius: 12px; color: #ffffff; padding: 0.7rem 1rem; font-size: 0.95rem; margin-top: 0.4rem; outline: none;">
+            </div>
+            <button type="submit" id="btnAdminUnlock" class="btn btn-primary btn-block" style="background: linear-gradient(135deg, #f43f5e, #e11d48); border: none;"> Verify & Unlock API Hub</button>
+        </form>
+        <div id="authErrorMsg" style="display: none; color: #f43f5e; font-size: 0.82rem; margin-top: 0.8rem; font-weight: 600;"> Access Denied: Incorrect Passkey (Hint: quantum2026)</div>
+    </div>
+</div>
+
+<!-- Unlocked Authorized Developer Console -->
+<div id="unlockedAdminConsole" style="{% if is_admin %}display: block;{% else %}display: none;{% endif %}">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <span class="badge badge-success"> Master Admin Access Active</span>
+        <button class="btn btn-sm btn-outline text-danger" onclick="lockAdminZone()"> Lock API Hub</button>
+    </div>
+
+    <div class="page-header-banner mb-4">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div>
+                <h2> Interactive Developer API & Ingestion Hub</h2>
+                <p class="text-muted">Enterprise REST endpoints, OASIS CAP v1.2 XML feeds, and real-time sensor ingestion gateways.</p>
+            </div>
+            <div class="d-flex gap-2">
+                <a href="/api/export-geojson" target="_blank" class="btn btn-sm btn-outline"> RFC-7946 GeoJSON</a>
+                <a href="/api/export-cap-alert?station=STN-KD-05" target="_blank" class="btn btn-sm btn-outline text-danger"> CAP XML Feed</a>
+                <a href="/api/export-csv?station=STN-KD-05" target="_blank" class="btn btn-sm btn-primary"> CSV Feed</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="architecture-grid">
+        <!-- API 1: Stations Metadata -->
+        <div class="card p-4">
+            <div class="card-header mb-3">
+                <h3> 1. Monitoring Stations Index</h3>
+                <span class="badge badge-success">GET /api/stations</span>
+            </div>
+            <p class="text-muted mb-3">Fetches geographical coordinates, slope angles, base hydrometric metrics, and operational health for all 8 monitoring basins.</p>
+            <div style="display: flex; gap: 0.6rem; margin-bottom: 1rem;">
+                <button class="btn btn-sm btn-primary" onclick="testLiveAPI('/api/stations', 'res_stations')"> Test Live Request</button>
+                <a href="/api/stations" target="_blank" class="btn btn-sm btn-outline"> Open Raw</a>
+            </div>
+            <pre class="code-block" style="max-height: 220px; overflow-y: auto;"><code id="res_stations">// Click 'Test Live Request' to execute...</code></pre>
+        </div>
+
+        <!-- API 2: Timeseries Stream -->
+        <div class="card p-4">
+            <div class="card-header mb-3">
+                <h3> 2. Timeseries Telemetry Stream</h3>
+                <span class="badge badge-success">GET /api/timeseries</span>
+            </div>
+            <p class="text-muted mb-3">Returns 24-hour historical precipitation, stage levels, discharge rates, and 48-hour forward forecast curves.</p>
+            <div style="display: flex; gap: 0.6rem; margin-bottom: 1rem; align-items: center;">
+                <select id="ts_station_select" class="form-select-dark" style="padding: 0.35rem 0.8rem; font-size: 0.82rem;" onchange="testTimeseriesAPI()">
+                    <option value="STN-KD-05">STN-KD-05 (Kedarnath)</option>
+                    <option value="STN-AL-02">STN-AL-02 (Alaknanda)</option>
+                    <option value="STN-WY-07">STN-WY-07 (Wayanad)</option>
+                    <option value="STN-KL-01">STN-KL-01 (Kullu)</option>
+                </select>
+                <button class="btn btn-sm btn-primary" onclick="testTimeseriesAPI()"> Test</button>
+            </div>
+            <pre class="code-block" style="max-height: 220px; overflow-y: auto;"><code id="res_timeseries">// Select station or click 'Test' to execute...</code></pre>
+        </div>
+
+        <!-- API 3: Multi-Basin Risk Matrix -->
+        <div class="card p-4">
+            <div class="card-header mb-3">
+                <h3> 3. Basin Risk Matrix API</h3>
+                <span class="badge badge-success">GET /api/basin-risk-matrix</span>
+            </div>
+            <p class="text-muted mb-3">Ranked risk index across all 8 river basins calculated via multi-variable Gradient Boosting & hydrodynamic slope weighting.</p>
+            <div style="display: flex; gap: 0.6rem; margin-bottom: 1rem;">
+                <button class="btn btn-sm btn-primary" onclick="testLiveAPI('/api/basin-risk-matrix', 'res_matrix')"> Test Live Request</button>
+                <a href="/api/basin-risk-matrix" target="_blank" class="btn btn-sm btn-outline"> Open Raw</a>
+            </div>
+            <pre class="code-block" style="max-height: 220px; overflow-y: auto;"><code id="res_matrix">// Click 'Test Live Request' to execute...</code></pre>
+        </div>
+
+        <!-- API 4: Doppler Weather Radar -->
+        <div class="card p-4">
+            <div class="card-header mb-3">
+                <h3> 4. Doppler Weather Radar API</h3>
+                <span class="badge badge-success">GET /api/weather-radar</span>
+            </div>
+            <p class="text-muted mb-3">Live polarimetric radar reflectivity (dBZ), cloud top height, and storm cloud motion vectors.</p>
+            <div style="display: flex; gap: 0.6rem; margin-bottom: 1rem;">
+                <button class="btn btn-sm btn-primary" onclick="testLiveAPI('/api/weather-radar', 'res_radar')"> Test Live Request</button>
+                <a href="/api/weather-radar" target="_blank" class="btn btn-sm btn-outline"> Open Raw</a>
+            </div>
+            <pre class="code-block" style="max-height: 220px; overflow-y: auto;"><code id="res_radar">// Click 'Test Live Request' to execute...</code></pre>
+        </div>
+
+        <!-- API 5: CSV Telemetry Downloader -->
+        <div class="card p-4">
+            <div class="card-header mb-3">
+                <h3> 5. CSV Telemetry Exporter</h3>
+                <span class="badge badge-success">GET /api/export-csv</span>
+            </div>
+            <p class="text-muted mb-3">Direct raw CSV export formatted with RFC-4180 headers for hydrometric ingestion and GIS analysis.</p>
+            <div style="display: flex; gap: 0.6rem; margin-bottom: 1rem; align-items: center;">
+                <select id="csv_station_select" class="form-select-dark" style="padding: 0.35rem 0.8rem; font-size: 0.82rem;">
+                    <option value="STN-AL-02">STN-AL-02 (Alaknanda)</option>
+                    <option value="STN-KD-05">STN-KD-05 (Kedarnath)</option>
+                    <option value="STN-WY-07">STN-WY-07 (Wayanad)</option>
+                    <option value="STN-KL-01">STN-KL-01 (Kullu)</option>
+                </select>
+                <a id="csv_download_link" href="/api/export-csv?station=STN-AL-02" class="btn btn-sm btn-primary" target="_blank"> Download CSV</a>
+            </div>
+            <pre class="code-block" style="max-height: 220px; overflow-y: auto;"><code>timestamp_utc,station_id,station_name,rainfall_intensity_mm_hr,soil_moisture_pct,river_water_level_m,river_flow_velocity_mps,flood_risk_score,alert_status</code></pre>
+        </div>
+
+        <!-- API 6: OASIS CAP v1.2 Alert Feed -->
+        <div class="card p-4">
+            <div class="card-header mb-3">
+                <h3> 6. OASIS CAP v1.2 XML Feed</h3>
+                <span class="badge badge-success">GET /api/export-cap-alert</span>
+            </div>
+            <p class="text-muted mb-3">WMO & NDMA compliant Common Alerting Protocol v1.2 XML feed for public broadcast transmitters.</p>
+            <div style="display: flex; gap: 0.6rem; margin-bottom: 1rem;">
+                <a href="/api/export-cap-alert?station=STN-KD-05" target="_blank" class="btn btn-sm btn-primary"> View CAP XML</a>
+            </div>
+            <pre class="code-block" style="max-height: 220px; overflow-y: auto;"><code>&lt;alert xmlns="urn:oasis:names:tc:emergency:cap:1.2"&gt;
+  &lt;identifier&gt;HYDROSENTINEL-ALERT&lt;/identifier&gt;
+  &lt;info&gt;
+    &lt;category&gt;Met&lt;/category&gt;
+    &lt;event&gt;Flash Flood Warning&lt;/event&gt;
+  &lt;/info&gt;
+&lt;/alert&gt;</code></pre>
+        </div>
+
+        <!-- API 7: Multi-Source Data Ingestion Telemetry Hub -->
+        <div class="card p-4">
+            <div class="card-header mb-3">
+                <h3> 7. Multi-Source Ingestion Pipeline Status</h3>
+                <span class="badge badge-success">GET /api/ingestion-status</span>
+            </div>
+            <p class="text-muted mb-3">Real-time throughput for NASA GPM Satellite, Copernicus Sentinel SAR, Open-Meteo NWP, CWC River Gauges, and LoRaWAN IoT Mesh.</p>
+            <div style="display: flex; gap: 0.6rem; margin-bottom: 1rem;">
+                <button class="btn btn-sm btn-primary" onclick="testLiveAPI('/api/ingestion-status', 'res_ingestion')"> Test Ingestion Health</button>
+                <a href="/api/ingestion-status" target="_blank" class="btn btn-sm btn-outline"> Open Raw JSON</a>
+            </div>
+            <pre class="code-block" style="max-height: 220px; overflow-y: auto;"><code id="res_ingestion">// Click 'Test Ingestion Health' to execute...</code></pre>
+        </div>
+
+        <!-- API 8: Live Telemetry Webhook Dispatcher -->
+        <div class="card p-4">
+            <div class="card-header mb-3">
+                <h3> 8. Live Telemetry Webhook Dispatcher</h3>
+                <span class="badge badge-primary">POST /api/webhook-dispatch</span>
+            </div>
+            <p class="text-muted mb-3">Simulate an automated real-time webhook callback pushing sensor breach payloads to external disaster response gateways.</p>
+            <div style="display: flex; gap: 0.6rem; margin-bottom: 1rem;">
+                <input type="text" id="webhookUrlInput" placeholder="https://your-server.org/webhook/alert" value="https://api.ndrf.gov.in/v1/telemetry-sink" style="flex: 1; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); color: #ffffff; padding: 0.4rem 0.8rem; border-radius: 99px; font-family: var(--font-mono); font-size: 0.82rem;">
+                <button class="btn btn-sm btn-primary" onclick="simulateWebhookDispatch()"> Dispatch Webhook Test</button>
+            </div>
+            <pre class="code-block" style="max-height: 180px; overflow-y: auto;"><code id="res_webhook">// Click 'Dispatch Webhook Test' to simulate payload delivery...</code></pre>
+        </div>
+
+        <!-- API 9: Live Visitor Feedback Inbox & Submissions Ledger -->
+        <div class="card p-4">
+            <div class="card-header mb-3">
+                <h3> 9. Live Visitor Feedback Inbox & Ledger</h3>
+                <span class="badge badge-success">GET /api/feedbacks</span>
+            </div>
+            <p class="text-muted mb-3">Inspect all incoming visitor feedback entries, star ratings, and review comments stored in the persistent database.</p>
+            <button class="btn btn-sm btn-outline mb-3" onclick="loadLiveFeedbacks()"> Refresh Feedback Inbox</button>
+            <pre class="code-block" style="max-height: 220px; overflow-y: auto;"><code id="res_feedbacks">// Click 'Refresh Feedback Inbox' to load live submissions...</code></pre>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function handleAdminAuth(e) {
+    if (e) e.preventDefault();
+    const key = document.getElementById('adminPasskeyInput')?.value?.trim() || '';
+    const err = document.getElementById('authErrorMsg');
+
+    if (key === 'quantum2026') {
+        // 1. Instant Client-Side Reveal
+        document.getElementById('restrictedAdminGate').style.display = 'none';
+        document.getElementById('unlockedAdminConsole').style.display = 'block';
+
+        // 2. Persist in session in background
+        fetch('/api/admin-auth', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ passkey: key })
+        }).catch(() => {});
+
+        // Auto-run initial live telemetry tests
+        testLiveAPI('/api/stations', 'res_stations');
+        testTimeseriesAPI();
+        if (typeof triggerHaptic === 'function') triggerHaptic('medium');
+    } else {
+        if (err) err.style.display = 'block';
+        if (typeof triggerHaptic === 'function') triggerHaptic('warning');
+    }
+}
+
+function lockAdminZone() {
+    fetch('/api/admin-logout', { method: 'POST' }).catch(() => {});
+    document.getElementById('unlockedAdminConsole').style.display = 'none';
+    document.getElementById('restrictedAdminGate').style.display = 'block';
+    const input = document.getElementById('adminPasskeyInput');
+    if (input) input.value = '';
+}
+
+function testLiveAPI(url, targetId) {
+    const el = document.getElementById(targetId);
+    if (!el) return;
+    el.textContent = "Fetching live response...";
+    fetch(url)
+        .then(r => r.json())
+        .then(data => {
+            el.textContent = JSON.stringify(data, null, 2);
+        })
+        .catch(err => {
+            el.textContent = "Error: " + err.message;
+        });
+}
+
+function testTimeseriesAPI() {
+    const stn = document.getElementById('ts_station_select')?.value || 'STN-KD-05';
+    testLiveAPI(`/api/timeseries?station=${stn}`, 'res_timeseries');
+}
+
+function simulateWebhookDispatch() {
+    const url = document.getElementById('webhookUrlInput')?.value || 'https://api.ndrf.gov.in/v1/telemetry-sink';
+    const resEl = document.getElementById('res_webhook');
+    if (resEl) {
+        resEl.innerText = `[DISPATCHING] Pushing HTTP POST JSON payload to: ${url}...\n\n{\n  "event": "CRITICAL_SURGE_DETECTED",\n  "station_id": "STN-KD-05",\n  "precipitation_mm_hr": 88.0,\n  "soil_saturation_pct": 91.5,\n  "surge_inflow_m3_s2": 3.6,\n  "timestamp": "${new Date().toISOString()}"\n}\n\n[SUCCESS] HTTP 200 OK — Webhook Ack Received (Latency: 28ms)`;
+    }
+}
+
+async function loadLiveFeedbacks() {
+    try {
+        const res = await fetch('/api/feedbacks');
+        const data = await res.json();
+        const el = document.getElementById('res_feedbacks');
+        if (el) el.innerText = JSON.stringify(data, null, 2);
+    } catch(e) {
+        alert('Failed to load feedbacks: ' + e);
+    }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    // If opened with ?key=quantum2026, unlock immediately
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('key') === 'quantum2026') {
+        document.getElementById('restrictedAdminGate').style.display = 'none';
+        document.getElementById('unlockedAdminConsole').style.display = 'block';
+        testLiveAPI('/api/stations', 'res_stations');
+        testTimeseriesAPI();
+    }
+});
+</script>
+{% endblock %}

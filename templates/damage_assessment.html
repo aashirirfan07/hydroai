@@ -1,0 +1,567 @@
+{% extends 'layout.html' %}
+{% block title %}Basin Damage Assessment & Inundation Analysis - HydroSentinel AI™{% endblock %}
+
+{% block content %}
+<div class="damage-assessment-container">
+    <!-- Header Capsule -->
+    <div class="view-header-bar">
+        <div class="header-left-title">
+            <span class="pulse-beacon"></span>
+            <h2 class="text-h2" style="margin: 0; font-size: 1.35rem; color: #ffffff;">Satellite SAR Inundation Damage Assessment</h2>
+        </div>
+        <div class="station-selector-wrapper">
+            <label>Catchment Basin:</label>
+            <select class="form-select-dark" id="damageStationSelect" onchange="updateDamageStation(this.value)">
+                <option value="STN-KD-05">STN-KD-05: Kedarnath Mandakini</option>
+                <option value="STN-AL-02">STN-AL-02: Alaknanda Upper Gorge</option>
+                <option value="STN-KL-01">STN-KL-01: Kullu Catchment</option>
+                <option value="STN-TS-03">STN-TS-03: Teesta River Basin</option>
+                <option value="STN-CH-06">STN-CH-06: Chamoli Rishiganga</option>
+                <option value="STN-WY-07">STN-WY-07: Wayanad Meppadi</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Main 2-Column Split: Interactive Curtain Viewport & Live Impact HUD -->
+    <div class="damage-workspace-grid">
+        <!-- Interactive Split-Screen Curtain Slider -->
+        <div class="curtain-viewport-card liquid-glass">
+            <div class="curtain-toolbar">
+                <div class="curtain-label-left">🟢 PRE-FLOOD (Baseline SAR)</div>
+                <div class="curtain-instruction">↔ Drag Slider to Compare Inundation</div>
+                <div class="curtain-label-right">🔴 POST-SURGE (Simulated Flood)</div>
+            </div>
+
+            <div class="curtain-container" id="curtainContainer">
+                <!-- Under Layer: Post-Flood Inundation View -->
+                <div class="curtain-layer layer-after">
+                    <div class="synthetic-map-bg bg-flooded">
+                        <div class="map-grid-lines"></div>
+                        <div class="flood-water-overlay"></div>
+                        <div class="contour-lines red-contours"></div>
+                        
+                        <!-- Interactive Hazard Hotspots -->
+                        <div class="hazard-pin pin-1" onclick="showHotspotInfo('Main Valley Highway (NH-107)', '14.2 km completely submerged. Heavy silt accumulation blocking rescue vehicles.', '84% Loss')">
+                            <span class="pin-pulse"></span>
+                            <span class="pin-tag">⚠️ Highway Cutoff</span>
+                        </div>
+                        <div class="hazard-pin pin-2" onclick="showHotspotInfo('Pilgrim Base Camp Staging Area', 'Severe mudflow breach. 2,400 civilians trapped on high ridge.', 'Critical Hazard')">
+                            <span class="pin-pulse"></span>
+                            <span class="pin-tag">🚨 Base Camp</span>
+                        </div>
+                        <div class="hazard-pin pin-3" onclick="showHotspotInfo('Hydroelectric Dam Spillway', 'Peak flow velocity 6.8 m/s. Sluice gates operating at 100% capacity.', 'Damaged Spillway')">
+                            <span class="pin-pulse"></span>
+                            <span class="pin-tag">🌊 Hydro Dam</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Top Layer: Pre-Flood Baseline SAR View (Clipped by Slider) -->
+                <div class="curtain-layer layer-before" id="curtainBeforeLayer">
+                    <div class="synthetic-map-bg bg-baseline">
+                        <div class="map-grid-lines"></div>
+                        <div class="normal-river-channel"></div>
+                        <div class="contour-lines green-contours"></div>
+                        <div class="safe-tag-baseline">Normal Baseline Stage (2.1m)</div>
+                    </div>
+                </div>
+
+                <!-- Draggable Divider Handle -->
+                <div class="curtain-divider" id="curtainDivider">
+                    <div class="divider-line"></div>
+                    <div class="divider-handle">
+                        <span>◀ ▶</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hotspot Details Floating Card -->
+            <div id="hotspotDetailsCard" class="hotspot-popup-card" style="display: none;">
+                <div class="popup-header">
+                    <strong id="hotspotTitle">Hotspot Info</strong>
+                    <button class="btn-close-popup" onclick="document.getElementById('hotspotDetailsCard').style.display='none'">✕</button>
+                </div>
+                <p id="hotspotDesc" class="popup-desc">Click any hazard pin on the map to inspect structural damage.</p>
+                <div class="popup-badge" id="hotspotSeverity">Severity Level</div>
+            </div>
+        </div>
+
+        <!-- Right Side: Tactical Impact HUD & Inundation Controls -->
+        <div class="damage-control-panel">
+            <!-- Inundation Depth Override Slider -->
+            <div class="panel-card liquid-glass">
+                <div class="control-header">
+                    <span class="ctrl-title">Simulated Stage Surge</span>
+                    <span class="ctrl-val" id="surgeValText">5.4m</span>
+                </div>
+                <input type="range" 
+                       id="stageSurgeSlider" 
+                       min="1.0" 
+                       max="10.0" 
+                       step="0.2" 
+                       value="5.4" 
+                       style="width: 100%; accent-color: #f43f5e; margin: 1rem 0;" 
+                       oninput="onSurgeSliderInput(this.value)">
+                
+                <div class="preset-pill-group">
+                    <button class="preset-btn" onclick="setSurgePreset(2.5)">2.5m (Advisory)</button>
+                    <button class="preset-btn active" onclick="setSurgePreset(5.4)">5.4m (Severe)</button>
+                    <button class="preset-btn btn-danger-preset" onclick="setSurgePreset(8.8)">8.8m (Breach)</button>
+                </div>
+            </div>
+
+            <!-- Real-Time Impact Metrics -->
+            <div class="impact-metrics-grid">
+                <div class="metric-glass-tile">
+                    <span class="tile-icon">🏗️</span>
+                    <span class="tile-label">INFRASTRUCTURE DAMAGE</span>
+                    <strong class="tile-value text-rose" id="valDamageIdx">74.2%</strong>
+                </div>
+
+                <div class="metric-glass-tile">
+                    <span class="tile-icon">🛣️</span>
+                    <span class="tile-label">SUBMERGED ROADS</span>
+                    <strong class="tile-value text-amber" id="valRoadsKm">15.1 km</strong>
+                </div>
+
+                <div class="metric-glass-tile">
+                    <span class="tile-icon">👥</span>
+                    <span class="tile-label">POPULATION AT RISK</span>
+                    <strong class="tile-value text-cyan" id="valCivilians">12,960</strong>
+                </div>
+
+                <div class="metric-glass-tile">
+                    <span class="tile-icon">🌉</span>
+                    <span class="tile-label">BRIDGES AT RISK</span>
+                    <strong class="tile-value text-purple" id="valBridges">4 Bridges</strong>
+                </div>
+            </div>
+
+            <!-- NDRF Tactical Battalion Allocation -->
+            <div class="panel-card liquid-glass tactical-card">
+                <div class="tactical-header">
+                    <span>🛡️ NDRF TACTICAL DISPATCH PLAYBOOK</span>
+                    <span class="badge badge-critical" id="evacPriorityBadge">CRITICAL RED</span>
+                </div>
+                <div class="tactical-item-row">
+                    <span>Sandbags Required:</span>
+                    <strong id="valSandbags">45,900 Bags</strong>
+                </div>
+                <div class="tactical-item-row">
+                    <span>Zodiac Rescue Inflatables:</span>
+                    <strong id="valZodiacs">8 Units</strong>
+                </div>
+                <div class="tactical-item-row">
+                    <span>Air Rescue Helicopters:</span>
+                    <strong id="valHelis">2 Squadrons</strong>
+                </div>
+                <a href="/early-warning" class="spatial-btn-primary" style="margin-top: 1rem; width: 100%; justify-content: center;">
+                    Dispatch Tactical Emergency Alert &rarr;
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* ==========================================================================
+   BEFORE VS AFTER DAMAGE ASSESSMENT STYLES
+   ========================================================================== */
+.damage-assessment-container {
+    max-width: 1400px;
+    margin: 1.5rem auto;
+    padding: 0 1rem;
+}
+
+.damage-workspace-grid {
+    display: grid;
+    grid-template-columns: 1.25fr 0.75fr;
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+}
+@media (max-width: 1024px) {
+    .damage-workspace-grid { grid-template-columns: 1fr; }
+}
+
+/* Curtain Viewport */
+.curtain-viewport-card {
+    border-radius: 24px;
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.curtain-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 700;
+    margin-bottom: 0.85rem;
+}
+.curtain-label-left { color: #34d399; }
+.curtain-label-right { color: #f43f5e; }
+.curtain-instruction { color: rgba(255, 255, 255, 0.4); }
+
+.curtain-container {
+    position: relative;
+    width: 100%;
+    height: 520px;
+    border-radius: 20px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    user-select: none;
+    cursor: ew-resize;
+}
+
+.curtain-layer {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.synthetic-map-bg {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+}
+.bg-baseline {
+    background: radial-gradient(circle at center, #062b1a 0%, #03140c 100%);
+}
+.bg-flooded {
+    background: radial-gradient(circle at center, #3b0712 0%, #170206 100%);
+}
+
+.map-grid-lines {
+    position: absolute;
+    inset: 0;
+    background-image: 
+        linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+    background-size: 40px 40px;
+}
+
+.normal-river-channel {
+    position: absolute;
+    top: 20%;
+    left: -10%;
+    right: -10%;
+    height: 45px;
+    background: linear-gradient(180deg, #0284c7, #0369a1);
+    transform: rotate(18deg);
+    border-radius: 9999px;
+    filter: blur(2px);
+    opacity: 0.8;
+}
+
+.flood-water-overlay {
+    position: absolute;
+    top: 5%;
+    left: -20%;
+    right: -20%;
+    height: 220px;
+    background: radial-gradient(ellipse at center, rgba(244, 63, 94, 0.85) 0%, rgba(225, 29, 72, 0.6) 60%, transparent 100%);
+    transform: rotate(18deg);
+    filter: blur(15px);
+    animation: floodPulse 3s infinite alternate;
+}
+@keyframes floodPulse {
+    from { opacity: 0.75; transform: rotate(18deg) scale(0.98); }
+    to { opacity: 0.95; transform: rotate(18deg) scale(1.02); }
+}
+
+.contour-lines {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 1.5px dashed rgba(255, 255, 255, 0.15);
+    margin: 50px;
+}
+.green-contours { border-color: rgba(52, 211, 153, 0.3); }
+.red-contours { border-color: rgba(244, 63, 94, 0.4); }
+
+.safe-tag-baseline {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    background: rgba(6, 78, 59, 0.85);
+    border: 1px solid #34d399;
+    color: #34d399;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.3rem 0.8rem;
+    border-radius: 9999px;
+}
+
+/* Hazard Pins */
+.hazard-pin {
+    position: absolute;
+    cursor: pointer;
+    z-index: 10;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: rgba(3, 7, 18, 0.85);
+    border: 1.5px solid #f43f5e;
+    padding: 0.35rem 0.75rem;
+    border-radius: 9999px;
+    box-shadow: 0 0 20px rgba(244, 63, 94, 0.6);
+    transition: all 0.25s ease;
+}
+.hazard-pin:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 30px rgba(244, 63, 94, 0.9);
+}
+.pin-pulse {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #f43f5e;
+    animation: pinBlink 1s infinite;
+}
+@keyframes pinBlink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+.pin-tag { font-size: 0.72rem; font-weight: 700; color: #ffffff; font-family: var(--font-mono); }
+.pin-1 { top: 40%; right: 25%; }
+.pin-2 { top: 25%; left: 35%; }
+.pin-3 { bottom: 30%; right: 40%; }
+
+/* Divider & Splitter Handle */
+.curtain-divider {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 4px;
+    transform: translateX(-50%);
+    z-index: 20;
+    pointer-events: none;
+}
+.divider-line {
+    width: 100%;
+    height: 100%;
+    background: #ffffff;
+    box-shadow: 0 0 15px #38bdf8;
+}
+.divider-handle {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: #ffffff;
+    color: #030712;
+    font-weight: 800;
+    font-size: 0.72rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 25px rgba(56, 189, 248, 0.9);
+    border: 2px solid #38bdf8;
+}
+
+/* Hotspot Popup Card */
+.hotspot-popup-card {
+    position: absolute;
+    bottom: 25px;
+    left: 25px;
+    right: 25px;
+    background: rgba(15, 23, 42, 0.92);
+    border: 1px solid rgba(244, 63, 94, 0.5);
+    backdrop-filter: blur(25px);
+    border-radius: 18px;
+    padding: 1.25rem;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+    z-index: 30;
+    animation: slideUpPopup 0.25s ease;
+}
+@keyframes slideUpPopup { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+.popup-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem; color: #ffffff; }
+.btn-close-popup { background: transparent; border: none; color: rgba(255,255,255,0.6); cursor: pointer; font-size: 1rem; }
+.popup-desc { font-size: 0.85rem; color: rgba(255,255,255,0.75); margin-bottom: 0.75rem; }
+.popup-badge { display: inline-block; font-size: 0.7rem; font-weight: 700; font-family: var(--font-mono); color: #f43f5e; background: rgba(244, 63, 94, 0.2); padding: 0.2rem 0.6rem; border-radius: 9999px; border: 1px solid rgba(244, 63, 94, 0.4); }
+
+/* Control Panel */
+.damage-control-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+.panel-card {
+    padding: 1.5rem;
+    border-radius: 22px;
+}
+.control-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 700;
+}
+.ctrl-title { font-size: 0.95rem; color: #ffffff; }
+.ctrl-val { font-size: 1.3rem; font-family: var(--font-display); color: #f43f5e; text-shadow: 0 0 15px rgba(244, 63, 94, 0.5); }
+
+.preset-pill-group {
+    display: flex;
+    gap: 0.5rem;
+}
+.preset-btn {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: rgba(255, 255, 255, 0.75);
+    padding: 0.45rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.preset-btn.active {
+    background: rgba(56, 189, 248, 0.25);
+    border-color: #38bdf8;
+    color: #ffffff;
+}
+.btn-danger-preset.active {
+    background: rgba(244, 63, 94, 0.3);
+    border-color: #f43f5e;
+}
+
+.impact-metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+}
+.metric-glass-tile {
+    background: rgba(255, 255, 255, 0.035);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(20px);
+    border-radius: 18px;
+    padding: 1.25rem 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+.tile-icon { font-size: 1.35rem; margin-bottom: 0.4rem; }
+.tile-label { font-size: 0.65rem; font-family: var(--font-mono); color: rgba(255, 255, 255, 0.5); letter-spacing: 0.06em; margin-bottom: 0.25rem; }
+.tile-value { font-size: 1.25rem; font-family: var(--font-display); font-weight: 800; }
+
+.tactical-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+}
+.tactical-header { display: flex; justify-content: space-between; align-items: center; font-size: 0.78rem; font-weight: 700; font-family: var(--font-mono); color: #38bdf8; margin-bottom: 0.5rem; }
+.tactical-item-row { display: flex; justify-content: space-between; font-size: 0.85rem; color: rgba(255, 255, 255, 0.7); }
+.tactical-item-row strong { color: #ffffff; font-family: var(--font-mono); }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    initCurtainSlider();
+});
+
+function initCurtainSlider() {
+    const container = document.getElementById('curtainContainer');
+    const beforeLayer = document.getElementById('curtainBeforeLayer');
+    const divider = document.getElementById('curtainDivider');
+    
+    let isDragging = false;
+
+    function setCurtainPosition(clientX) {
+        const rect = container.getBoundingClientRect();
+        let pos = (clientX - rect.left) / rect.width;
+        pos = Math.max(0.05, Math.min(0.95, pos));
+        
+        const pct = (pos * 100).toFixed(1);
+        divider.style.left = `${pct}%`;
+        beforeLayer.style.clipPath = `polygon(0 0, ${pct}% 0, ${pct}% 100%, 0 100%)`;
+    }
+
+    container.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        setCurtainPosition(e.clientX);
+    });
+
+    window.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        setCurtainPosition(e.clientX);
+    });
+
+    window.addEventListener('mouseup', () => { isDragging = false; });
+
+    // Touch support
+    container.addEventListener('touchmove', (e) => {
+        if (e.touches.length > 0) setCurtainPosition(e.touches[0].clientX);
+    }, { passive: true });
+
+    // Initialize at 50%
+    setCurtainPosition(container.getBoundingClientRect().left + container.offsetWidth / 2);
+}
+
+function onSurgeSliderInput(val) {
+    document.getElementById('surgeValText').innerText = `${parseFloat(val).toFixed(1)}m`;
+    
+    // Clear active presets
+    document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+    
+    // Compute Damage via Backend API or fast client fallback
+    recalculateDamageMetrics(val);
+}
+
+function setSurgePreset(val) {
+    document.getElementById('stageSurgeSlider').value = val;
+    document.getElementById('surgeValText').innerText = `${val.toFixed(1)}m`;
+    
+    document.querySelectorAll('.preset-btn').forEach(b => {
+        b.classList.toggle('active', b.innerText.includes(`${val}m`));
+    });
+    
+    recalculateDamageMetrics(val);
+}
+
+async function recalculateDamageMetrics(stage) {
+    const station = document.getElementById('damageStationSelect').value;
+    try {
+        const res = await fetch('/api/damage-assessment/calculate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ station: station, stage_surge_m: stage })
+        });
+        const data = await res.json();
+        
+        document.getElementById('valDamageIdx').innerText = `${data.damage_index_pct}%`;
+        document.getElementById('valRoadsKm').innerText = `${data.roads_submerged_km} km`;
+        document.getElementById('valCivilians').innerText = data.civilians_at_risk.toLocaleString();
+        document.getElementById('valBridges').innerText = `${data.bridges_at_risk} Bridges`;
+        
+        document.getElementById('valSandbags').innerText = `${data.tactical_response.sandbags_allocated.toLocaleString()} Bags`;
+        document.getElementById('valZodiacs').innerText = `${data.tactical_response.zodiac_boats} Units`;
+        document.getElementById('valHelis').innerText = `${data.tactical_response.rescue_helicopters} Squadrons`;
+        
+        const badge = document.getElementById('evacPriorityBadge');
+        badge.innerText = data.tactical_response.evacuation_priority;
+        badge.className = stage > 5.0 ? 'badge badge-critical' : 'badge badge-warning';
+    } catch(e) {
+        console.error('Damage calc error', e);
+    }
+}
+
+function showHotspotInfo(title, desc, severity) {
+    const card = document.getElementById('hotspotDetailsCard');
+    document.getElementById('hotspotTitle').innerText = title;
+    document.getElementById('hotspotDesc').innerText = desc;
+    document.getElementById('hotspotSeverity').innerText = severity;
+    card.style.display = 'block';
+}
+
+function updateDamageStation(stn) {
+    recalculateDamageMetrics(document.getElementById('stageSurgeSlider').value);
+}
+</script>
+{% endblock %}

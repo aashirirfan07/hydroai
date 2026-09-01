@@ -1,0 +1,161 @@
+{% extends 'layout.html' %}
+
+{% block title %}AI Model Hub & Neural Benchmarks - HydroSentinel AI™{% endblock %}
+
+{% block content %}
+<div class="page-header-banner">
+    <div class="section-title">
+        <h2> AI Model Hub & Machine Learning Benchmarks</h2>
+        <p>In-depth architectural comparison of ensemble regressors, feature importance rankings, and real-time retraining pipeline.</p>
+    </div>
+    <div class="header-action-group">
+        <button class="btn btn-primary" onclick="triggerModelRetrain()"> Retrain Model Pipeline</button>
+    </div>
+</div>
+
+<!-- Retraining Feedback Container -->
+<div id="retrainStatus" class="mt-3"></div>
+
+<!-- Model Benchmark Grid -->
+<div class="models-overview-grid mt-4">
+    <div class="card p-4">
+        <div class="card-header">
+            <h3> Model Leaderboard & Validation Metrics</h3>
+            <span class="badge badge-success">5-Fold Cross Validation</span>
+        </div>
+        <div class="table-responsive mt-3">
+            <table class="table-dark-custom">
+                <thead>
+                    <tr>
+                        <th>Model Algorithm</th>
+                        <th>R² Accuracy Score</th>
+                        <th>RMSE</th>
+                        <th>MAE</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="highlight-row">
+                        <td><strong> Gradient Boosting Regressor</strong></td>
+                        <td><strong class="text-neon-green">0.9858</strong></td>
+                        <td><strong class="text-cyan">27.20</strong></td>
+                        <td>21.20</td>
+                        <td><span class="badge badge-success">Production Champion</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>XGBoost Regressor</strong></td>
+                        <td>0.9853</td>
+                        <td>27.70</td>
+                        <td>21.50</td>
+                        <td><span class="badge badge-info">Candidate Model</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Extra Trees Regressor</strong></td>
+                        <td>0.9837</td>
+                        <td>29.15</td>
+                        <td>22.49</td>
+                        <td><span class="badge badge-secondary">Ensemble Backup</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Ridge Linear Baseline</strong></td>
+                        <td>0.9817</td>
+                        <td>30.95</td>
+                        <td>22.16</td>
+                        <td><span class="badge badge-secondary">Linear Baseline</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Random Forest Regressor</strong></td>
+                        <td>0.9800</td>
+                        <td>32.35</td>
+                        <td>24.57</td>
+                        <td><span class="badge badge-secondary">Tree Ensemble</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="card p-4">
+        <div class="card-header">
+            <h3> Hydrological Feature Importance (Gini Impurity)</h3>
+            <span class="badge badge-info">10 Telemetry Variables</span>
+        </div>
+        <div class="feature-importance-bars mt-3">
+            <div class="fi-item">
+                <div class="fi-label"><span>Instantaneous Rainfall Intensity (mm/hr)</span> <strong>34.2%</strong></div>
+                <div class="progress-bar-bg"><div class="progress-fill" style="width: 34.2%; background: #00f2fe;"></div></div>
+            </div>
+            <div class="fi-item">
+                <div class="fi-label"><span>Soil Hydro-Saturation (%)</span> <strong>23.8%</strong></div>
+                <div class="progress-bar-bg"><div class="progress-fill" style="width: 23.8%; background: #f59e0b;"></div></div>
+            </div>
+            <div class="fi-item">
+                <div class="fi-label"><span>River Stage Depth & Flow Velocity</span> <strong>20.5%</strong></div>
+                <div class="progress-bar-bg"><div class="progress-fill" style="width: 20.5%; background: #ff3366;"></div></div>
+            </div>
+            <div class="fi-item">
+                <div class="fi-label"><span>Topographic Slope & TWI</span> <strong>12.4%</strong></div>
+                <div class="progress-bar-bg"><div class="progress-fill" style="width: 12.4%; background: #00f5a0;"></div></div>
+            </div>
+            <div class="fi-item">
+                <div class="fi-label"><span>Upstream Basin Surge Rate</span> <strong>9.1%</strong></div>
+                <div class="progress-bar-bg"><div class="progress-fill" style="width: 9.1%; background: #a855f7;"></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Architecture Deep Dive -->
+<div class="card mt-4 p-4">
+    <div class="card-header">
+        <h3> Pipeline Serialization & Artifact Architecture</h3>
+    </div>
+    <div class="pipeline-flow-diagram mt-3">
+        <div class="pipe-step">
+            <div class="pipe-icon"></div>
+            <strong>1. Data Ingestion</strong>
+            <small>80/20 Train-Test Split with Stratified Catchment Sampling</small>
+        </div>
+        <div class="pipe-arrow"></div>
+        <div class="pipe-step">
+            <div class="pipe-icon"></div>
+            <strong>2. Transformation</strong>
+            <small>StandardScaler + TWI & Kinetic Surge Transformers</small>
+        </div>
+        <div class="pipe-arrow"></div>
+        <div class="pipe-step">
+            <div class="pipe-icon"></div>
+            <strong>3. Model Trainer</strong>
+            <small>Gradient Boosting + Hyperparameter Grid Optimization</small>
+        </div>
+        <div class="pipe-arrow"></div>
+        <div class="pipe-step">
+            <div class="pipe-icon"></div>
+            <strong>4. Artifact Export</strong>
+            <small>model.pkl & preprocessor.pkl Serialized</small>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function triggerModelRetrain() {
+    const statusBox = document.getElementById('retrainStatus');
+    statusBox.innerHTML = '<div class="alert-box alert-box-info"> Triggering Data Ingestion, Transformation & Model Training Pipeline...</div>';
+
+    fetch('/api/retrain', { method: 'POST' })
+    .then(r => r.json())
+    .then(data => {
+        if (data.status === 'success') {
+            statusBox.innerHTML = `<div class="alert-box alert-box-success"> <strong>Retraining Completed!</strong> Best Model: ${data.metrics.best_model} with R²: ${data.metrics.r2_score} and RMSE: ${data.metrics.rmse}</div>`;
+        } else {
+            statusBox.innerHTML = `<div class="alert-box alert-box-danger"> Error: ${data.message}</div>`;
+        }
+    })
+    .catch(e => {
+        statusBox.innerHTML = `<div class="alert-box alert-box-danger"> Pipeline failed: ${e}</div>`;
+    });
+}
+</script>
+{% endblock %}

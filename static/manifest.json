@@ -1,0 +1,35 @@
+{
+  "name": "HydroSentinel AI™ - Disaster Defense PWA",
+  "short_name": "HydroSentinel",
+  "description": "Autonomous Flash Flood Early Warning & Geospatial Intelligence Platform",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#030712",
+  "theme_color": "#030712",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/static/img/hydrosentinel_logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "3D Digital Twin",
+      "url": "/dashboard",
+      "description": "Launch 3D LiDAR Mountain Mesh"
+    },
+    {
+      "name": "Citizen SOS",
+      "url": "/report-incident",
+      "description": "Emergency 1-Tap SOS Beacon"
+    },
+    {
+      "name": "Damage Scan",
+      "url": "/damage-assessment",
+      "description": "Satellite SAR Inundation Assessment"
+    }
+  ]
+}

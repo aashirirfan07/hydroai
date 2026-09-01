@@ -1,0 +1,230 @@
+{% extends 'layout.html' %}
+{% block title %}HydroSentinel AI™ - Historical Disaster Time-Machine{% endblock %}
+
+{% block content %}
+<div class="page-header-banner mb-4">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+        <div>
+            <h2><img src="/static/img/badges/emblem_overview.svg" class="header-emblem-badge" alt="Time-Machine"> Historical Disaster Time-Machine & Replay Engine</h2>
+            <p class="text-muted">Replay iconic mountain flash flood catastrophes through HydroSentinel AI's neural forecasting matrix to evaluate early warning lead times.</p>
+        </div>
+        <a href="{{ url_for('dashboard') }}" class="btn btn-sm btn-outline"> Live 3D Twin</a>
+    </div>
+</div>
+
+<!-- Event Selector Cards -->
+<div class="section-title mb-3">
+    <h3> Select Historical Catastrophe Scenario</h3>
+</div>
+
+<div class="dashboard-grid mb-4">
+    <div class="card p-3 time-machine-card active" onclick="loadEventScenario(0, this)">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <span class="badge badge-danger">Kedarnath 2013</span>
+            <span style="font-size: 0.72rem; color: #f59e0b; font-family: var(--font-mono);">375 mm/h Surge</span>
+        </div>
+        <strong style="color: #ffffff; font-size: 0.95rem;">2013 Kedarnath Mandakini Glacier Cloudburst</strong>
+        <p class="text-muted mt-1" style="font-size: 0.78rem;">Moraine lake breach & torrential cloudburst surge.</p>
+        <div class="badge badge-success mt-2"> +4.3h AI Lead Time</div>
+    </div>
+
+    <div class="card p-3 time-machine-card" onclick="loadEventScenario(1, this)">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <span class="badge badge-primary">Wayanad 2024</span>
+            <span style="font-size: 0.72rem; color: #f59e0b; font-family: var(--font-mono);">290 mm/h Surge</span>
+        </div>
+        <strong style="color: #ffffff; font-size: 0.95rem;">2024 Wayanad Meppadi Debris Flow</strong>
+        <p class="text-muted mt-1" style="font-size: 0.78rem;">Heavy Western Ghats rainfall and pore saturation.</p>
+        <div class="badge badge-success mt-2"> +5.8h AI Lead Time</div>
+    </div>
+
+    <div class="card p-3 time-machine-card" onclick="loadEventScenario(2, this)">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <span class="badge badge-outline">Chamoli 2021</span>
+            <span style="font-size: 0.72rem; color: #f59e0b; font-family: var(--font-mono);">Rock-Ice Avalanche</span>
+        </div>
+        <strong style="color: #ffffff; font-size: 0.95rem;">2021 Chamoli Glacier Rock Avalanche</strong>
+        <p class="text-muted mt-1" style="font-size: 0.78rem;">Rishi Ganga rockfall and downstream hydro dam burst.</p>
+        <div class="badge badge-success mt-2"> +2.6h AI Lead Time</div>
+    </div>
+</div>
+
+<!-- Interactive Timeline Playback Deck -->
+<div class="card p-4 liquid-glass mb-4" style="border: 1px solid rgba(56, 189, 248, 0.4);">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+        <div>
+            <h3 id="eventTitle" style="color: #ffffff; margin-bottom: 0.2rem;">2013 Kedarnath Mandakini Glacier Cloudburst</h3>
+            <span id="eventDate" style="color: #38bdf8; font-size: 0.8rem; font-family: var(--font-mono);"> June 16-17, 2013 | STN-KD-05 Kedarnath</span>
+        </div>
+        <div class="d-flex gap-2 align-items-center">
+            <button id="playBtn" class="btn btn-primary" onclick="togglePlayback()"> Play Replay</button>
+            <button class="btn btn-outline" onclick="resetPlayback()"> Reset</button>
+        </div>
+    </div>
+
+    <!-- Scrubber Slider -->
+    <div style="margin-bottom: 1.5rem;">
+        <div class="d-flex justify-content-between text-muted" style="font-size: 0.75rem; font-family: var(--font-mono); margin-bottom: 0.4rem;">
+            <span>TIMELINE SCRUBBER: <strong id="currentHourLabel" style="color: #00f0ff;">00:00 (Hour 1)</strong></span>
+            <span>SPEED: <strong>1.0x REAL-TIME</strong></span>
+        </div>
+        <input type="range" id="timeScrubber" min="0" max="4" step="1" value="0" style="width: 100%; accent-color: #00f0ff;" oninput="onScrubChange(this.value)">
+    </div>
+
+    <!-- Live Telemetry Tele-Gauge Meters -->
+    <div class="dashboard-grid">
+        <div class="card p-3 text-center">
+            <div class="widget-label">Rainfall Intensity</div>
+            <div id="telePrecip" class="widget-value text-cyan" style="font-size: 2rem;">35.0 mm/h</div>
+            <span class="badge badge-primary mt-1">Satellite GPM</span>
+        </div>
+        <div class="card p-3 text-center">
+            <div class="widget-label">River Stage Level</div>
+            <div id="teleStage" class="widget-value text-amber" style="font-size: 2rem;">2.1 m</div>
+            <span class="badge badge-outline mt-1">Acoustic Gauge</span>
+        </div>
+        <div class="card p-3 text-center">
+            <div class="widget-label">AI Threat Evaluation</div>
+            <div id="teleRisk" class="widget-value text-neon-green" style="font-size: 1.5rem; margin-top: 0.3rem;">NORMAL</div>
+            <span id="teleAction" class="badge badge-success mt-1">Baseline Monitoring</span>
+        </div>
+        <div class="card p-3 text-center">
+            <div class="widget-label">Lives Protected Estimate</div>
+            <div id="teleLives" class="widget-value text-neon-green" style="font-size: 2rem;">94.2%</div>
+            <span class="badge badge-success mt-1"> AI Mitigation</span>
+        </div>
+    </div>
+</div>
+
+<!-- Multilingual Bilingual Voice PA Broadcast Synthesizer -->
+<div class="card p-4 liquid-glass" style="border: 1px solid rgba(244, 63, 94, 0.4);">
+    <div class="card-header mb-3">
+        <h3><img src="/static/img/badges/emblem_alerts.svg" class="header-emblem-badge" alt="PA"> Multilingual Voice PA Siren Broadcast Synthesizer</h3>
+        <span class="badge badge-danger"> Emergency Audio</span>
+    </div>
+    <p class="text-muted mb-3">Simulate an instant high-gain civil defense PA loudspeaker broadcast synthesized in English and Hindi for high-altitude mountain settlements.</p>
+
+    <div class="d-flex gap-3 flex-wrap">
+        <button class="btn btn-primary" onclick="speakCivilDefenseWarning('en')"> Broadcast in English</button>
+        <button class="btn btn-outline text-amber" onclick="speakCivilDefenseWarning('hi')"> हिंदी में चेतावनी प्रसारित करें (Hindi)</button>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+let eventData = [];
+let currentEventIndex = 0;
+let playbackInterval = null;
+let currentStep = 0;
+
+document.addEventListener('DOMContentLoaded', async () => {
+    try {
+        const res = await fetch('/api/time-machine/events');
+        const data = await res.json();
+        eventData = data.events;
+        renderEventStep(0);
+    } catch(e) {
+        console.error(e);
+    }
+});
+
+function loadEventScenario(idx, el) {
+    currentEventIndex = idx;
+    currentStep = 0;
+    document.querySelectorAll('.time-machine-card').forEach(c => c.classList.remove('active'));
+    if (el) el.classList.add('active');
+    
+    const ev = eventData[idx];
+    if (ev) {
+        document.getElementById('eventTitle').innerText = ev.title;
+        document.getElementById('eventDate').innerHTML = ` ${ev.date} | ${ev.station} ${ev.location}`;
+        document.getElementById('timeScrubber').max = ev.timeline.length - 1;
+        document.getElementById('timeScrubber').value = 0;
+        document.getElementById('teleLives').innerText = ev.lives_savable_est;
+        renderEventStep(0);
+    }
+}
+
+function renderEventStep(stepIdx) {
+    const ev = eventData[currentEventIndex];
+    if (!ev || !ev.timeline[stepIdx]) return;
+    
+    const t = ev.timeline[stepIdx];
+    document.getElementById('currentHourLabel').innerText = `${t.hour} (Step ${stepIdx + 1}/${ev.timeline.length})`;
+    document.getElementById('telePrecip').innerText = `${t.precip} mm/h`;
+    document.getElementById('teleStage').innerText = `${t.stage} m`;
+    
+    const riskEl = document.getElementById('teleRisk');
+    riskEl.innerText = t.risk;
+    if (t.risk.includes('CRITICAL') || t.risk.includes('CATASTROPHIC')) {
+        riskEl.className = 'widget-value text-danger';
+    } else if (t.risk.includes('ADVISORY')) {
+        riskEl.className = 'widget-value text-amber';
+    } else {
+        riskEl.className = 'widget-value text-neon-green';
+    }
+    
+    document.getElementById('teleAction').innerText = t.action;
+}
+
+function onScrubChange(val) {
+    currentStep = parseInt(val, 10);
+    renderEventStep(currentStep);
+}
+
+function togglePlayback() {
+    const btn = document.getElementById('playBtn');
+    if (playbackInterval) {
+        clearInterval(playbackInterval);
+        playbackInterval = null;
+        if (btn) btn.innerHTML = ' Play Replay';
+    } else {
+        if (btn) btn.innerHTML = ' Pause';
+        playbackInterval = setInterval(() => {
+            const ev = eventData[currentEventIndex];
+            if (currentStep < ev.timeline.length - 1) {
+                currentStep++;
+                document.getElementById('timeScrubber').value = currentStep;
+                renderEventStep(currentStep);
+                if (typeof triggerHaptic === 'function') triggerHaptic('light');
+            } else {
+                clearInterval(playbackInterval);
+                playbackInterval = null;
+                if (btn) btn.innerHTML = ' Play Replay';
+            }
+        }, 1800);
+    }
+}
+
+function resetPlayback() {
+    if (playbackInterval) {
+        clearInterval(playbackInterval);
+        playbackInterval = null;
+        document.getElementById('playBtn').innerHTML = ' Play Replay';
+    }
+    currentStep = 0;
+    document.getElementById('timeScrubber').value = 0;
+    renderEventStep(0);
+}
+
+function speakCivilDefenseWarning(lang = 'en') {
+    if (!('speechSynthesis' in window)) {
+        alert('Web Speech API not supported on this browser.');
+        return;
+    }
+    window.speechSynthesis.cancel();
+    
+    let text = lang === 'hi'
+        ? "चेतावनी। केदारनाथ मंदाकिनी घाटी में अचानक बाढ़ और भूस्खलन का गंभीर खतरा है। सभी नागरिक तुरंत ऊंचे सुरक्षित स्थानों और नागरिक सुरक्षा बंकरों की ओर जाएं।"
+        : "Emergency Civil Defense Alert. Critical flash flood and debris surge imminent in Kedarnath Mandakini Gorge. Evacuate immediately to designated high-altitude safe bunkers.";
+        
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = lang === 'hi' ? 'hi-IN' : 'en-US';
+    utterance.rate = 0.95;
+    utterance.pitch = 1.05;
+    window.speechSynthesis.speak(utterance);
+    if (typeof triggerHaptic === 'function') triggerHaptic('critical');
+}
+</script>
+{% endblock %}

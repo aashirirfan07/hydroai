@@ -1,0 +1,190 @@
+{% extends "layout.html" %}
+
+{% block title %}UAV Drone Vision - HydroSentinel AI{% endblock %}
+
+{% block content %}
+<div class="drone-container">
+    <div class="drone-header">
+        <h2 class="text-h2" style="color: #05ffa1;"><i class="fas fa-video"></i> LIVE UAV THERMAL FEED</h2>
+        <div class="drone-status-bar">
+            <span class="rec-indicator"></span> REC
+            <span class="drone-stat">ALT: 1,450ft</span>
+            <span class="drone-stat">SPD: 42kn</span>
+            <span class="drone-stat">BAT: 84%</span>
+        </div>
+    </div>
+    
+    <div class="drone-feed-wrapper">
+        <div class="drone-hud-overlay">
+            <!-- Crosshairs -->
+            <div class="crosshair crosshair-v"></div>
+            <div class="crosshair crosshair-h"></div>
+            <div class="crosshair-center"></div>
+            
+            <!-- Corner Brackets -->
+            <div class="corner corner-tl"></div>
+            <div class="corner corner-tr"></div>
+            <div class="corner corner-bl"></div>
+            <div class="corner corner-br"></div>
+            
+            <!-- Pitch Ladder -->
+            <div class="pitch-ladder">
+                <div class="pitch-line"><span>+10</span><div class="line"></div><span>+10</span></div>
+                <div class="pitch-line"><span> +5</span><div class="line"></div><span> +5</span></div>
+                <div class="pitch-line center-pitch"><span>  0</span><div class="line"></div><span>  0</span></div>
+                <div class="pitch-line"><span> -5</span><div class="line dashed"></div><span> -5</span></div>
+                <div class="pitch-line"><span>-10</span><div class="line dashed"></div><span>-10</span></div>
+            </div>
+            
+            <!-- Active Target Info -->
+            <div id="targetInfoBox" class="target-info-box" style="display: none;">
+                <div class="target-title">AI CLASSIFICATION</div>
+                <div id="targetClass" class="target-class">STRANDED CIVILIAN</div>
+                <div id="targetConf" class="target-conf">CONFIDENCE: 98.4%</div>
+                <div class="target-coords">LAT: 30.732 N | LON: 79.066 E</div>
+            </div>
+        </div>
+        <canvas id="droneCanvas"></canvas>
+    </div>
+</div>
+
+<style>
+.drone-container {
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 1rem;
+    height: calc(100vh - 150px);
+    display: flex;
+    flex-direction: column;
+}
+.drone-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding: 1rem;
+    background: rgba(5, 255, 161, 0.05);
+    border: 1px solid rgba(5, 255, 161, 0.2);
+    border-radius: 8px;
+}
+.drone-status-bar {
+    display: flex;
+    gap: 1.5rem;
+    font-family: var(--font-mono);
+    color: #05ffa1;
+    font-size: 1rem;
+    align-items: center;
+}
+.rec-indicator {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    background-color: #ff003c;
+    border-radius: 50%;
+    animation: flash 1s infinite;
+}
+@keyframes flash {
+    0% { opacity: 1; }
+    50% { opacity: 0; }
+    100% { opacity: 1; }
+}
+.drone-feed-wrapper {
+    position: relative;
+    flex: 1;
+    background: #000;
+    border: 2px solid #05ffa1;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 0 30px rgba(5, 255, 161, 0.15) inset;
+}
+#droneCanvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+    filter: sepia(1) hue-rotate(100deg) saturate(3) brightness(0.8) contrast(1.5); /* Night vision FLIR effect */
+}
+
+/* HUD Overlay Elements */
+.drone-hud-overlay {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 10;
+}
+.crosshair {
+    position: absolute;
+    background: rgba(5, 255, 161, 0.6);
+}
+.crosshair-v { width: 1px; height: 100%; left: 50%; top: 0; }
+.crosshair-h { width: 100%; height: 1px; top: 50%; left: 0; }
+.crosshair-center {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #05ffa1;
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.corner {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    border-color: #05ffa1;
+    border-style: solid;
+    border-width: 0;
+}
+.corner-tl { top: 20px; left: 20px; border-top-width: 3px; border-left-width: 3px; }
+.corner-tr { top: 20px; right: 20px; border-top-width: 3px; border-right-width: 3px; }
+.corner-bl { bottom: 20px; left: 20px; border-bottom-width: 3px; border-left-width: 3px; }
+.corner-br { bottom: 20px; right: 20px; border-bottom-width: 3px; border-right-width: 3px; }
+
+.pitch-ladder {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    align-items: center;
+}
+.pitch-line {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #05ffa1;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+}
+.pitch-line .line {
+    width: 120px;
+    height: 1px;
+    background: #05ffa1;
+}
+.pitch-line .line.dashed {
+    background: repeating-linear-gradient(90deg, #05ffa1, #05ffa1 10px, transparent 10px, transparent 20px);
+}
+.center-pitch .line { width: 200px; height: 2px; }
+
+.target-info-box {
+    position: absolute;
+    bottom: 30px;
+    right: 30px;
+    background: rgba(0, 0, 0, 0.7);
+    border: 1px solid #05ffa1;
+    padding: 1rem;
+    font-family: var(--font-mono);
+    color: #05ffa1;
+}
+.target-title { font-size: 0.7rem; letter-spacing: 2px; margin-bottom: 5px; opacity: 0.8; }
+.target-class { font-size: 1.2rem; font-weight: bold; color: #fff; margin-bottom: 5px; }
+.target-conf { font-size: 0.9rem; margin-bottom: 5px; }
+.target-coords { font-size: 0.8rem; opacity: 0.8; }
+</style>
+
+<script src="{{ url_for('static', filename='js/drone_hud.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,119 @@
+{% extends 'layout.html' %}
+{% block title %}About Team Quantum Minds & Scientific Foundations - HydroSentinel AI™{% endblock %}
+{% block content %}
+<div class="about-hero-card">
+    <div class="hero-tag"> Research & Engineering Division</div>
+    <h1><span class="powered-by-quantum-minds">Powered by Team Quantum Mindss</span></h1>
+    <p class="about-lead">
+        <strong>Team Quantum Minds</strong> is a specialized research collective focused on advancing artificial intelligence
+        for climate resilience, physical geospatial simulations, and real-time disaster defense systems.
+    </p>
+    <div class="about-stats-row mt-4">
+        <div class="about-stat"><span class="about-stat-num text-cyan">98.58%</span><span class="about-stat-label">Ensemble Accuracy (R²)</span></div>
+        <div class="about-stat"><span class="about-stat-num text-amber">12ms</span><span class="about-stat-label">Inference Latency</span></div>
+        <div class="about-stat"><span class="about-stat-num text-neon-green">4</span><span class="about-stat-label">Regional Basins</span></div>
+        <div class="about-stat"><span class="about-stat-num text-danger">3.8h</span><span class="about-stat-label">Early Warning Lead</span></div>
+    </div>
+</div>
+
+<div class="section-title mt-5"><h2> The Minds Behind HydroSentinel AI™</h2><p>Engineers, hydrologists, and AI researchers at Team Quantum Minds</p></div>
+
+<div class="team-showcase-grid">
+    <div class="team-member-card">
+        <div class="member-avatar"></div>
+        <h3>AI & Architecture Lead</h3>
+        <span class="member-role text-cyan">Core ML & Geospatial Systems</span>
+        <p>Architected the multi-source data ingestion pipeline, feature transformation math, and ensemble Gradient Boosting neural frameworks.</p>
+        <div class="member-skills"><span>Machine Learning</span><span>Geospatial AI</span><span>Three.js 3D</span><span>Python</span></div>
+    </div>
+    <div class="team-member-card">
+        <div class="member-avatar"></div>
+        <h3>Hydrological Physics Lab</h3>
+        <span class="member-role text-amber">Hydrodynamic Formulation</span>
+        <p>Formulated the Topographic Wetness Index (TWI), Darcy subsurface saturation kinetics, and catchment kinetic surge vectors.</p>
+        <div class="member-skills"><span>Hydrology</span><span>Terrain DEM</span><span>Kinematic Surge</span><span>GIS</span></div>
+    </div>
+    <div class="team-member-card">
+        <div class="member-avatar"></div>
+        <h3>Civil Defense & DevOps</h3>
+        <span class="member-role text-neon-green">Emergency Systems & CAP v1.2</span>
+        <p>Designed OASIS CAP v1.2 XML alerting feeds, Web Audio siren synthesizers, and autonomous high-ground evacuation pathfinding.</p>
+        <div class="member-skills"><span>CAP Protocol</span><span>Real-Time APIs</span><span>Docker</span><span>CI/CD</span></div>
+    </div>
+</div>
+
+<div class="section-title mt-5"><h2> Scientific Foundations & Physics Formulations</h2><p>Physical laws governing the multi-source feature transformations</p></div>
+
+<div class="physics-cards-grid">
+    <div class="physics-card">
+        <div class="p-card-header"><h4>1. Topographic Wetness Index (TWI)</h4><code>TWI = ln(a / tan β)</code></div>
+        <p>Quantifies topographical control on hydrological processes. <em>a</em> is the specific catchment drainage area per contour length, and <em>β</em> is the local slope gradient.</p>
+    </div>
+    <div class="physics-card">
+        <div class="p-card-header"><h4>2. Gravitational Runoff Kinetic Surge</h4><code>S_k = V × sin(β)</code></div>
+        <p>Computes kinetic surge acceleration of water down steep mountain inclines where stream velocity V is accelerated by the sine of slope angle β.</p>
+    </div>
+    <div class="physics-card">
+        <div class="p-card-header"><h4>3. Hydro-Saturation Pressure Excess</h4><code>E_sat = max(0, (θ - θ_crit)^1.3)</code></div>
+        <p>Calculates non-linear overland runoff once soil saturation θ surpasses critical bedrock capacity θ_crit = 70%.</p>
+    </div>
+</div>
+
+<div class="section-title mt-5"><h2> Technology Stack & Architecture</h2><p>End-to-end enterprise ML pipeline</p></div>
+
+<div class="tech-stack-grid">
+    <div class="tech-item"><strong>Python 3.13</strong><small>Core Runtime</small></div>
+    <div class="tech-item"><strong>Flask</strong><small>REST API Server</small></div>
+    <div class="tech-item"><strong>Scikit-Learn</strong><small>ML Framework</small></div>
+    <div class="tech-item"><strong>Three.js</strong><small>3D WebGL Engine</small></div>
+    <div class="tech-item"><strong>Chart.js</strong><small>Data Visualization</small></div>
+    <div class="tech-item"><strong>Docker</strong><small>Containerization</small></div>
+</div>
+{% endblock %}
+
+
+<div class="card p-4 mt-5" style="border-top: 3px solid #34d399;">
+    <div class="card-header mb-3">
+        <h3> Interactive Physical Equation Sandbox</h3>
+        <span class="badge badge-success"> Real-Time Hydrological Calculation</span>
+    </div>
+    <p class="text-muted mb-3">Interactively compute physical hydrodynamic properties by tweaking specific drainage area ($a$) and mountain slope angle ($\beta$).</p>
+    
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.2rem; align-items: center;">
+        <div>
+            <label style="font-size: 0.85rem; font-weight: 700; color: #38bdf8;">Specific Catchment Area $a$ (m²): <span id="areaValText" class="font-mono text-cyan">1500 m²</span></label>
+            <input type="range" id="physicsAreaSlider" min="200" max="8000" step="100" value="1500" style="width: 100%; accent-color: #38bdf8;" oninput="computePhysicsSandbox()">
+        </div>
+        <div>
+            <label style="font-size: 0.85rem; font-weight: 700; color: #f59e0b;">Slope Gradient $\beta$ (°): <span id="slopeValText" class="font-mono text-amber">35°</span></label>
+            <input type="range" id="physicsSlopeSlider" min="5" max="65" step="1" value="35" style="width: 100%; accent-color: #f59e0b;" oninput="computePhysicsSandbox()">
+        </div>
+        <div class="liquid-glass p-3" style="border-radius: 12px; text-align: center;">
+            <span style="font-size: 0.72rem; color: #94a3b8; text-transform: uppercase;">Calculated TWI Index:</span>
+            <div id="twiResultText" class="font-mono" style="font-size: 1.6rem; font-weight: 800; color: #05ffa1;">7.67 (High Runoff)</div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+function computePhysicsSandbox() {
+    const a = parseFloat(document.getElementById('physicsAreaSlider')?.value || 1500);
+    const betaDeg = parseFloat(document.getElementById('physicsSlopeSlider')?.value || 35);
+    const betaRad = (betaDeg * Math.PI) / 180;
+    const tanBeta = Math.tan(betaRad);
+
+    const twi = Math.log(a / Math.max(0.01, tanBeta));
+
+    const areaText = document.getElementById('areaValText');
+    const slopeText = document.getElementById('slopeValText');
+    const twiText = document.getElementById('twiResultText');
+
+    if (areaText) areaText.innerText = `${a} m²`;
+    if (slopeText) slopeText.innerText = `${betaDeg}°`;
+    if (twiText) {
+        twiText.innerText = `${twi.toFixed(2)} ${twi > 8.5 ? '🚨 [SATURATED SURGE]' : twi > 6.5 ? '⚠️ [HIGH RUNOFF]' : '[WELL DRAINED]'}`;
+        twiText.style.color = twi > 8.5 ? '#ef4444' : twi > 6.5 ? '#05ffa1' : '#38bdf8';
+    }
+}
+</script>

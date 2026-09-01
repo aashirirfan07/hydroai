@@ -1,0 +1,211 @@
+{% extends 'layout.html' %}
+
+{% block title %}Civil Defense & Early Warning Operations - HydroSentinel AI™{% endblock %}
+
+{% block content %}
+<div class="page-header-banner">
+    <div class="section-title">
+        <h2> Civil Defense & CAP Early Warning Operations Center</h2>
+        <p>OASIS Common Alerting Protocol (CAP v1.2) broadcast dispatcher, multi-channel siren triggers, and emergency logistics.</p>
+    </div>
+    <div class="header-action-group">
+        <a href="/api/export-cap-alert?station={{ current_station }}" target="_blank" class="btn btn-outline">
+             Download CAP v1.2 XML
+        </a>
+    </div>
+</div>
+
+<div class="early-warning-grid mt-4">
+    <!-- Left Column: Command Console -->
+    <div class="card p-4">
+        <div class="card-header">
+            <h3> Multi-Channel Alert Dispatch Console</h3>
+            <span class="badge badge-danger">Live Incident Grid</span>
+        </div>
+        
+        <div class="active-threat-card mt-3">
+            <div class="at-header">
+                <span class="badge" style="background: {{ data.prediction.color }}; color: #000; font-weight: 800;">
+                    {{ data.prediction.alert_level }}
+                </span>
+                <span class="at-code">{{ data.prediction.threat_level }}</span>
+            </div>
+            <h3 class="mt-2">{{ data.station.name }}</h3>
+            <p class="text-muted mt-1">{{ data.prediction.alert_status }}</p>
+            <div class="at-metrics mt-3">
+                <div><span>Flood Severity:</span> <strong class="text-cyan">{{ data.prediction.flood_risk_score }}/1200</strong></div>
+                <div><span>24h Probability:</span> <strong class="text-amber">{{ data.prediction.flood_probability_24h }}%</strong></div>
+                <div><span>Rainfall Rate:</span> <strong class="text-blue">{{ data.telemetry.rainfall_intensity_mm_hr }} mm/hr</strong></div>
+            </div>
+        </div>
+
+        <div class="dispatch-channels-form mt-4">
+            <h4> Emergency Broadcast Communication Targets:</h4>
+            
+            <div class="checkbox-group mt-2">
+                <label class="custom-checkbox">
+                    <input type="checkbox" checked id="chkCap">
+                    <span><strong>OASIS CAP v1.2 XML Relay</strong> (National Disaster Management Authority)</span>
+                </label>
+                <label class="custom-checkbox">
+                    <input type="checkbox" checked id="chkSms">
+                    <span><strong>Cell Broadcast Emergency SMS</strong> (Public in 15km Radius)</span>
+                </label>
+                <label class="custom-checkbox">
+                    <input type="checkbox" checked id="chkSiren">
+                    <span><strong>Acoustic Valley Flood Sirens</strong> (Hardware Relay Stations)</span>
+                </label>
+                <label class="custom-checkbox">
+                    <input type="checkbox" checked id="chkDrone">
+                    <span><strong>Autonomous Drone Loudspeaker Warning</strong> (High Risk River Corridors)</span>
+                </label>
+            </div>
+
+            <button class="btn btn-primary btn-lg btn-block mt-4" onclick="dispatchEmergencyBroadcast()">
+                 Authorize & Dispatch Emergency Broadcast
+            </button>
+            <div id="dispatchFeedback" class="mt-3"></div>
+        </div>
+    </div>
+
+    <!-- Right Column: Incident Activity Feed & Safe Zones -->
+    <div class="card p-4">
+        <div class="card-header">
+            <h3> Real-Time Incident Operations Log</h3>
+            <span class="badge badge-info">Audit Trail</span>
+        </div>
+
+        <div class="incident-log-timeline mt-3">
+            <div class="log-item log-danger">
+                <div class="log-time">{{ data.timestamp }}</div>
+                <div class="log-msg">
+                    <strong>Critical Flood Surge Predicted:</strong> Inflow rate of {{ data.telemetry.rainfall_intensity_mm_hr }} mm/hr exceeds drainage capacity at {{ data.station.name }}.
+                </div>
+            </div>
+            <div class="log-item log-warning">
+                <div class="log-time">-10 min</div>
+                <div class="log-msg">
+                    <strong>Soil Saturation Surcharge:</strong> Subsurface sensors report 88% saturation in bedrock layers.
+                </div>
+            </div>
+            <div class="log-item log-info">
+                <div class="log-time">-25 min</div>
+                <div class="log-msg">
+                    <strong>Satellite Radar Inflow Triggered:</strong> Doppler precipitation cell detected entering catchment valley.
+                </div>
+            </div>
+            <div class="log-item log-info">
+                <div class="log-time">-45 min</div>
+                <div class="log-msg">
+                    <strong>Telemetry Grid Synchronized:</strong> 100% sensor array online with zero packet loss.
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-4">
+            <h4> Recommended Uphill Extraction Staging Areas:</h4>
+            {% for sz in data.safe_zones %}
+            <div class="safe-zone-mini mt-2">
+                <div>
+                    <strong>{{ sz.name }}</strong>
+                    <small>Elevation: +{{ sz.elevation_m }}m | Distance: {{ sz.distance_km }}km</small>
+                </div>
+                <span class="badge badge-success">{{ sz.safety_score }}/100 Safe</span>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function dispatchEmergencyBroadcast() {
+    const feedback = document.getElementById('dispatchFeedback');
+    feedback.innerHTML = '<div class="alert-box alert-box-success"> Disagreeing and transmitting CAP v1.2 payloads across civil defense network...</div>';
+    
+    fetch('/api/dispatch-alert', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ station: '{{ current_station }}', channels: ['CAP', 'SMS', 'SIREN', 'DRONE'] })
+    })
+    .then(r => r.json())
+    .then(data => {
+        feedback.innerHTML = `<div class="alert-box alert-box-success"> <strong>SUCCESS:</strong> ${data.message} (ID: ${data.dispatch_id})</div>`;
+    })
+    .catch(e => {
+        feedback.innerHTML = `<div class="alert-box alert-box-danger"> Error dispatching: ${e}</div>`;
+    });
+}
+</script>
+{% endblock %}
+
+
+    <!-- Multi-Channel Emergency Alert Dispatcher (SMS / Telegram / NDRF Gateway) -->
+    <div class="card p-4 mt-4" style="border-top: 3px solid #f43f5e;">
+        <div class="card-header mb-3">
+            <h3><img src="/static/img/hydrosentinel_logo.svg" style="width: 28px; height: 28px; vertical-align: middle; margin-right: 8px;"> Multi-Channel Civil Defense Broadcast Dispatcher</h3>
+            <span class="badge badge-danger"> Live Satellite Mesh</span>
+        </div>
+        <p class="text-muted mb-3">Simulate an immediate multi-channel mass emergency broadcast to field response teams, civil defense bunkers, and resident mobile phones.</p>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.2rem; margin-bottom: 1rem;">
+            <div>
+                <label style="font-size: 0.82rem; color: #38bdf8; font-weight: 700;">Target Catchment Basin:</label>
+                <select id="broadcastStationSelect" class="station-select" style="width: 100%; margin-top: 0.3rem;">
+                    <option value="STN-KD-05">STN-KD-05: Kedarnath Mandakini Basin (Critical)</option>
+                    <option value="STN-AL-02">STN-AL-02: Alaknanda Upper Gorge (Critical)</option>
+                    <option value="STN-KL-01">STN-KL-01: Kullu Valley Catchment (Advisory)</option>
+                    <option value="STN-WG-04">STN-WG-04: Western Ghats Escarpment (Advisory)</option>
+                    <option value="STN-TS-03">STN-TS-03: Teesta River Basin (Normal)</option>
+                </select>
+            </div>
+            <div>
+                <label style="font-size: 0.82rem; color: #f59e0b; font-weight: 700;">Alert Severity Tier:</label>
+                <select id="broadcastThreatSelect" class="station-select" style="width: 100%; margin-top: 0.3rem;">
+                    <option value="CRITICAL EVACUATION">🚨 Red: Immediate Mass Evacuation (Flash Flood Threat)</option>
+                    <option value="HIGH ADVISORY">⚠️ Amber: Severe Inundation Watch (Move to High Ground)</option>
+                    <option value="PRECAUTIONARY WATCH">🔵 Blue: Precautionary Hydrometric Advisory</option>
+                </select>
+            </div>
+        </div>
+
+        <button class="btn btn-primary" style="background: linear-gradient(135deg, #f43f5e, #e11d48); border: none;" onclick="triggerCivilDefenseBroadcast()"> Dispatch Mass Multi-Channel Broadcast Now</button>
+
+        <div id="broadcastResultBox" class="liquid-glass p-3 mt-3" style="display: none; border-radius: 12px; border: 1px solid rgba(16, 185, 129, 0.4);">
+            <div style="display: flex; align-items: center; gap: 0.5rem; color: #10b981; font-weight: 700; margin-bottom: 0.4rem;">
+                 <span id="broadcastStatusText">Broadcast Dispatched Successfully (Latency: 34ms)</span>
+            </div>
+            <pre class="code-block" style="margin: 0; max-height: 160px; overflow-y: auto;"><code id="broadcastJsonLog"></code></pre>
+        </div>
+    </div>
+
+
+<script>
+async function triggerCivilDefenseBroadcast() {
+    const station_id = document.getElementById('broadcastStationSelect')?.value || 'STN-KD-05';
+    const threat_level = document.getElementById('broadcastThreatSelect')?.value || 'CRITICAL EVACUATION';
+    
+    try {
+        const response = await fetch('/api/dispatch-broadcast', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                station_id: station_id,
+                threat_level: threat_level,
+                channels: ['Resident_SMS', 'Telegram_Bot_Disaster_Mesh', 'OASIS_CAP_XML', 'Acoustic_Siren_Relay']
+            })
+        });
+        const data = await response.json();
+        const box = document.getElementById('broadcastResultBox');
+        const code = document.getElementById('broadcastJsonLog');
+        if (box && code) {
+            box.style.display = 'block';
+            code.innerText = JSON.stringify(data, null, 2);
+            if (typeof triggerHaptic === 'function') triggerHaptic('critical');
+        }
+    } catch(e) {
+        alert('Broadcast failed: ' + e);
+    }
+}
+</script>
