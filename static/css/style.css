@@ -5175,3 +5175,95 @@ body.atmo-surge .liquid-glass, body.atmo-surge .spatial-card {
     box-shadow: 0 0 25px rgba(16, 185, 129, 0.6) !important;
     transform: translateY(-1px) !important;
 }
+
+
+/* ==========================================================================
+   🌌 BLACK HOLE GRAVITATIONAL ACCRETION GLOW BUTTON SYSTEM
+   ========================================================================== */
+.spatial-btn-primary, 
+.btn-hero-primary,
+.btn-primary,
+.btn-white,
+.btn-email-nav-pill,
+.global-floating-email-btn,
+.btn-copy-comp {
+    position: relative !important;
+    overflow: hidden !important;
+    background: radial-gradient(circle at center, #020617 0%, #000000 100%) !important;
+    border: 1px solid rgba(255, 140, 0, 0.5) !important;
+    color: #ffffff !important;
+    box-shadow: 0 0 15px rgba(255, 140, 0, 0.25), inset 0 0 12px rgba(56, 189, 248, 0.15) !important;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    z-index: 1 !important;
+}
+
+/* Orbiting Accretion Disk Ring */
+.spatial-btn-primary::before,
+.btn-hero-primary::before,
+.btn-primary::before,
+.btn-white::before,
+.btn-email-nav-pill::before,
+.global-floating-email-btn::before,
+.btn-copy-comp::before {
+    content: '' !important;
+    position: absolute !important;
+    top: -50% !important;
+    left: -50% !important;
+    width: 200% !important;
+    height: 200% !important;
+    background: conic-gradient(
+        transparent 0deg,
+        rgba(255, 140, 0, 0.8) 60deg,
+        rgba(56, 189, 248, 0.9) 120deg,
+        rgba(192, 132, 252, 0.8) 180deg,
+        transparent 240deg
+    ) !important;
+    animation: blackHoleAccretionSpin 4s linear infinite !important;
+    z-index: -2 !important;
+    opacity: 0.75 !important;
+}
+
+/* Event Horizon Core Overlay */
+.spatial-btn-primary::after,
+.btn-hero-primary::after,
+.btn-primary::after,
+.btn-white::after,
+.btn-email-nav-pill::after,
+.global-floating-email-btn::after,
+.btn-copy-comp::after {
+    content: '' !important;
+    position: absolute !important;
+    inset: 1.5px !important;
+    background: radial-gradient(ellipse at center, #090d16 20%, #000000 90%) !important;
+    border-radius: inherit !important;
+    z-index: -1 !important;
+    transition: all 0.25s ease !important;
+}
+
+/* Gravitational Lensing Hover State */
+.spatial-btn-primary:hover,
+.btn-hero-primary:hover,
+.btn-primary:hover,
+.btn-white:hover,
+.btn-email-nav-pill:hover,
+.global-floating-email-btn:hover,
+.btn-copy-comp:hover {
+    transform: translateY(-2px) scale(1.02) !important;
+    border-color: #ffaa00 !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), 0 0 30px rgba(255, 140, 0, 0.7), 0 0 50px rgba(56, 189, 248, 0.4) !important;
+}
+
+.spatial-btn-primary:hover::after,
+.btn-hero-primary:hover::after,
+.btn-primary:hover::after,
+.btn-white:hover::after,
+.btn-email-nav-pill:hover::after,
+.global-floating-email-btn:hover::after,
+.btn-copy-comp:hover::after {
+    background: radial-gradient(ellipse at center, #111827 10%, #020617 85%) !important;
+}
+
+@keyframes blackHoleAccretionSpin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
