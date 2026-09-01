@@ -902,6 +902,63 @@ def api_send_alert_email():
         "message": f"Disaster situation brief dispatched successfully to {recipient}."
     }), 200
 
+
+# ==============================================================================
+# 🧪 INTERACTIVE HYDRODYNAMIC PHYSICS SANDBOX & LIDAR BEDROCK SLICER
+# ==============================================================================
+@app.route('/physics-sandbox')
+def physics_sandbox_page():
+    '''Interactive Catchment Hydrodynamic Physics Lab & Bedrock Slicer.'''
+    return render_template('physics_sandbox.html')
+
+@app.route('/api/physics/calculate', methods=['POST'])
+def api_physics_calculate():
+    '''Computes Manning's open-channel hydraulics, Froude number, and hydrostatic pressure.'''
+    data = request.get_json() or {}
+    slope = float(data.get('slope', 0.045))          # S (m/m)
+    roughness = float(data.get('roughness', 0.040))  # n (Manning's coeff)
+    depth = float(data.get('depth', 3.5))            # y (m)
+    width = float(data.get('width', 12.0))           # b (m)
+    inflow_rate = float(data.get('inflow', 88.0))    # mm/hr
+    
+    # Area & Wetted Perimeter (Trapezoidal / Rectangular channel)
+    area = width * depth
+    wetted_perimeter = width + 2.0 * depth
+    hydraulic_radius = area / wetted_perimeter if wetted_perimeter > 0 else 1.0
+    
+    # Manning's Equation: v = (1/n) * R^(2/3) * S^(1/2)
+    velocity = (1.0 / max(roughness, 0.01)) * (hydraulic_radius ** (2.0 / 3.0)) * (max(slope, 0.001) ** 0.5)
+    discharge_q = velocity * area
+    
+    # Froude Number: Fr = v / sqrt(g * depth)
+    g = 9.81
+    froude = velocity / ((g * max(depth, 0.1)) ** 0.5)
+    flow_regime = "SUPERCRITICAL (Shooting Flow • Severe Erosion)" if froude > 1.0 else "SUBCRITICAL (Tranquil Flow)"
+    
+    # Hydrostatic Bed Pressure: P = rho * g * h (kPa)
+    density_water = 1000.0 # kg/m3
+    pressure_kpa = (density_water * g * depth) / 1000.0
+    
+    # Hydrograph Curve Generation (24-hour surge simulation)
+    time_series = []
+    for t in range(0, 25):
+        # Gaussian surge peak centered around t=6 hours
+        surge_factor = math.exp(-((t - 6.0) ** 2) / 8.0)
+        q_t = discharge_q * (0.3 + 0.7 * surge_factor * (inflow_rate / 60.0))
+        time_series.append({"hour": f"+{t}h", "discharge_m3_s": round(q_t, 2), "depth_m": round(depth * (0.4 + 0.6 * surge_factor), 2)})
+
+    return jsonify({
+        "status": "success",
+        "velocity_m_s": round(velocity, 2),
+        "discharge_m3_s": round(discharge_q, 2),
+        "froude_number": round(froude, 2),
+        "flow_regime": flow_regime,
+        "hydraulic_radius_m": round(hydraulic_radius, 2),
+        "bottom_pressure_kpa": round(pressure_kpa, 2),
+        "hydrograph": time_series,
+        "timestamp": datetime.now(timezone.utc).isoformat()
+    }), 200
+
 @app.route('/components-hub')
 def components_hub_page():
     '''21st.dev Inspired Next-Generation UI & Spatial Component Registry.'''

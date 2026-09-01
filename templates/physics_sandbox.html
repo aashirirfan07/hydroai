@@ -1,0 +1,408 @@
+{% extends 'layout.html' %}
+{% block title %}Hydrodynamic Physics Sandbox & LiDAR Slicer - HydroSentinel AI™{% endblock %}
+
+{% block content %}
+<div class="hub-viewport-container">
+    <!-- Header Hero -->
+    <div class="hub-hero-section">
+        <div class="hero-capsule-badge">
+            <span class="pulse-beacon"></span>
+            <span class="badge-text">HYDRODYNAMIC PHYSICS LAB &bull; SAINT-VENANT + MANNING</span>
+            <span class="badge-pill">REAL-TIME NUMERICAL SOLVER</span>
+        </div>
+
+        <h1 class="hub-main-title">
+            Catchment Hydrodynamic <br>
+            <span class="gradient-shimmer-text">Physics Sandbox & LiDAR Slicer</span>
+        </h1>
+
+        <p class="hub-subtext">
+            Simulate turbulent open-channel velocities, hydrostatic bed pressures, hydraulic jumps, and slice through subterranean granitic bedrock strata in real-time.
+        </p>
+    </div>
+
+    <!-- Main 2-Column Grid -->
+    <div style="display: grid; grid-template-columns: 1fr 1.3fr; gap: 1.5rem; margin-bottom: 2.5rem;">
+        
+        <!-- Left Column: Skeuomorphic Dials & Manometer -->
+        <div class="card p-4 liquid-glass">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h3 style="font-family: var(--font-display); font-size: 1.25rem; color: #ffffff; margin: 0;">
+                    🎛️ Catchment Hydraulic Controls
+                </h3>
+                <span class="badge badge-normal">Interactive Sliders</span>
+            </div>
+
+            <!-- Manometer Live Tube Display -->
+            <div class="manometer-container mb-4">
+                <div class="manometer-tube">
+                    <div class="manometer-fluid" id="manometerFluidLevel" style="height: 65%;">
+                        <div class="fluid-meniscus"></div>
+                        <div class="fluid-bubbles"></div>
+                    </div>
+                </div>
+                <div class="manometer-labels">
+                    <div class="manometer-readout-title">HYDROSTATIC BED PRESSURE</div>
+                    <div class="manometer-val" id="pressureValDisplay">34.34 kPa</div>
+                    <div class="manometer-sub" id="pressureHeadDisplay">Head: 3.50 m H₂O</div>
+                </div>
+            </div>
+
+            <!-- Sliders -->
+            <div class="physics-slider-group mb-3">
+                <div class="d-flex justify-content-between">
+                    <label>Valley Slope \(S\):</label>
+                    <span class="val-pill" id="slopeVal">0.045 m/m (4.5%)</span>
+                </div>
+                <input type="range" id="sliderSlope" min="0.005" max="0.15" step="0.005" value="0.045" oninput="updatePhysicsSimulation()">
+            </div>
+
+            <div class="physics-slider-group mb-3">
+                <div class="d-flex justify-content-between">
+                    <label>Manning's Roughness \(n\):</label>
+                    <span class="val-pill" id="roughnessVal">0.040 (Cobbles & Boulders)</span>
+                </div>
+                <input type="range" id="sliderRoughness" min="0.020" max="0.080" step="0.005" value="0.040" oninput="updatePhysicsSimulation()">
+            </div>
+
+            <div class="physics-slider-group mb-3">
+                <div class="d-flex justify-content-between">
+                    <label>River Stage Depth \(y\):</label>
+                    <span class="val-pill" id="depthVal">3.50 m</span>
+                </div>
+                <input type="range" id="sliderDepth" min="0.5" max="10.0" step="0.25" value="3.5" oninput="updatePhysicsSimulation()">
+            </div>
+
+            <div class="physics-slider-group mb-4">
+                <div class="d-flex justify-content-between">
+                    <label>Cloudburst Inflow Rate:</label>
+                    <span class="val-pill" id="inflowVal">88.0 mm/hr</span>
+                </div>
+                <input type="range" id="sliderInflow" min="10" max="200" step="5" value="88" oninput="updatePhysicsSimulation()">
+            </div>
+
+            <!-- Output Metric Chips -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+                <div class="physics-metric-chip">
+                    <span class="pm-lbl">VELOCITY (\(v\))</span>
+                    <strong class="pm-val text-cyan" id="calcVelocity">8.42 m/s</strong>
+                </div>
+                <div class="physics-metric-chip">
+                    <span class="pm-lbl">DISCHARGE (\(Q\))</span>
+                    <strong class="pm-val text-blue" id="calcDischarge">353.6 m³/s</strong>
+                </div>
+                <div class="physics-metric-chip">
+                    <span class="pm-lbl">FROUDE NUMBER (\(Fr\))</span>
+                    <strong class="pm-val text-amber" id="calcFroude">1.44</strong>
+                </div>
+                <div class="physics-metric-chip">
+                    <span class="pm-lbl">REGIME</span>
+                    <strong class="pm-val text-danger" id="calcRegime" style="font-size: 0.72rem;">SUPERCRITICAL</strong>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column: 3D LiDAR Bedrock Slicer & Hydrograph -->
+        <div class="d-flex flex-column gap-4">
+            
+            <!-- 3D LiDAR Bedrock Cross-Section Slicer -->
+            <div class="card p-4 liquid-glass">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h3 style="font-family: var(--font-display); font-size: 1.25rem; color: #ffffff; margin: 0;">
+                        🏔️ 3D LiDAR Subterranean Bedrock Slicer
+                    </h3>
+                    <span class="badge badge-critical">10m LiDAR Cross-Section</span>
+                </div>
+                <p class="text-muted mb-3" style="font-size: 0.82rem;">
+                    Drag the laser slicing cursor to inspect subterranean aquifer saturation, topsoil permeability, and fractured granitic bedrock depth.
+                </p>
+
+                <!-- Interactive Slicer Canvas / Visualizer -->
+                <div class="lidar-slicer-viewport" id="lidarSlicerViewport">
+                    <div class="strata-layer strata-topsoil"><span class="strata-tag">Topsoil Permeable Layer (0 - 1.8m)</span></div>
+                    <div class="strata-layer strata-aquifer" id="aquiferLayer"><span class="strata-tag">Saturated Hydrostatic Water Table (1.8 - 6.5m)</span></div>
+                    <div class="strata-layer strata-bedrock"><span class="strata-tag">Dense Himalayan Granitic Bedrock (> 6.5m)</span></div>
+                    
+                    <!-- Vertical Laser Slicing Plane -->
+                    <div class="laser-slicing-plane" id="laserSlicingPlane">
+                        <div class="laser-glow-line"></div>
+                        <div class="laser-handle-pill">⚡ SLICE PLANE: 48.2m</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dynamic Hydrograph Surge Curve -->
+            <div class="card p-4 liquid-glass">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h3 style="font-family: var(--font-display); font-size: 1.25rem; color: #ffffff; margin: 0;">
+                        📈 24-Hour Catchment Discharge Hydrograph
+                    </h3>
+                    <span class="badge badge-normal">Real-Time Re-Plotting</span>
+                </div>
+                <div style="height: 200px; width: 100%;">
+                    <canvas id="hydrographChartCanvas"></canvas>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<style>
+/* Manometer Tube Component */
+.manometer-container {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(56, 189, 248, 0.3);
+    border-radius: 20px;
+    padding: 1.25rem;
+    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8), 0 0 15px rgba(56, 189, 248, 0.15);
+}
+.manometer-tube {
+    width: 32px;
+    height: 120px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 9999px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.9);
+}
+.manometer-fluid {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(180deg, #38bdf8, #0284c7);
+    transition: height 0.35s ease;
+    box-shadow: 0 0 15px #38bdf8;
+}
+.fluid-meniscus {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 6px;
+    background: #e0f2fe;
+    border-radius: 50%;
+}
+.manometer-readout-title {
+    font-size: 0.72rem;
+    font-family: var(--font-mono);
+    color: #38bdf8;
+    font-weight: 700;
+}
+.manometer-val {
+    font-family: var(--font-mono);
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: #ffffff;
+    line-height: 1.1;
+}
+.manometer-sub {
+    font-size: 0.82rem;
+    color: rgba(255, 255, 255, 0.6);
+    font-family: var(--font-mono);
+}
+
+/* Sliders */
+.physics-slider-group label {
+    font-size: 0.82rem;
+    color: rgba(255, 255, 255, 0.85);
+    font-weight: 600;
+}
+.val-pill {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: #38bdf8;
+    font-weight: 700;
+}
+.physics-slider-group input[type="range"] {
+    width: 100%;
+    margin-top: 0.4rem;
+    accent-color: #38bdf8;
+}
+
+/* Metric Chips */
+.physics-metric-chip {
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    padding: 0.65rem 0.85rem;
+}
+.pm-lbl {
+    font-size: 0.68rem;
+    font-family: var(--font-mono);
+    color: rgba(255, 255, 255, 0.5);
+    display: block;
+}
+.pm-val {
+    font-family: var(--font-mono);
+    font-size: 1.05rem;
+    display: block;
+    margin-top: 0.2rem;
+}
+
+/* LiDAR Slicer Viewport */
+.lidar-slicer-viewport {
+    height: 180px;
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+    border: 1px solid rgba(56, 189, 248, 0.4);
+    display: flex;
+    flex-direction: column;
+    cursor: ew-resize;
+}
+.strata-layer {
+    display: flex;
+    align-items: center;
+    padding-left: 1rem;
+}
+.strata-tag {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #ffffff;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+}
+.strata-topsoil {
+    height: 25%;
+    background: linear-gradient(90deg, #78350f, #92400e);
+}
+.strata-aquifer {
+    height: 40%;
+    background: linear-gradient(90deg, #0369a1, #0284c7);
+    transition: height 0.3s ease;
+}
+.strata-bedrock {
+    height: 35%;
+    background: linear-gradient(90deg, #1e293b, #0f172a);
+}
+
+/* Laser Slicing Plane */
+.laser-slicing-plane {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 45%;
+    width: 2px;
+    background: #f43f5e;
+    box-shadow: 0 0 15px #f43f5e, 0 0 30px #f43f5e;
+    pointer-events: none;
+}
+.laser-handle-pill {
+    position: absolute;
+    top: 10px;
+    left: -60px;
+    background: rgba(244, 63, 94, 0.9);
+    color: #ffffff;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    font-weight: 800;
+    padding: 0.2rem 0.5rem;
+    border-radius: 9999px;
+    white-space: nowrap;
+}
+</style>
+
+<script>
+let hydroChart = null;
+
+document.addEventListener('DOMContentLoaded', () => {
+    initHydrographChart();
+    initLaserDrag();
+    updatePhysicsSimulation();
+});
+
+function initLaserDrag() {
+    const vp = document.getElementById('lidarSlicerViewport');
+    const laser = document.getElementById('laserSlicingPlane');
+    
+    vp.addEventListener('mousemove', (e) => {
+        const rect = vp.getBoundingClientRect();
+        const x = Math.max(0, Math.min(rect.width, e.clientX - rect.left));
+        const pct = (x / rect.width) * 100;
+        laser.style.left = pct + '%';
+        laser.querySelector('.laser-handle-pill').innerText = `⚡ SLICE PLANE: ${(pct * 1.2).toFixed(1)}m`;
+    });
+}
+
+function initHydrographChart() {
+    const ctx = document.getElementById('hydrographChartCanvas').getContext('2d');
+    hydroChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['+0h', '+2h', '+4h', '+6h (Peak)', '+8h', '+10h', '+12h', '+16h', '+20h', '+24h'],
+            datasets: [{
+                label: 'Discharge Q (m³/s)',
+                data: [45, 80, 190, 353, 280, 180, 110, 65, 50, 42],
+                borderColor: '#38bdf8',
+                backgroundColor: 'rgba(56, 189, 248, 0.15)',
+                fill: true,
+                tension: 0.4,
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+                x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: 'rgba(255,255,255,0.6)', font: { size: 10 } } },
+                y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: 'rgba(255,255,255,0.6)', font: { size: 10 } } }
+            }
+        }
+    });
+}
+
+async function updatePhysicsSimulation() {
+    const slope = parseFloat(document.getElementById('sliderSlope').value);
+    const roughness = parseFloat(document.getElementById('sliderRoughness').value);
+    const depth = parseFloat(document.getElementById('sliderDepth').value);
+    const inflow = parseFloat(document.getElementById('sliderInflow').value);
+
+    document.getElementById('slopeVal').innerText = `${slope.toFixed(3)} m/m (${(slope*100).toFixed(1)}%)`;
+    document.getElementById('roughnessVal').innerText = `${roughness.toFixed(3)}`;
+    document.getElementById('depthVal').innerText = `${depth.toFixed(2)} m`;
+    document.getElementById('inflowVal').innerText = `${inflow.toFixed(0)} mm/hr`;
+
+    try {
+        const res = await fetch('/api/physics/calculate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ slope, roughness, depth, width: 12.0, inflow })
+        });
+        const d = await res.json();
+
+        // Update Outputs
+        document.getElementById('calcVelocity').innerText = `${d.velocity_m_s} m/s`;
+        document.getElementById('calcDischarge').innerText = `${d.discharge_m3_s} m³/s`;
+        document.getElementById('calcFroude').innerText = `${d.froude_number}`;
+        document.getElementById('calcRegime').innerText = d.flow_regime.includes('SUPERCRITICAL') ? 'SUPERCRITICAL' : 'SUBCRITICAL';
+        document.getElementById('calcRegime').className = `pm-val ${d.froude_number > 1 ? 'text-danger' : 'text-cyan'}`;
+
+        // Update Manometer
+        const pressKpa = d.bottom_pressure_kpa;
+        document.getElementById('pressureValDisplay').innerText = `${pressKpa.toFixed(2)} kPa`;
+        document.getElementById('pressureHeadDisplay').innerText = `Head: ${depth.toFixed(2)} m H₂O`;
+        const fluidPct = Math.min(100, Math.max(15, (depth / 10.0) * 100));
+        document.getElementById('manometerFluidLevel').style.height = `${fluidPct}%`;
+
+        // Update Aquifer Strata
+        document.getElementById('aquiferLayer').style.height = `${Math.min(60, 20 + depth * 4)}%`;
+
+        // Update Hydrograph
+        if (hydroChart && d.hydrograph) {
+            hydroChart.data.labels = d.hydrograph.map(h => h.hour);
+            hydroChart.data.datasets[0].data = d.hydrograph.map(h => h.discharge_m3_s);
+            hydroChart.update();
+        }
+    } catch(err) {
+        console.log('Physics calculate error:', err);
+    }
+}
+</script>
+{% endblock %}

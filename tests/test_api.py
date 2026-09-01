@@ -412,3 +412,25 @@ def test_api_send_instant_email(client):
     assert json_data['status'] == 'success'
     assert json_data['requires_api_key'] is False
     assert json_data['recipient'] == 'rescue.officer@gmail.com'
+
+
+def test_physics_sandbox_page(client):
+    res = client.get('/physics-sandbox')
+    assert res.status_code == 200
+    assert b'Catchment Hydrodynamic' in res.data
+    assert b'HYDROSTATIC BED PRESSURE' in res.data
+
+def test_api_physics_calculate(client):
+    res = client.post('/api/physics/calculate', json={
+        'slope': 0.045,
+        'roughness': 0.040,
+        'depth': 3.5,
+        'width': 12.0,
+        'inflow': 88.0
+    })
+    assert res.status_code == 200
+    d = res.get_json()
+    assert d['status'] == 'success'
+    assert 'velocity_m_s' in d
+    assert 'bottom_pressure_kpa' in d
+    assert len(d['hydrograph']) == 25
