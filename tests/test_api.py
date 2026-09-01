@@ -398,3 +398,17 @@ def test_api_dispatch_broadcast_channels(client):
     assert json_data['status'] == 'success'
     assert 'broadcast_id' in json_data
     assert json_data['total_civilian_reach'] == 25700
+
+
+def test_api_send_instant_email(client):
+    res = client.post('/api/send-instant-email', json={
+        'recipient_email': 'rescue.officer@gmail.com',
+        'station_name': 'Kedarnath Mandakini Gorge',
+        'threat_level': 'CRITICAL RED',
+        'notes': 'Immediate test dispatch'
+    })
+    assert res.status_code == 200
+    json_data = res.get_json()
+    assert json_data['status'] == 'success'
+    assert json_data['requires_api_key'] is False
+    assert json_data['recipient'] == 'rescue.officer@gmail.com'

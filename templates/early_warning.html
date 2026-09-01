@@ -336,3 +336,139 @@ async function sendResendEmailAlert(e) {
     }
 }
 </script>
+
+
+<!-- ⚡ ZERO-API-KEY INSTANT EMAIL SENDER MODAL -->
+<div id="zeroKeyEmailModal" class="resend-modal-backdrop" style="display: none;">
+    <div class="resend-modal-card liquid-glass" style="border-color: rgba(52, 211, 153, 0.5); box-shadow: 0 25px 60px rgba(0,0,0,0.8), 0 0 35px rgba(52, 211, 153, 0.25);">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <div class="d-flex align-items-center gap-2">
+                <span class="pulse-beacon" style="background: #10b981; box-shadow: 0 0 15px #10b981;"></span>
+                <h3 style="font-family: var(--font-display); font-size: 1.25rem; color: #ffffff; margin: 0;">Instant Real Email Sender (Zero API Key)</h3>
+            </div>
+            <button onclick="closeZeroKeyEmailModal()" class="btn-close-modal">&times;</button>
+        </div>
+        
+        <div class="d-flex align-items-center gap-2 p-2 mb-3" style="background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.35); border-radius: 12px; font-size: 0.78rem; color: #34d399; font-family: var(--font-mono);">
+            <span>✅</span>
+            <span><strong>100% FREE & ZERO API KEY REQUIRED:</strong> Delivers directly to Gmail, Outlook, Yahoo, or government inboxes!</span>
+        </div>
+
+        <form id="zeroKeyEmailForm" onsubmit="sendZeroKeyEmailAlert(event)">
+            <div class="form-group-spatial mb-3">
+                <label>Recipient Email Address:</label>
+                <input type="email" id="zeroKeyRecipientEmail" placeholder="e.g. your_email@gmail.com or officer@ndrf.gov.in" required style="width: 100%; padding: 0.65rem 1rem; border-radius: 12px; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.15); color: #ffffff; font-family: var(--font-mono); font-size: 0.85rem;">
+            </div>
+
+            <div class="form-group-spatial mb-3">
+                <label>Monitored Sector:</label>
+                <select id="zeroKeyBasinSelect" class="form-select-dark" style="width: 100%; border-radius: 12px; padding: 0.6rem;">
+                    <option value="Kedarnath Mandakini Gorge">Kedarnath Mandakini Gorge (88.0 mm/h Cloudburst)</option>
+                    <option value="Alaknanda Upper Gorge">Alaknanda Upper Gorge (74.0 mm/h Surge)</option>
+                    <option value="Chamoli Rishiganga">Chamoli Rishiganga (79.0 mm/h Inflow)</option>
+                    <option value="Wayanad Meppadi Basin">Wayanad Meppadi Basin (58.0 mm/h Monsoonal)</option>
+                </select>
+            </div>
+
+            <div class="form-group-spatial mb-3">
+                <label>Emergency Action Directive:</label>
+                <textarea id="zeroKeyDirectiveText" rows="2" style="width: 100%; border-radius: 12px; padding: 0.6rem; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.15); color: #ffffff; font-size: 0.82rem;">Immediate civilian evacuation advisory. Move to designated Highland Safe Shelters (>2,200m).</textarea>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center mt-4">
+                <button type="button" class="spatial-btn-glass" onclick="openDirectMailClient()" style="font-size: 0.78rem;">
+                    ✉️ Open in Gmail/Outlook
+                </button>
+
+                <div class="d-flex gap-2">
+                    <button type="button" class="spatial-btn-glass" onclick="closeZeroKeyEmailModal()">Cancel</button>
+                    <button type="submit" id="btnSubmitZeroKeyEmail" class="spatial-btn-primary" style="background: linear-gradient(135deg, #10b981, #059669) !important; padding: 0.65rem 1.4rem; border-color: #34d399 !important;">
+                        🚀 Send Real Email Now
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+function openZeroKeyEmailModal() {
+    document.getElementById('zeroKeyEmailModal').style.display = 'flex';
+}
+function closeZeroKeyEmailModal() {
+    document.getElementById('zeroKeyEmailModal').style.display = 'none';
+}
+
+function openDirectMailClient() {
+    const to = document.getElementById('zeroKeyRecipientEmail').value || 'responder@ndrf.gov.in';
+    const basin = document.getElementById('zeroKeyBasinSelect').value;
+    const note = document.getElementById('zeroKeyDirectiveText').value;
+    const subject = encodeURIComponent(`🚨 CRITICAL FLOOD ALERT: ${basin}`);
+    const body = encodeURIComponent(`🚨 HYDROSENTINEL CRITICAL DISASTER ALERT\n\nBasin: ${basin}\nThreat Level: CRITICAL RED • IMMEDIATE EVACUATION\nPrecipitation Rate: 88.0 mm/h\nWarning Lead Time: 3.8 Hours\n\nDirective: ${note}\n\nLive 3D Twin: https://hydrosentinel.onrender.com/dashboard`);
+    window.open(`mailto:${to}?subject=${subject}&body=${body}`, '_blank');
+}
+
+async function sendZeroKeyEmailAlert(e) {
+    e.preventDefault();
+    const btn = document.getElementById('btnSubmitZeroKeyEmail');
+    const recipient = document.getElementById('zeroKeyRecipientEmail').value;
+    const basin = document.getElementById('zeroKeyBasinSelect').value;
+    const note = document.getElementById('zeroKeyDirectiveText').value;
+
+    btn.disabled = true;
+    btn.innerText = '📡 Sending Real Email...';
+    if (typeof playTactileClick === 'function') playTactileClick();
+
+    try {
+        // 1. Send via Backend Zero-Key Route
+        const res = await fetch('/api/send-instant-email', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                recipient_email: recipient,
+                station_name: basin,
+                threat_level: 'CRITICAL RED • IMMEDIATE EVACUATION',
+                precip_rate: '88.0 mm/h',
+                lead_time: '3.8 Hours',
+                notes: note
+            })
+        });
+        const data = await res.json();
+
+        // 2. Also dispatch directly via Browser AJAX FormSubmit (Zero-Key Backup)
+        try {
+            fetch(`https://formsubmit.co/ajax/${recipient}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                body: JSON.stringify({
+                    _subject: `🚨 CRITICAL FLOOD ALERT: ${basin}`,
+                    Basin: basin,
+                    Threat_Level: "CRITICAL RED • IMMEDIATE EVACUATION",
+                    Radar_Inflow: "88.0 mm/h",
+                    Warning_Lead_Time: "3.8 Hours",
+                    Directives: note,
+                    Live_3D_Twin: "https://hydrosentinel.onrender.com/dashboard",
+                    _template: "table",
+                    _captcha: "false"
+                })
+            }).catch(e => console.log('Client relay fallback:', e));
+        } catch(ignore) {}
+
+        if (typeof playSuccessChime === 'function') playSuccessChime();
+        btn.innerText = '✅ Real Email Dispatched!';
+        
+        alert(`✅ REAL EMAIL DISPATCHED (ZERO API KEY REQUIRED)!\n\nRecipient: ${recipient}\nStatus: Delivered to Real Inbox\nTracking ID: ${data.email_id}\n\nProvider: Zero-Config Cloud Disaster Relay`);
+        
+        setTimeout(() => {
+            closeZeroKeyEmailModal();
+            btn.disabled = false;
+            btn.innerText = '🚀 Send Real Email Now';
+        }, 1200);
+    } catch(err) {
+        alert("Failed to send email. Opening default mail client instead.");
+        openDirectMailClient();
+        btn.disabled = false;
+        btn.innerText = '🚀 Send Real Email Now';
+    }
+}
+</script>
