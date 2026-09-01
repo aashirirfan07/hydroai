@@ -384,3 +384,17 @@ def test_api_send_alert_email(client):
     assert json_data['status'] == 'success'
     assert 'email_id' in json_data
     assert json_data['recipient'] == 'test.responder@ndrf.gov.in'
+
+
+def test_api_dispatch_broadcast_channels(client):
+    res = client.post('/api/broadcast/dispatch-channels', json={
+        'station_id': 'STN-KD-05',
+        'station_name': 'Kedarnath Mandakini Gorge',
+        'threat_level': 'CRITICAL RED',
+        'notes': 'Test broadcast'
+    })
+    assert res.status_code == 200
+    json_data = res.get_json()
+    assert json_data['status'] == 'success'
+    assert 'broadcast_id' in json_data
+    assert json_data['total_civilian_reach'] == 25700
