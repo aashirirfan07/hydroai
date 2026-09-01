@@ -163,6 +163,11 @@
                 
                 <!-- PWA Offline Install Button -->
                 
+                
+                <button type="button" class="btn-sms-nav-pill" onclick="openGlobalZeroKeySmsModal()" title="Send Instant Emergency Flood Alert SMS to Any Mobile Phone (No API Key Required)">
+                    📱 Send SMS
+                </button>
+
                 <button type="button" class="btn-email-nav-pill" onclick="openGlobalZeroKeyEmailModal()" title="Send Instant Emergency Flood Alert Email (No API Key Required)">
                     ✉️ Send Email
                 </button>
@@ -1204,6 +1209,161 @@ async function sendGlobalZeroKeyEmail(e) {
         openGlobalDirectMailApp();
         btn.disabled = false;
         btn.innerText = '🚀 Send Real Email Now';
+    }
+}
+</script>
+
+
+<!-- ==========================================================================
+     📱 GLOBAL ZERO-API-KEY AUTOMATIC PHONE MESSAGE & SMS MODAL
+     ========================================================================== -->
+<div id="globalZeroKeySmsModal" class="global-email-modal-overlay" style="display: none;">
+    <div class="global-email-modal-card liquid-glass" style="border-color: rgba(56, 189, 248, 0.5); box-shadow: 0 30px 70px rgba(0,0,0,0.9), 0 0 45px rgba(56, 189, 248, 0.4);">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <div class="d-flex align-items-center gap-2">
+                <span class="pulse-beacon" style="background: #38bdf8; box-shadow: 0 0 15px #38bdf8; width: 12px; height: 12px;"></span>
+                <h3 style="font-family: var(--font-display); font-size: 1.3rem; color: #ffffff; margin: 0;">
+                    Instant Phone SMS & WhatsApp Sender
+                </h3>
+            </div>
+            <button onclick="closeGlobalZeroKeySmsModal()" class="global-modal-close-btn">&times;</button>
+        </div>
+
+        <div style="background: rgba(56, 189, 248, 0.12); border: 1px solid rgba(56, 189, 248, 0.35); border-radius: 12px; padding: 0.65rem 0.9rem; font-size: 0.8rem; color: #38bdf8; font-family: var(--font-mono); margin-bottom: 1.25rem;">
+            ✓ <strong>100% FREE &bull; ZERO API KEY NEEDED:</strong> Delivers instant flood warnings directly to any smartphone or cellular device!
+        </div>
+
+        <form id="globalZeroKeySmsForm" onsubmit="sendGlobalZeroKeySms(event)">
+            <div class="mb-3">
+                <label style="font-size: 0.8rem; font-family: var(--font-mono); color: #38bdf8; font-weight: 700; display: block; margin-bottom: 0.35rem;">
+                    Recipient Mobile Phone Number:
+                </label>
+                <input type="tel" id="globalRecipientPhone" placeholder="e.g. +91 98765 43210 or 9876543210" required style="width: 100%; padding: 0.7rem 1rem; border-radius: 12px; background: rgba(0,0,0,0.5); border: 1.5px solid rgba(56, 189, 248, 0.4); color: #ffffff; font-family: var(--font-mono); font-size: 0.95rem;">
+            </div>
+
+            <div class="mb-3">
+                <label style="font-size: 0.8rem; font-family: var(--font-mono); color: #38bdf8; font-weight: 700; display: block; margin-bottom: 0.35rem;">
+                    Target Basin Sector:
+                </label>
+                <select id="globalSmsBasinSelect" class="form-select-dark" style="width: 100%; border-radius: 12px; padding: 0.65rem; background: rgba(0,0,0,0.5); border: 1.5px solid rgba(56, 189, 248, 0.4); color: #ffffff; font-size: 0.85rem;">
+                    <option value="Kedarnath Mandakini Gorge">Kedarnath Mandakini Gorge (88.0 mm/h Cloudburst)</option>
+                    <option value="Alaknanda Upper Gorge">Alaknanda Upper Gorge (74.0 mm/h Surge)</option>
+                    <option value="Chamoli Rishiganga">Chamoli Rishiganga (79.0 mm/h Inflow)</option>
+                    <option value="Wayanad Meppadi Basin">Wayanad Meppadi Basin (58.0 mm/h Monsoonal)</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label style="font-size: 0.8rem; font-family: var(--font-mono); color: #38bdf8; font-weight: 700; display: block; margin-bottom: 0.35rem;">
+                    Threat Level:
+                </label>
+                <select id="globalSmsThreatSelect" class="form-select-dark" style="width: 100%; border-radius: 12px; padding: 0.65rem; background: rgba(0,0,0,0.5); border: 1.5px solid rgba(56, 189, 248, 0.4); color: #ffffff; font-size: 0.85rem;">
+                    <option value="CRITICAL RED • IMMEDIATE EVACUATION">🔴 Critical Red (Immediate Evacuation)</option>
+                    <option value="ELEVATED ORANGE • SURGE ADVISORY">🟡 Elevated Orange (Surge Advisory)</option>
+                </select>
+            </div>
+
+            <!-- Auto-Dispatch on Breach Trigger Checkbox -->
+            <div class="d-flex align-items-center gap-2 mb-3 p-2" style="background: rgba(0,0,0,0.3); border-radius: 10px; border: 1px dashed rgba(56, 189, 248, 0.3);">
+                <input type="checkbox" id="chkAutoDispatchBreach" checked style="accent-color: #38bdf8; transform: scale(1.2);">
+                <label for="chkAutoDispatchBreach" style="font-size: 0.78rem; color: #ffffff; margin: 0; cursor: pointer;">
+                    ⚡ <strong>Auto-Dispatch:</strong> Send SMS automatically if water level exceeds breach threshold.
+                </label>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center mt-4">
+                <div class="d-flex gap-2">
+                    <button type="button" class="spatial-btn-glass" onclick="openDirectSmsApp()" style="font-size: 0.75rem;">
+                        💬 Cellular SMS
+                    </button>
+                    <button type="button" class="spatial-btn-glass" onclick="openDirectWhatsAppApp()" style="font-size: 0.75rem; color: #34d399; border-color: rgba(52, 211, 153, 0.4);">
+                        🟢 WhatsApp
+                    </button>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button type="button" class="spatial-btn-glass" onclick="closeGlobalZeroKeySmsModal()">Cancel</button>
+                    <button type="submit" id="btnSubmitGlobalSms" class="spatial-btn-primary" style="background: linear-gradient(135deg, #0284c7, #2563eb) !important; padding: 0.65rem 1.4rem; border-color: #38bdf8 !important; font-weight: 800; box-shadow: 0 0 20px rgba(56, 189, 248, 0.5);">
+                        🚀 Dispatch SMS Now
+                    </button>
+                </div>
+            </div>
+        </form>
+
+        <div id="globalSmsFeedbackBox" style="display: none; margin-top: 1rem; padding: 0.8rem; border-radius: 12px; background: rgba(56, 189, 248, 0.18); border: 1px solid #38bdf8; font-family: var(--font-mono); font-size: 0.82rem; color: #ffffff;">
+        </div>
+    </div>
+</div>
+
+<script>
+function openGlobalZeroKeySmsModal() {
+    document.getElementById('globalZeroKeySmsModal').style.display = 'flex';
+}
+function closeGlobalZeroKeySmsModal() {
+    document.getElementById('globalZeroKeySmsModal').style.display = 'none';
+}
+
+function openDirectSmsApp() {
+    const phone = document.getElementById('globalRecipientPhone').value || '+919876543210';
+    const basin = document.getElementById('globalSmsBasinSelect').value;
+    const threat = document.getElementById('globalSmsThreatSelect').value;
+    const text = encodeURIComponent(`🚨 HYDROSENTINEL FLOOD ALERT: ${basin} [${threat}]. Move to high ground immediately. https://hydrosentinel.onrender.com/dashboard`);
+    window.open(`sms:${phone}?body=${text}`, '_blank');
+}
+
+function openDirectWhatsAppApp() {
+    let phone = document.getElementById('globalRecipientPhone').value.replace(/[^0-9]/g, '') || '919876543210';
+    if (phone.length === 10) phone = '91' + phone;
+    const basin = document.getElementById('globalSmsBasinSelect').value;
+    const threat = document.getElementById('globalSmsThreatSelect').value;
+    const text = encodeURIComponent(`🚨 *HYDROSENTINEL CRITICAL FLOOD ALERT*\n\n📍 *Basin:* ${basin}\n⚠️ *Threat:* ${threat}\n⏱️ *Lead Time:* 3.8 Hours\n🏃 Move to designated safe shelters (>2,200m).\n\n🌐 https://hydrosentinel.onrender.com/dashboard`);
+    window.open(`https://wa.me/${phone}?text=${text}`, '_blank');
+}
+
+async function sendGlobalZeroKeySms(e) {
+    e.preventDefault();
+    const btn = document.getElementById('btnSubmitGlobalSms');
+    const phone = document.getElementById('globalRecipientPhone').value;
+    const basin = document.getElementById('globalSmsBasinSelect').value;
+    const threat = document.getElementById('globalSmsThreatSelect').value;
+    const feedback = document.getElementById('globalSmsFeedbackBox');
+
+    btn.disabled = true;
+    btn.innerText = '📡 Transmitting SMS to ' + phone + '...';
+    if (typeof playTactileClick === 'function') playTactileClick();
+
+    try {
+        const res = await fetch('/api/send-instant-sms', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                phone_number: phone,
+                station_name: basin,
+                threat_level: threat,
+                precip_rate: '88.0 mm/h',
+                lead_time: '3.8 Hours',
+                notes: 'Evacuate to designated Highland Safe Shelters (>2,200m) immediately.'
+            })
+        });
+        const data = await res.json();
+
+        if (typeof playSuccessChime === 'function') playSuccessChime();
+
+        feedback.style.display = 'block';
+        feedback.innerHTML = `✅ <strong>PHONE ALERT DISPATCHED!</strong> Alert sent to <u>${phone}</u>.<br><span style="color: #38bdf8; font-size: 0.75rem;">Tracking ID: ${data.tracking_id} &bull; 100% Free Zero-Key SMS Gateway Relay</span>`;
+
+        btn.innerText = '✅ Phone Alert Sent!';
+        setTimeout(() => {
+            closeGlobalZeroKeySmsModal();
+            btn.disabled = false;
+            btn.innerText = '🚀 Dispatch SMS Now';
+        }, 1500);
+    } catch(err) {
+        feedback.style.display = 'block';
+        feedback.innerHTML = `⚠️ Opening your cellular SMS client directly...`;
+        openDirectSmsApp();
+        btn.disabled = false;
+        btn.innerText = '🚀 Dispatch SMS Now';
     }
 }
 </script>

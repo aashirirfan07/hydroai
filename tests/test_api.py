@@ -434,3 +434,19 @@ def test_api_physics_calculate(client):
     assert 'velocity_m_s' in d
     assert 'bottom_pressure_kpa' in d
     assert len(d['hydrograph']) == 25
+
+
+def test_api_send_instant_sms(client):
+    res = client.post('/api/send-instant-sms', json={
+        'phone_number': '+919876543210',
+        'station_name': 'Kedarnath Mandakini Gorge',
+        'threat_level': 'CRITICAL RED',
+        'notes': 'Test emergency SMS dispatch'
+    })
+    assert res.status_code == 200
+    json_data = res.get_json()
+    assert json_data['status'] == 'success'
+    assert json_data['requires_api_key'] is False
+    assert 'tracking_id' in json_data
+    assert 'whatsapp_url' in json_data
+    assert 'cellular_sms_url' in json_data
