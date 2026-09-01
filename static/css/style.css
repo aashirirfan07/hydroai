@@ -5267,3 +5267,46 @@ body.atmo-surge .liquid-glass, body.atmo-surge .spatial-card {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }
+
+
+/* ==========================================================================
+   🌌 COSMIC RELATIVISTIC SHIMMER & GRAVITATIONAL TEXT SYSTEM
+   ========================================================================== */
+.gradient-shimmer-text, 
+.brand-glow,
+.section-title-spatial strong,
+.hero-title-spatial strong {
+    background: linear-gradient(
+        135deg,
+        #ffffff 0%,
+        #38bdf8 30%,
+        #fb923c 60%,
+        #c084fc 85%,
+        #ffffff 100%
+    ) !important;
+    background-size: 250% 250% !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    animation: cosmicTextShimmer 6s ease infinite alternate !important;
+    text-shadow: 0 0 25px rgba(56, 189, 248, 0.35) !important;
+}
+
+@keyframes cosmicTextShimmer {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Cosmic Glow on Section Headings */
+h1, h2, h3, .section-title h2, .hub-main-title {
+    letter-spacing: -0.03em !important;
+    text-shadow: 0 2px 20px rgba(0, 0, 0, 0.8), 0 0 35px rgba(56, 189, 248, 0.15) !important;
+}
+
+/* Photon Ring Badges */
+.badge-pill, .badge-queue, .badge-normal, .badge-success, .badge-critical {
+    font-family: var(--font-mono) !important;
+    letter-spacing: 0.04em !important;
+    text-transform: uppercase !important;
+    box-shadow: 0 0 12px rgba(56, 189, 248, 0.25) !important;
+}
