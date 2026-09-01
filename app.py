@@ -1240,11 +1240,6 @@ def add_cors_headers(response):
     return response
 
 
-if __name__ == '__main__':
-    if not os.path.exists(os.path.join("artifacts", "model.pkl")):
-        train_pipeline = TrainPipeline()
-        train_pipeline.run_pipeline()
-    app.run(host='0.0.0.0', port=5000, debug=True)
 
 
 @app.route('/api/tactical-playbook', methods=['GET'])
@@ -1283,3 +1278,11 @@ def generate_tactical_playbook():
         "timestamp": time.time()
     }
     return jsonify(playbook), 200
+
+
+if __name__ == '__main__':
+    if not os.path.exists(os.path.join('artifacts', 'model.pkl')):
+        train_pipeline = TrainPipeline()
+        train_pipeline.run_pipeline()
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port, debug=False)
