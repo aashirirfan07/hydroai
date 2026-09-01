@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { createRenderer } from "./black-hole-utils/renderer";
 
 export function Example() {
