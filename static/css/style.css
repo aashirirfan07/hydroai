@@ -5080,3 +5080,74 @@ body.atmo-surge .liquid-glass, body.atmo-surge .spatial-card {
     transform: scale(1.03);
     box-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
 }
+
+
+/* ==========================================================================
+   📱 MOBILE HEADER SPACING & HORIZONTAL RESILIENCY FIX
+   ========================================================================== */
+@media (max-width: 900px) {
+    .navbar-floating-wrapper {
+        top: 8px !important;
+        padding: 0 0.75rem !important;
+    }
+    .navbar-floating-inner {
+        padding: 0.45rem 0.85rem !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        gap: 0.75rem !important;
+        border-radius: 20px !important;
+    }
+    .nav-brand {
+        flex-shrink: 0 !important;
+    }
+    .brand-link {
+        gap: 0.45rem !important;
+    }
+    .brand-title {
+        font-size: 0.88rem !important;
+    }
+    .nav-pill-group {
+        display: none !important;
+    }
+    .nav-right-actions {
+        display: flex !important;
+        align-items: center !important;
+        gap: 0.45rem !important;
+        flex-wrap: nowrap !important;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+        scrollbar-width: none !important;
+        max-width: calc(100vw - 160px) !important;
+        padding: 0.15rem 0 !important;
+    }
+    .nav-right-actions::-webkit-scrollbar {
+        display: none !important;
+    }
+    .btn-sonic-toggle-pill, 
+    .lang-selector-group, 
+    .btn-atmo-control-pill, 
+    .btn-pwa-install-pill,
+    .btn-palette-trigger-chip {
+        flex-shrink: 0 !important;
+        margin: 0 !important;
+        font-size: 0.72rem !important;
+        padding: 0.3rem 0.6rem !important;
+    }
+    .btn-palette-trigger-chip .search-label {
+        display: none !important;
+    }
+}
+
+@media (max-width: 500px) {
+    .brand-badge-ai {
+        display: none !important;
+    }
+    .nav-right-actions {
+        max-width: calc(100vw - 130px) !important;
+        gap: 0.35rem !important;
+    }
+    .btn-atmo-control-pill {
+        padding: 0.3rem 0.5rem !important;
+    }
+}

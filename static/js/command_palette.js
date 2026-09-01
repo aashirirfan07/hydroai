@@ -10,6 +10,7 @@ const COMMANDS_DATA = [
     { id: 'nav-analytics', category: 'Navigation', icon: '📊', title: 'Analytics & Diagnostic Charts', shortcut: 'G A', action: () => window.location.href = '/analytics' },
     { id: 'nav-damage', category: 'Navigation', icon: '🔍', title: 'Before/After Damage Assessment Slider', shortcut: 'G K', action: () => window.location.href = '/damage-assessment' },
     { id: 'nav-briefing', category: 'Navigation', icon: '📄', title: 'Official NDMA Situation Briefing (SITREP)', shortcut: 'G B', action: () => window.location.href = '/intelligence-briefing' },
+    { id: 'nav-hub', category: 'Navigation', icon: '⚡', title: '21st.dev Component Registry & Design Engineering Hub', shortcut: 'G U', action: () => window.location.href = '/components-hub' },
     { id: 'nav-sos', category: 'Navigation', icon: '🚨', title: 'Citizen Flood SOS & Geotagged Incident Reporter', shortcut: 'G I', action: () => window.location.href = '/report-incident' },
     { id: 'nav-early', category: 'Navigation', icon: '🚨', title: 'Emergency Early Warning Center', shortcut: 'G E', action: () => window.location.href = '/early-warning' },
     { id: 'nav-sim', category: 'Navigation', icon: '🧪', title: 'Scenario Simulator & SHAP', shortcut: 'G S', action: () => window.location.href = '/predict' },

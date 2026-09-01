@@ -363,3 +363,24 @@ def test_api_citizen_sos_beacon(client):
     })
     assert res.status_code == 200
     assert res.get_json()['status'] == 'SOS_BROADCAST_ACTIVE'
+
+
+def test_components_hub_page(client):
+    res = client.get('/components-hub')
+    assert res.status_code == 200
+    assert b'21ST.DEV DESIGN ENGINEER REGISTRY' in res.data
+    assert b'Incident Escalation Funnel Chart' in res.data
+
+
+def test_api_send_alert_email(client):
+    res = client.post('/api/send-alert-email', json={
+        'recipient_email': 'test.responder@ndrf.gov.in',
+        'station_name': 'Kedarnath Mandakini Gorge',
+        'threat_level': 'CRITICAL RED',
+        'notes': 'Test alert dispatch'
+    })
+    assert res.status_code == 200
+    json_data = res.get_json()
+    assert json_data['status'] == 'success'
+    assert 'email_id' in json_data
+    assert json_data['recipient'] == 'test.responder@ndrf.gov.in'

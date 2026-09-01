@@ -209,3 +209,130 @@ async function triggerCivilDefenseBroadcast() {
     }
 }
 </script>
+
+
+<!-- 📧 RESEND EMAIL DISASTER ALERT MODAL -->
+<div id="resendAlertModal" class="resend-modal-backdrop" style="display: none;">
+    <div class="resend-modal-card liquid-glass">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <div class="d-flex align-items-center gap-2">
+                <span class="pulse-beacon"></span>
+                <h3 style="font-family: var(--font-display); font-size: 1.25rem; color: #ffffff; margin: 0;">Dispatch Resend Email Alert</h3>
+            </div>
+            <button onclick="closeResendModal()" class="btn-close-modal">&times;</button>
+        </div>
+        
+        <p class="text-muted" style="font-size: 0.85rem; margin-bottom: 1.25rem;">
+            Transmits an official, NDMA-compliant critical flood situation alert directly to government responders, media, or field units via the <strong>Resend Cloud Email API</strong>.
+        </p>
+
+        <form id="resendEmailForm" onsubmit="sendResendEmailAlert(event)">
+            <div class="form-group-spatial mb-3">
+                <label>Recipient Email Address:</label>
+                <input type="email" id="resendRecipientEmail" placeholder="e.g. commander@ndrf.gov.in or responder@gmail.com" required style="width: 100%; padding: 0.65rem 1rem; border-radius: 12px; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.15); color: #ffffff; font-family: var(--font-mono); font-size: 0.85rem;">
+            </div>
+
+            <div class="form-group-spatial mb-3">
+                <label>Target Basin Sector:</label>
+                <select id="resendBasinSelect" class="form-select-dark" style="width: 100%; border-radius: 12px; padding: 0.6rem;">
+                    <option value="Kedarnath Mandakini Gorge">Kedarnath Mandakini Gorge (88.0 mm/h Cloudburst)</option>
+                    <option value="Alaknanda Upper Gorge">Alaknanda Upper Gorge (74.0 mm/h Surge)</option>
+                    <option value="Chamoli Rishiganga">Chamoli Rishiganga (79.0 mm/h Inflow)</option>
+                    <option value="Wayanad Meppadi Basin">Wayanad Meppadi Basin (58.0 mm/h Monsoonal)</option>
+                </select>
+            </div>
+
+            <div class="form-group-spatial mb-3">
+                <label>Threat Level Severity:</label>
+                <select id="resendSeveritySelect" class="form-select-dark" style="width: 100%; border-radius: 12px; padding: 0.6rem;">
+                    <option value="CRITICAL RED &bull; IMMEDIATE EVACUATION">🔴 Critical Red (Immediate Evacuation)</option>
+                    <option value="ELEVATED ORANGE &bull; SURGE ADVISORY">🟡 Elevated Orange (Surge Advisory)</option>
+                </select>
+            </div>
+
+            <div class="d-flex justify-content-end gap-2 mt-4">
+                <button type="button" class="spatial-btn-glass" onclick="closeResendModal()">Cancel</button>
+                <button type="submit" id="btnSubmitResend" class="spatial-btn-primary" style="padding: 0.65rem 1.4rem;">
+                    🚀 Dispatch Email via Resend
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+.resend-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(20px);
+    z-index: 10005;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+}
+.resend-modal-card {
+    width: 100%;
+    max-width: 520px;
+    border-radius: 24px;
+    padding: 2rem;
+    border: 1px solid rgba(56, 189, 248, 0.4);
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8), 0 0 35px rgba(56, 189, 248, 0.2);
+}
+.btn-close-modal {
+    background: transparent;
+    border: none;
+    color: rgba(255,255,255,0.5);
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+.btn-close-modal:hover { color: #ffffff; }
+</style>
+
+<script>
+function openResendModal() {
+    document.getElementById('resendAlertModal').style.display = 'flex';
+}
+function closeResendModal() {
+    document.getElementById('resendAlertModal').style.display = 'none';
+}
+
+async function sendResendEmailAlert(e) {
+    e.preventDefault();
+    const btn = document.getElementById('btnSubmitResend');
+    btn.disabled = true;
+    btn.innerText = '📡 Calling Resend API...';
+
+    const payload = {
+        recipient_email: document.getElementById('resendRecipientEmail').value,
+        station_name: document.getElementById('resendBasinSelect').value,
+        threat_level: document.getElementById('resendSeveritySelect').value,
+        precip_rate: '88.0 mm/h',
+        lead_time: '3.8 Hours',
+        notes: 'Autonomous early warning broadcast initiated. All downriver sirens synchronized.'
+    };
+
+    try {
+        const res = await fetch('/api/send-alert-email', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        
+        btn.innerText = '✅ Resend Alert Dispatched!';
+        if (typeof playSuccessChime === 'function') playSuccessChime();
+        alert(`✅ RESEND EMAIL DISPATCHED!\n\nDelivery Status: ${data.delivery_status}\nRecipient: ${data.recipient}\nEmail ID: ${data.email_id}\n\nProvider: Resend API`);
+        setTimeout(() => {
+            closeResendModal();
+            btn.disabled = false;
+            btn.innerText = '🚀 Dispatch Email via Resend';
+        }, 1000);
+    } catch(err) {
+        alert("Failed to connect to Resend API. Please retry.");
+        btn.disabled = false;
+        btn.innerText = '🚀 Dispatch Email via Resend';
+    }
+}
+</script>
