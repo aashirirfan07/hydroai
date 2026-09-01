@@ -34,9 +34,9 @@
 
     <!-- Category Filter Pills -->
     <div class="hub-filter-bar mb-4">
-        <button class="filter-pill active" onclick="filterComponents('all')">🔥 All Components (8)</button>
+        <button class="filter-pill active" onclick="filterComponents('all')">🔥 All Components (9)</button>
         <button class="filter-pill" onclick="filterComponents('charts')">📊 Charts & Funnels (2)</button>
-        <button class="filter-pill" onclick="filterComponents('webgl')">🌐 3D WebGL & Maps (3)</button>
+        <button class="filter-pill" onclick="filterComponents('webgl')">🌐 3D WebGL & Maps (4)</button>
         <button class="filter-pill" onclick="filterComponents('tactile')">🎛️ Tactile Dials & Haptics (2)</button>
         <button class="filter-pill" onclick="filterComponents('defense')">🚨 Civil Defense & SOS (1)</button>
     </div>
@@ -264,6 +264,36 @@
                 </button>
                 <a href="{{ url_for('report_incident_page') }}" class="spatial-btn-glass">
                     Live Demo &rarr;
+                </a>
+            </div>
+        </div>
+
+    
+        <!-- Component 9: Relativistic Black Hole Accretion Disk Shader -->
+        <div class="hub-comp-card liquid-glass" data-category="webgl">
+            <div class="comp-card-top">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="comp-tag">WEBGL SHADER / TSX</span>
+                    <span class="badge badge-normal">Gravitational Lensing</span>
+                </div>
+                <h3 class="comp-title">Relativistic Black Hole Vortex</h3>
+                <p class="comp-desc">GPU fragment shader simulating Schwarzschild event horizon, relativistic Doppler beaming, photon ring, and accretion disk.</p>
+            </div>
+
+            <div class="comp-live-preview d-flex justify-content-center align-items-center" style="background: #000000; position: relative;">
+                <div class="black-hole-preview-mini">
+                    <div class="bh-event-horizon"></div>
+                    <div class="bh-accretion-disk"></div>
+                    <div class="bh-photon-ring"></div>
+                </div>
+            </div>
+
+            <div class="comp-card-bottom">
+                <button class="spatial-btn-primary btn-copy-comp" onclick="copyComponentCode('black-hole')">
+                    📋 Copy Black Hole TSX
+                </button>
+                <a href="{{ url_for('satellites_page') }}" class="spatial-btn-glass">
+                    Space View &rarr;
                 </a>
             </div>
         </div>
@@ -574,6 +604,54 @@
     font-size: 0.8rem;
     padding: 0.55rem;
 }
+
+/* Black Hole Mini Preview */
+.black-hole-preview-mini {
+    width: 90px;
+    height: 90px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.bh-event-horizon {
+    width: 32px;
+    height: 32px;
+    background: #000000;
+    border-radius: 50%;
+    z-index: 2;
+    box-shadow: 0 0 15px rgba(255, 140, 0, 0.4);
+}
+.bh-photon-ring {
+    position: absolute;
+    width: 36px;
+    height: 36px;
+    border: 2px solid #ffaa00;
+    border-radius: 50%;
+    box-shadow: 0 0 10px #ffaa00, 0 0 20px #ff5500;
+    z-index: 1;
+    animation: pulsePhoton 2s infinite alternate;
+}
+.bh-accretion-disk {
+    position: absolute;
+    width: 85px;
+    height: 30px;
+    border-radius: 50%;
+    background: radial-gradient(ellipse at center, rgba(255,100,0,0.8), rgba(255,200,0,0.4), transparent);
+    transform: rotate(-25deg);
+    filter: blur(2px);
+    animation: rotateAccretion 4s linear infinite;
+}
+@keyframes pulsePhoton {
+    0% { transform: scale(0.95); opacity: 0.8; }
+    100% { transform: scale(1.05); opacity: 1; }
+}
+@keyframes rotateAccretion {
+    0% { transform: rotate(-25deg) scaleY(1); }
+    50% { transform: rotate(-25deg) scaleY(1.15); }
+    100% { transform: rotate(-25deg) scaleY(1); }
+}
+
 </style>
 
 <script>
