@@ -343,20 +343,45 @@ function switchTelemetryMode(mode) {
         .catch(err => console.error(err));
 }
 
-function switchDashboardTab(tabId) {
-    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+function switchDashboardTab(tabId, btnEl) {
+    if (!tabId) return;
+    const cleanKey = tabId.replace(/^tab-/, '');
+    const tabElementId = 'tab-' + cleanKey;
+
+    // Update active tab buttons
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+        const clickAttr = btn.getAttribute('onclick') || '';
+        if (clickAttr.includes(tabId) || clickAttr.includes(cleanKey) || (btnEl && btn === btnEl)) {
+            btn.classList.add('active');
+        }
+    });
+
+    // Hide all tab contents
     document.querySelectorAll('.tab-content').forEach(content => {
         content.style.display = 'none';
         content.classList.remove('active');
     });
 
-    const targetTab = document.getElementById(tabId);
+    // Show target tab
+    const targetTab = document.getElementById(tabElementId) || document.getElementById(tabId) || document.getElementById(cleanKey);
     if (targetTab) {
         targetTab.style.display = 'block';
         targetTab.classList.add('active');
-    }
 
-    event.currentTarget.classList.add('active');
+        // If switching to NASA & Open Data telemetry, immediately trigger live update
+        if (cleanKey === 'space_telemetry' && typeof updateOpenDataSpaceMesh === 'function') {
+            updateOpenDataSpaceMesh();
+        }
+
+        // Refresh 3D tilt
+        if (window.refreshLovable3D) window.refreshLovable3D();
+
+        // Smoothly scroll target tab into view
+        targetTab.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } else {
+        console.warn('Target tab not found:', tabId, tabElementId);
+    }
 }
 
 // ================= FULLY OPERATIONAL ALERT SENDER CONTROLLER ================= //

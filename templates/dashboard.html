@@ -1,107 +1,6 @@
 {% extends 'layout.html' %}
 
-{% block title %}Real-Time 3D Digital Twin & Sensor Telemetry - HydroSentinel AI™
-<script>
-// Real-time Space & Open Data Mesh Live Stream Ingestion
-async function updateOpenDataSpaceMesh() {
-    try {
-        const res = await fetch('/api/space-telemetry/live');
-        if (!res.ok) return;
-        const data = await res.json();
-        
-        // HUD Badge updates
-        if (data.nasa && data.nasa.gpm_precipitation_feed) {
-            const gpm = data.nasa.gpm_precipitation_feed[0] || {};
-            const gpmEl = document.getElementById('hudGpmVal');
-            if (gpmEl && gpm.gpm_precipitation_rate_mm_h) gpmEl.innerText = `${gpm.gpm_precipitation_rate_mm_h} mm/h`;
-            const cardGpm = document.getElementById('cardNasaGpm');
-            if (cardGpm && gpm.gpm_precipitation_rate_mm_h) cardGpm.innerText = `${gpm.gpm_precipitation_rate_mm_h} mm/h`;
-        }
-
-        if (data.india && data.india.isro_mosdac) {
-            const isro = data.india.isro_mosdac;
-            const cttEl = document.getElementById('hudCttVal');
-            if (cttEl) cttEl.innerText = `${isro.cloud_top_temperature_c}°C`;
-            const cardCtt = document.getElementById('cardIsroCtt');
-            if (cardCtt) cardCtt.innerText = `${isro.cloud_top_temperature_c}°C CTT`;
-        }
-
-        if (data.india && data.india.imd_doppler_radar) {
-            const imd = data.india.imd_doppler_radar;
-            const cardImd = document.getElementById('cardImdRadar');
-            if (cardImd) cardImd.innerText = `${imd.composite_reflectivity_dbz} dBZ`;
-        }
-
-        if (data.open_mesh) {
-            const mesh = data.open_mesh;
-            
-            // GloFAS
-            if (mesh.glofas_river_discharge) {
-                const flood = mesh.glofas_river_discharge;
-                const glofasEl = document.getElementById('hudGlofasVal');
-                if (glofasEl) glofasEl.innerText = `${flood.current_discharge_m3_s} m³/s`;
-                const cardFlow = document.getElementById('cardGlofasFlow');
-                if (cardFlow) cardFlow.innerText = `${flood.current_discharge_m3_s} m³/s`;
-                const cardSub = document.getElementById('cardGlofasSub');
-                if (cardSub) cardSub.innerText = `7-Day Peak: ${flood.peak_discharge_m3_s} m³/s • Status: ${flood.status} • Trend: ${flood.trend}`;
-            }
-
-            // CAPE
-            if (mesh.severe_weather_cape) {
-                const wx = mesh.severe_weather_cape;
-                const capeEl = document.getElementById('hudCapeVal');
-                if (capeEl) capeEl.innerText = `${wx.max_convective_cape_j_kg} J/kg`;
-                const cardCape = document.getElementById('cardCapeVal');
-                if (cardCape) cardCape.innerText = `${wx.max_convective_cape_j_kg} J/kg`;
-                const cardCapeSub = document.getElementById('cardCapeSub');
-                if (cardCapeSub) cardCapeSub.innerText = `Cloudburst Risk: ${wx.cloudburst_risk} • 24h Rain: ${wx.max_24h_precip_rate_mm_h} mm/h`;
-            }
-
-            // Seismic
-            if (mesh.usgs_seismic_geohazard) {
-                const seismic = mesh.usgs_seismic_geohazard;
-                const seismicEl = document.getElementById('hudSeismicVal');
-                const triggerText = seismic.landslide_glof_trigger_status || 'NOMINAL';
-                if (seismicEl) {
-                    seismicEl.innerText = triggerText.includes('NOMINAL') ? 'NOMINAL' : 'ELEVATED';
-                    seismicEl.className = triggerText.includes('NOMINAL') ? 'text-neon-green' : 'text-amber';
-                }
-                const cardTrigger = document.getElementById('cardSeismicTrigger');
-                if (cardTrigger) {
-                    cardTrigger.innerText = triggerText.includes('NOMINAL') ? 'NOMINAL' : 'ALERT';
-                    cardTrigger.className = triggerText.includes('NOMINAL') ? 'text-neon-green font-mono font-bold' : 'text-danger font-mono font-bold';
-                }
-                const cardSub = document.getElementById('cardSeismicSub');
-                if (cardSub) cardSub.innerText = triggerText;
-
-                if (seismic.recent_regional_events && seismic.recent_regional_events.length > 0) {
-                    const eq = seismic.recent_regional_events[0];
-                    const eqEl = document.getElementById('cardLatestQuake');
-                    if (eqEl) eqEl.innerText = eq.title;
-                    const eqSub = document.getElementById('cardLatestQuakeSub');
-                    if (eqSub) eqSub.innerText = `Depth: ${eq.depth_km} km • ${eq.place}`;
-                }
-            }
-
-            // DEM Elevation
-            if (mesh.elevation_dem_amsl_m) {
-                const demEl = document.getElementById('cardDemElev');
-                if (demEl) demEl.innerText = `${mesh.elevation_dem_amsl_m} m AMSL`;
-            }
-        }
-    } catch (e) {
-        console.warn('Space & Open Data Mesh poll notice:', e);
-    }
-}
-
-// Initial fetch and poll every 12 seconds
-document.addEventListener('DOMContentLoaded', () => {
-    updateOpenDataSpaceMesh();
-    setInterval(updateOpenDataSpaceMesh, 12000);
-});
-</script>
-
-{% endblock %}
+{% block title %}Real-Time 3D Digital Twin & Sensor Telemetry - HydroSentinel AI™{% endblock %}
 
 {% block content %}
 <div class="dashboard-topbar">
@@ -213,6 +112,20 @@ document.addEventListener('DOMContentLoaded', () => {
                     <button class="btn-3d-atmo" onclick="set3DAtmosphere('overcast')">Fog</button>
                     <button class="btn-3d-atmo" onclick="set3DAtmosphere('clear')">Clear</button>
                 </div>
+
+                <div class="cam-preset-btn-group">
+                    <span class="toolbar-label"> 3D Cam:</span>
+                    <button class="btn-cam-preset active" data-preset="orbit" onclick="setLovable3DCameraPreset('orbit')">Orbit</button>
+                    <button class="btn-cam-preset" data-preset="satellite" onclick="setLovable3DCameraPreset('satellite')">🛰️ Nadir</button>
+                    <button class="btn-cam-preset" data-preset="isometric" onclick="setLovable3DCameraPreset('isometric')">Iso</button>
+                    <button class="btn-cam-preset" data-preset="gorge" onclick="setLovable3DCameraPreset('gorge')">Gorge</button>
+                </div>
+
+                <div class="nasa-direct-btn-wrap">
+                    <button type="button" class="btn-nasa-direct-glow" onclick="switchDashboardTab('space_telemetry', this)" title="Open Real-Time NASA EONET, GPM & ISRO Telemetry Deck">
+                        <span class="live-dot-pulse"></span> 🛰️ NASA Telemetry
+                    </button>
+                </div>
                 <div class="sim-actions-group" style="display: flex; gap: 0.5rem; margin-left: auto;">
                     <button id="btnToggleFlightMode" class="btn-pilot-drone-glow" onclick="toggleInteractiveDroneFlight()" title="Pilot 3D Inspection Drone with WASD keys">
                         🎮 Pilot Drone (WASD)
@@ -254,7 +167,7 @@ document.addEventListener('DOMContentLoaded', () => {
     </div>
 
         <!-- 🛰️ Floating Live NASA, ISRO & Open Data Mesh HUD Overlay -->
-            <div class="twin-space-hud-badge" id="twinSpaceHudBadge">
+            <div class="twin-space-hud-badge clickable-3d-hud" id="twinSpaceHudBadge" onclick="switchDashboardTab('space_telemetry')" role="button" tabindex="0" title="Click to view live NASA & Indian Space Telemetry Deck" style="cursor: pointer;">
                 <div class="d-flex align-items-center gap-2">
                     <span class="pulse-beacon" style="background: #10b981; width: 7px; height: 7px;"></span>
                     <span class="hud-label">OPEN DATA & SPACE MESH:</span>
