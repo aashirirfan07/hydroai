@@ -1673,13 +1673,15 @@ def api_offline_survival_card():
 # ==============================================================================
 # 🌍 WORLD MONITOR • GLOBAL SITUATIONAL AWARENESS ROOM
 # ==============================================================================
+WM_PUBLIC_URL = os.environ.get('WM_PUBLIC_URL', 'https://their-surface-cut-resource.trycloudflare.com')
+
 @app.route('/world-monitor')
 @app.route('/global-situation-room')
 def world_monitor_page():
     '''World Monitor: Integrated Global Intelligence & Situational Awareness Command Center.'''
     station_id = request.args.get('station', 'STN-KD-05')
     telemetry = live_service.get_live_telemetry(station_id)
-    return render_template('world_monitor.html', data=telemetry, current_station=station_id)
+    return render_template('world_monitor.html', data=telemetry, current_station=station_id, wm_url=WM_PUBLIC_URL)
 
 @app.route('/api/world-monitor/status', methods=['GET'])
 def api_world_monitor_status():
@@ -1698,6 +1700,7 @@ def api_world_monitor_status():
         "status": "SUCCESS",
         "local_engine_online": is_local_online,
         "local_url": "http://localhost:3000/",
+        "public_url": WM_PUBLIC_URL,
         "fallback_url": "https://www.worldmonitor.app",
         "map_layers": 57,
         "feeds": 461,

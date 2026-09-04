@@ -19,19 +19,25 @@
                 </div>
             </div>
 
-            <!-- Action Controls -->
+            <!-- Action Controls & Stream Switchers -->
             <div class="d-flex align-items-center gap-2 flex-wrap">
                 <span id="wmEngineBadge" class="badge" style="background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid #10b981; font-size: 0.76rem; padding: 0.35rem 0.75rem;">
-                    <span class="badge-pulse-dot" style="background: #10b981;"></span> LOCAL ENGINE ACTIVE (PORT 3000)
+                    <span class="badge-pulse-dot" style="background: #10b981;"></span> LIVE ENGINE READY
                 </span>
+                <button type="button" id="btnSrcTunnel" class="spatial-btn-glass" onclick="switchWmSource('tunnel')" style="padding: 0.35rem 0.75rem; font-size: 0.75rem; border-color: #38bdf8; color: #38bdf8;">
+                    🌐 Public HTTPS Tunnel
+                </button>
+                <button type="button" id="btnSrcLocal" class="spatial-btn-glass" onclick="switchWmSource('local')" style="padding: 0.35rem 0.75rem; font-size: 0.75rem;">
+                    💻 Localhost (3000)
+                </button>
                 <button type="button" class="spatial-btn-glass" onclick="toggleWmFullscreen()" style="padding: 0.35rem 0.75rem; font-size: 0.75rem;">
                     ⛶ Fullscreen
                 </button>
                 <button type="button" class="spatial-btn-glass" onclick="reloadWmIframe()" style="padding: 0.35rem 0.75rem; font-size: 0.75rem;">
                     🔄 Refresh
                 </button>
-                <a href="http://localhost:3000/" target="_blank" class="spatial-btn-primary" style="padding: 0.35rem 0.85rem; font-size: 0.75rem;">
-                    ↗ Open Standalone (Port 3000)
+                <a id="btnWmStandalone" href="{{ wm_url or 'https://their-surface-cut-resource.trycloudflare.com' }}" target="_blank" class="spatial-btn-primary" style="padding: 0.35rem 0.85rem; font-size: 0.75rem;">
+                    ↗ Open Live Engine
                 </a>
             </div>
         </div>
@@ -62,29 +68,32 @@
     </div>
 
     <!-- Embedded World Monitor Command Deck -->
-    <div id="wmFrameWrapper" class="card liquid-glass" style="border: 1px solid rgba(255, 255, 255, 0.15); background: #000000; border-radius: 8px; overflow: hidden; position: relative; height: calc(100vh - 210px); min-height: 750px;">
+    <div id="wmFrameWrapper" class="card liquid-glass" style="border: 1px solid rgba(255, 255, 255, 0.15); background: #0a0f0a; border-radius: 8px; overflow: hidden; position: relative; height: calc(100vh - 210px); min-height: 750px;">
         <iframe 
             id="worldMonitorIframe" 
-            src="http://localhost:3000/" 
+            src="{{ wm_url or 'https://their-surface-cut-resource.trycloudflare.com' }}" 
             title="World Monitor Situational Awareness Dashboard"
             style="width: 100%; height: 100%; border: none; background: #0a0f0a;"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
             allowfullscreen>
         </iframe>
         
-        <!-- Offline / Loading overlay if port 3000 is unreachable -->
+        <!-- Offline / Loading overlay if unreachable -->
         <div id="wmFallbackOverlay" style="display: none; position: absolute; inset: 0; background: rgba(3, 7, 18, 0.95); justify-content: center; align-items: center; flex-direction: column; gap: 1rem; padding: 2rem; text-align: center;">
             <i class="fa-solid fa-satellite-dish fa-3x text-cyan"></i>
             <h3 style="color: #ffffff; font-family: var(--font-display);">World Monitor Engine Connecting...</h3>
             <p style="color: #94a3b8; max-width: 500px; font-size: 0.85rem;">
-                The local World Monitor engine runs on <code>http://localhost:3000/</code>. If it is stopped, you can relaunch it or visit the official cloud gateway.
+                If the embedded frame does not load automatically, you can switch streams or open the standalone engine in a new tab.
             </p>
             <div class="d-flex gap-2">
-                <button type="button" class="spatial-btn-primary" onclick="reloadWmIframe()">
-                    🔄 Retry Local Engine
+                <button type="button" class="spatial-btn-primary" onclick="switchWmSource('tunnel')">
+                    🌐 Use HTTPS Cloudflare Tunnel
                 </button>
-                <a href="https://www.worldmonitor.app" target="_blank" class="spatial-btn-glass">
-                    🌐 Open World Monitor Cloud
+                <button type="button" class="spatial-btn-glass" onclick="switchWmSource('local')">
+                    💻 Use Localhost:3000
+                </button>
+                <a href="{{ wm_url or 'https://their-surface-cut-resource.trycloudflare.com' }}" target="_blank" class="spatial-btn-glass">
+                    ↗ Open Standalone
                 </a>
             </div>
         </div>
@@ -92,27 +101,68 @@
 </div>
 
 <script>
+const defaultTunnelUrl = "{{ wm_url or 'https://their-surface-cut-resource.trycloudflare.com' }}";
+const localUrl = "http://localhost:3000/";
+
+function initIframeUrl() {
+    const iframe = document.getElementById('worldMonitorIframe');
+    const btn = document.getElementById('btnWmStandalone');
+    // If the browser loaded this page over HTTPS, ALWAYS default to HTTPS tunnel to prevent Mixed Content blocking
+    const target = (window.location.protocol === 'https:' || window.location.hostname !== 'localhost') 
+        ? defaultTunnelUrl 
+        : localUrl;
+    
+    if (iframe) iframe.src = target;
+    if (btn) btn.href = target;
+    highlightSourceBtn(target === defaultTunnelUrl ? 'tunnel' : 'local');
+}
+
+function switchWmSource(type) {
+    const iframe = document.getElementById('worldMonitorIframe');
+    const btn = document.getElementById('btnWmStandalone');
+    const targetUrl = type === 'local' ? localUrl : defaultTunnelUrl;
+    
+    if (iframe) iframe.src = targetUrl;
+    if (btn) btn.href = targetUrl;
+    highlightSourceBtn(type);
+}
+
+function highlightSourceBtn(type) {
+    const btnT = document.getElementById('btnSrcTunnel');
+    const btnL = document.getElementById('btnSrcLocal');
+    if (btnT && btnL) {
+        if (type === 'tunnel') {
+            btnT.style.borderColor = '#38bdf8';
+            btnT.style.color = '#38bdf8';
+            btnL.style.borderColor = 'rgba(255,255,255,0.15)';
+            btnL.style.color = '#94a3b8';
+        } else {
+            btnL.style.borderColor = '#38bdf8';
+            btnL.style.color = '#38bdf8';
+            btnT.style.borderColor = 'rgba(255,255,255,0.15)';
+            btnT.style.color = '#94a3b8';
+        }
+    }
+}
+
 async function checkWmStatus() {
     try {
         const res = await fetch('/api/world-monitor/status');
         if (!res.ok) return;
         const data = await res.json();
         const badge = document.getElementById('wmEngineBadge');
-        const overlay = document.getElementById('wmFallbackOverlay');
-        const iframe = document.getElementById('worldMonitorIframe');
         
         if (data.local_engine_online) {
             if (badge) {
-                badge.innerHTML = '<span class="badge-pulse-dot" style="background: #10b981;"></span> LOCAL ENGINE ACTIVE (PORT 3000)';
+                badge.innerHTML = '<span class="badge-pulse-dot" style="background: #10b981;"></span> LIVE ENGINE ACTIVE';
                 badge.style.borderColor = '#10b981';
                 badge.style.color = '#34d399';
             }
-            if (overlay) overlay.style.display = 'none';
         } else {
             if (badge) {
-                badge.innerHTML = '<span class="badge-pulse-dot" style="background: #f59e0b;"></span> ENGINE STANDBY';
-                badge.style.borderColor = '#f59e0b';
-                badge.style.color = '#fbbf24';
+                badge.innerHTML = '<span class="badge-pulse-dot" style="background: #38bdf8;"></span> TUNNEL ACTIVE';
+                badge.style.borderColor = '#38bdf8';
+                badge.style.color = '#38bdf8';
             }
         }
     } catch (e) {
@@ -122,7 +172,7 @@ async function checkWmStatus() {
 
 function reloadWmIframe() {
     const iframe = document.getElementById('worldMonitorIframe');
-    if (iframe) iframe.src = 'http://localhost:3000/';
+    if (iframe) iframe.src = iframe.src;
     checkWmStatus();
 }
 
@@ -139,6 +189,7 @@ function toggleWmFullscreen() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+    initIframeUrl();
     checkWmStatus();
     setInterval(checkWmStatus, 15000);
 });
