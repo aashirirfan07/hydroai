@@ -1,3 +1,4 @@
+from src.indian_telemetry_service import indian_service
 from src.nasa_service import nasa_service
 import urllib.parse
 from src.pipeline.multi_source_ingestion_service import MultiSourceIngestionService
@@ -1146,6 +1147,33 @@ def uav_feed():
 def nasa_live_page():
     '''NASA Earth Observatory Real-Time Command Deck & Cyclone Tracker.'''
     return render_template('nasa_live.html')
+
+
+@app.route('/api/space-telemetry/live', methods=['GET'])
+def api_space_telemetry_live():
+    '''Returns combined real-time NASA Earth Observation + Indian ISRO/IMD/CWC Telemetry.'''
+    station_id = request.args.get('station', 'STN-KD-05')
+    nasa_events = nasa_service.get_realtime_events(limit=5)
+    nasa_gpm = nasa_service.get_gpm_precipitation_feed(live_service.stations)
+    isro_telemetry = indian_service.get_isro_mosdac_telemetry(station_id)
+    imd_radar = indian_service.get_imd_doppler_radar(station_id)
+    cwc_network = indian_service.get_cwc_river_network()
+    
+    return jsonify({
+        "status": "SUCCESS",
+        "station_id": station_id,
+        "nasa": {
+            "gpm_precipitation_feed": nasa_gpm,
+            "active_events_count": len(nasa_events.get("events", [])),
+            "sample_events": nasa_events.get("events", [])[:3]
+        },
+        "india": {
+            "isro_mosdac": isro_telemetry,
+            "imd_doppler_radar": imd_radar,
+            "cwc_river_network": cwc_network
+        },
+        "timestamp": datetime.now(timezone.utc).isoformat()
+    }), 200
 
 @app.route('/api/nasa/realtime-events', methods=['GET'])
 def api_nasa_realtime_events():

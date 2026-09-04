@@ -504,3 +504,15 @@ def test_api_nasa_endpoints(client):
     assert res_sync.status_code == 200
     d_sync = res_sync.get_json()
     assert d_sync['status'] == 'ONLINE'
+
+
+def test_space_telemetry_live(client):
+    res = client.get('/api/space-telemetry/live')
+    assert res.status_code == 200
+    d = res.get_json()
+    assert d['status'] == 'SUCCESS'
+    assert 'nasa' in d
+    assert 'india' in d
+    assert 'isro_mosdac' in d['india']
+    assert 'imd_doppler_radar' in d['india']
+    assert 'cwc_river_network' in d['india']
