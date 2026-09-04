@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function initSpatialAudioEngine() {
     const saved = localStorage.getItem('hydro_audio_enabled');
-    isAudioEnabled = saved === null ? true : saved === 'true';
+    isAudioEnabled = saved === null ? false : saved === 'true';
     updateAudioToggleUI();
 
     // Auto-bind sound effects to DOM elements

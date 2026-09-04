@@ -1168,6 +1168,8 @@ def api_space_telemetry_live():
     return jsonify({
         "status": "SUCCESS",
         "station_id": station_id,
+        "data_mode": open_mesh.get("data_mode", "LIVE_STREAM"),
+        "zero_key_compliant": True,
         "nasa": {
             "gpm_precipitation_feed": nasa_gpm,
             "active_events_count": len(nasa_events.get("events", [])),

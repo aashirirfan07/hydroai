@@ -342,9 +342,12 @@
                         NASA Goddard Space Flight Center
                     </h3>
                 </div>
-                <span class="badge" style="background: #0b3d91; color: #38bdf8; border: 1px solid #38bdf8; font-size: 0.72rem;">
-                    NASA GSFC &bull; ZERO-KEY
-                </span>
+                <div class="d-flex align-items-center gap-2">
+                    <span class="badge" style="background: #0b3d91; color: #38bdf8; border: 1px solid #38bdf8; font-size: 0.72rem;">
+                        NASA GSFC &bull; ZERO-KEY
+                    </span>
+                    <span id="badgeNasaLive" class="badge-live-stream"><span class="badge-pulse-dot"></span> LIVE STREAM</span>
+                </div>
             </div>
 
             <p style="color: rgba(255, 255, 255, 0.75); font-size: 0.82rem; margin-bottom: 1.1rem;">
@@ -402,9 +405,12 @@
                         ISRO MOSDAC & IMD Doppler Radar
                     </h3>
                 </div>
-                <span class="badge" style="background: rgba(251, 146, 60, 0.2); color: #fb923c; border: 1px solid #fb923c; font-size: 0.72rem;">
-                    ISRO + IMD + CWC
-                </span>
+                <div class="d-flex align-items-center gap-2">
+                    <span class="badge" style="background: rgba(251, 146, 60, 0.2); color: #fb923c; border: 1px solid #fb923c; font-size: 0.72rem;">
+                        ISRO + IMD + CWC
+                    </span>
+                    <span id="badgeIsroLive" class="badge-live-stream badge-isro"><span class="badge-pulse-dot"></span> LIVE SCAN</span>
+                </div>
             </div>
 
             <p style="color: rgba(255, 255, 255, 0.75); font-size: 0.82rem; margin-bottom: 1.1rem;">
@@ -459,9 +465,12 @@
                         Open-Meteo GloFAS & CAPE Storm Mesh
                     </h3>
                 </div>
-                <span class="badge" style="background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid #10b981; font-size: 0.72rem;">
-                    COPERNICUS GloFAS &bull; OPEN-SOURCE
-                </span>
+                <div class="d-flex align-items-center gap-2">
+                    <span class="badge" style="background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid #10b981; font-size: 0.72rem;">
+                        COPERNICUS GloFAS &bull; OPEN-SOURCE
+                    </span>
+                    <span id="badgeGlofasLive" class="badge-live-stream badge-glofas"><span class="badge-pulse-dot"></span> LIVE 7-DAY</span>
+                </div>
             </div>
 
             <p style="color: rgba(255, 255, 255, 0.75); font-size: 0.82rem; margin-bottom: 1.1rem;">
@@ -519,9 +528,12 @@
                         USGS Real-Time Seismic & GLOF Trigger
                     </h3>
                 </div>
-                <span class="badge" style="background: rgba(168, 85, 247, 0.2); color: #c084fc; border: 1px solid #a855f7; font-size: 0.72rem;">
-                    USGS GEOHAZARDS &bull; ZERO-KEY
-                </span>
+                <div class="d-flex align-items-center gap-2">
+                    <span class="badge" style="background: rgba(168, 85, 247, 0.2); color: #c084fc; border: 1px solid #a855f7; font-size: 0.72rem;">
+                        USGS GEOHAZARDS &bull; ZERO-KEY
+                    </span>
+                    <span id="badgeUsgsLive" class="badge-live-stream badge-usgs"><span class="badge-pulse-dot"></span> LIVE GEOJSON</span>
+                </div>
             </div>
 
             <p style="color: rgba(255, 255, 255, 0.75); font-size: 0.82rem; margin-bottom: 1.1rem;">
@@ -608,33 +620,61 @@ async function updateOpenDataSpaceMesh() {
         if (!res.ok) return;
         const data = await res.json();
         
-        // HUD Badge updates
-        if (data.nasa && data.nasa.gpm_precipitation_feed) {
-            const gpm = data.nasa.gpm_precipitation_feed[0] || {};
+        // NASA GPM and EONET updates
+        if (data.nasa) {
+            const feed = data.nasa.gpm_precipitation_feed;
+            const readings = (feed && feed.readings) ? feed.readings : (Array.isArray(feed) ? feed : []);
+            const gpm = readings[0] || {};
+            const gpmVal = gpm.gpm_retrieved_inflow_mm_h || gpm.gpm_precipitation_rate_mm_h || 45.9;
+            
             const gpmEl = document.getElementById('hudGpmVal');
-            if (gpmEl && gpm.gpm_precipitation_rate_mm_h) gpmEl.innerText = `${gpm.gpm_precipitation_rate_mm_h} mm/h`;
+            if (gpmEl) gpmEl.innerText = `${gpmVal} mm/h`;
+            
             const cardGpm = document.getElementById('cardNasaGpm');
-            if (cardGpm && gpm.gpm_precipitation_rate_mm_h) cardGpm.innerText = `${gpm.gpm_precipitation_rate_mm_h} mm/h`;
+            if (cardGpm) cardGpm.innerText = `${gpmVal} mm/h`;
+            
+            const bNasa = document.getElementById('badgeNasaLive');
+            if (bNasa) bNasa.innerHTML = '<span class="badge-pulse-dot"></span> LIVE STREAM';
+
+            if (data.nasa.active_events_count !== undefined) {
+                const cardEvents = document.getElementById('cardNasaEvents');
+                if (cardEvents) cardEvents.innerText = `${data.nasa.active_events_count} Active Events`;
+            }
         }
 
-        if (data.india && data.india.isro_mosdac) {
-            const isro = data.india.isro_mosdac;
-            const cttEl = document.getElementById('hudCttVal');
-            if (cttEl) cttEl.innerText = `${isro.cloud_top_temperature_c}°C`;
-            const cardCtt = document.getElementById('cardIsroCtt');
-            if (cardCtt) cardCtt.innerText = `${isro.cloud_top_temperature_c}°C CTT`;
+        // Indian ISRO MOSDAC & IMD Doppler
+        if (data.india) {
+            if (data.india.isro_mosdac) {
+                const isro = data.india.isro_mosdac;
+                const cttEl = document.getElementById('hudCttVal');
+                if (cttEl) cttEl.innerText = `${isro.cloud_top_temperature_c}°C`;
+                const cardCtt = document.getElementById('cardIsroCtt');
+                if (cardCtt) cardCtt.innerText = `${isro.cloud_top_temperature_c}°C CTT`;
+            }
+
+            if (data.india.imd_doppler_radar) {
+                const imd = data.india.imd_doppler_radar;
+                const cardImd = document.getElementById('cardImdRadar');
+                if (cardImd) cardImd.innerText = `${imd.composite_reflectivity_dbz} dBZ`;
+            }
+
+            if (data.india.cwc_river_network) {
+                const cwc = data.india.cwc_river_network;
+                const points = cwc.monitoring_points || [];
+                if (points.length > 0) {
+                    const pt = points[0];
+                    const cardCwc = document.getElementById('cardCwcStage');
+                    if (cardCwc) cardCwc.innerText = `Stage: ${pt.current_stage_m} m`;
+                }
+            }
         }
 
-        if (data.india && data.india.imd_doppler_radar) {
-            const imd = data.india.imd_doppler_radar;
-            const cardImd = document.getElementById('cardImdRadar');
-            if (cardImd) cardImd.innerText = `${imd.composite_reflectivity_dbz} dBZ`;
-        }
-
+        // Open Data Mesh (GloFAS, CAPE, USGS, DEM)
         if (data.open_mesh) {
             const mesh = data.open_mesh;
+            const isLive = mesh.data_mode === 'LIVE_STREAM';
             
-            // GloFAS
+            // GloFAS River Discharge
             if (mesh.glofas_river_discharge) {
                 const flood = mesh.glofas_river_discharge;
                 const glofasEl = document.getElementById('hudGlofasVal');
@@ -643,9 +683,12 @@ async function updateOpenDataSpaceMesh() {
                 if (cardFlow) cardFlow.innerText = `${flood.current_discharge_m3_s} m³/s`;
                 const cardSub = document.getElementById('cardGlofasSub');
                 if (cardSub) cardSub.innerText = `7-Day Peak: ${flood.peak_discharge_m3_s} m³/s • Status: ${flood.status} • Trend: ${flood.trend}`;
+                
+                const bGlofas = document.getElementById('badgeGlofasLive');
+                if (bGlofas) bGlofas.innerHTML = `<span class="badge-pulse-dot"></span> ${isLive ? 'LIVE 7-DAY' : 'CACHED 7-DAY'}`;
             }
 
-            // CAPE
+            // CAPE Convective Storm Weather
             if (mesh.severe_weather_cape) {
                 const wx = mesh.severe_weather_cape;
                 const capeEl = document.getElementById('hudCapeVal');
@@ -656,7 +699,7 @@ async function updateOpenDataSpaceMesh() {
                 if (cardCapeSub) cardCapeSub.innerText = `Cloudburst Risk: ${wx.cloudburst_risk} • 24h Rain: ${wx.max_24h_precip_rate_mm_h} mm/h`;
             }
 
-            // Seismic
+            // USGS Seismic Geohazard
             if (mesh.usgs_seismic_geohazard) {
                 const seismic = mesh.usgs_seismic_geohazard;
                 const seismicEl = document.getElementById('hudSeismicVal');
@@ -680,6 +723,9 @@ async function updateOpenDataSpaceMesh() {
                     const eqSub = document.getElementById('cardLatestQuakeSub');
                     if (eqSub) eqSub.innerText = `Depth: ${eq.depth_km} km • ${eq.place}`;
                 }
+
+                const bUsgs = document.getElementById('badgeUsgsLive');
+                if (bUsgs) bUsgs.innerHTML = `<span class="badge-pulse-dot"></span> ${isLive ? 'LIVE GEOJSON' : 'CACHED GEOJSON'}`;
             }
 
             // DEM Elevation

@@ -334,9 +334,12 @@ class OpenDataMeshService:
         seismic = self.get_usgs_seismic_hazards()
         elevation = self.get_topographic_elevation(lat=lat, lon=lon)
 
+        is_live = flood.get('source', '').find('Fallback') == -1 and weather.get('source', '').find('Fallback') == -1
         return {
             'status': 'ONLINE',
             'mesh_version': 'v2.9-OPEN-DATA',
+            'data_mode': 'LIVE_STREAM' if is_live else 'CACHED_TELEMETRY',
+            'stream_health': '100% OPERATIONAL' if is_live else 'RESILIENT CACHE',
             'zero_key_compliant': True,
             'station_id': station_id,
             'catchment_coordinates': {'latitude': lat, 'longitude': lon},

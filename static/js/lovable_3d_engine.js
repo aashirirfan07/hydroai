@@ -99,7 +99,7 @@
     }
 
     // 2. 3D Camera Presets for Digital Twin Viewport
-    window.setLovable3DCameraPreset = function (preset) {
+    if (!window.setLovable3DCameraPreset) window.setLovable3DCameraPreset = function (preset) {
         if (!window.currentControls || !window.currentCamera) {
             console.log('3D controls not ready yet for preset:', preset);
             return;

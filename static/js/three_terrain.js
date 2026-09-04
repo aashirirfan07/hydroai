@@ -49,16 +49,24 @@ function init3DScene() {
     container.innerHTML = '';
     container.appendChild(renderer.domElement);
 
-    // 3. Orbit Controls
+    // 3. Orbit Controls with Smart Hover Zoom
     if (typeof THREE.OrbitControls !== 'undefined') {
         controls = new THREE.OrbitControls(camera, renderer.domElement);
-        controls.enableZoom = false; // Prevents wheel lock on page scroll
+        controls.enableZoom = false; // Muted by default to avoid page scroll hijack
         controls.enableDamping = true;
         controls.dampingFactor = 0.06;
         controls.maxPolarAngle = Math.PI / 2 - 0.05;
-        controls.minDistance = 15;
-        controls.maxDistance = 140;
+        controls.minDistance = 12;
+        controls.maxDistance = 150;
         controls.target.set(0, 4, 0);
+
+        // Smart Zoom: enable mouse wheel zoom ONLY while hovering over the 3D canvas
+        container.addEventListener('mouseenter', () => {
+            if (controls) controls.enableZoom = true;
+        });
+        container.addEventListener('mouseleave', () => {
+            if (controls) controls.enableZoom = false;
+        });
     }
 
     // 4. Lighting Rig (Sapforce AI Glow)
@@ -90,7 +98,84 @@ function init3DScene() {
 
     window.addEventListener('resize', onWindowResize);
     animate();
+
+    // Expose 3D Objects to Global Window Scope
+    window.scene = scene;
+    window.camera = camera;
+    window.controls = controls;
+    window.currentCamera = camera;
+    window.currentControls = controls;
+    window.renderer = renderer;
 }
+
+// ============================================================================
+// ✨ LOVABLE 3D CAMERA INTERPOLATION PRESETS
+// ============================================================================
+let camTweenRaf = null;
+
+window.setLovable3DCameraPreset = function(preset) {
+    if (!camera || !controls) {
+        console.warn('3D Camera or Controls not ready yet');
+        return;
+    }
+
+    let targetPos = new THREE.Vector3(0, 42, 62);
+    let targetLook = new THREE.Vector3(0, 4, 0);
+
+    switch (preset) {
+        case 'orbit':
+            targetPos.set(0, 42, 62);
+            targetLook.set(0, 4, 0);
+            break;
+        case 'satellite': // Nadir top-down perpendicular satellite swath
+            targetPos.set(0, 95, 0.1);
+            targetLook.set(0, 0, 0);
+            break;
+        case 'isometric': // 45-degree architectural / topographic axonometric
+            targetPos.set(45, 38, 45);
+            targetLook.set(0, 2, 0);
+            break;
+        case 'gorge': // River canyon cross-section view
+            targetPos.set(-30, 10, 15);
+            targetLook.set(0, 5, -10);
+            break;
+    }
+
+    if (camTweenRaf) cancelAnimationFrame(camTweenRaf);
+
+    const startPos = camera.position.clone();
+    const startLook = controls.target.clone();
+    const startTime = performance.now();
+    const durationMs = 650;
+
+    function animateCamera(now) {
+        const elapsed = now - startTime;
+        const progress = Math.min(elapsed / durationMs, 1.0);
+        // Cubic ease-out: 1 - (1 - t)^3
+        const ease = 1 - Math.pow(1 - progress, 3);
+
+        camera.position.lerpVectors(startPos, targetPos, ease);
+        controls.target.lerpVectors(startLook, targetLook, ease);
+        controls.update();
+
+        if (progress < 1.0) {
+            camTweenRaf = requestAnimationFrame(animateCamera);
+        } else {
+            camera.position.copy(targetPos);
+            controls.target.copy(targetLook);
+            controls.update();
+            camTweenRaf = null;
+        }
+    }
+
+    camTweenRaf = requestAnimationFrame(animateCamera);
+
+    // Update UI active buttons
+    document.querySelectorAll('.btn-cam-preset').forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.dataset.preset === preset) btn.classList.add('active');
+    });
+};
 
 function setupLighting() {
     const ambientLight = new THREE.AmbientLight(0x1e293b, 1.8);

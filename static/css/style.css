@@ -5922,3 +5922,84 @@ h1, h2, h3, .section-title h2, .hub-main-title {
 .clickable-3d-hud:active {
     transform: scale(0.98);
 }
+
+
+/* Live Telemetry Status Stream Badges */
+.badge-live-stream {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.66rem;
+    font-weight: 700;
+    font-family: var(--font-mono);
+    letter-spacing: 0.04em;
+    padding: 0.18rem 0.55rem;
+    border-radius: 9999px;
+    background: rgba(16, 185, 129, 0.14);
+    border: 1px solid rgba(16, 185, 129, 0.38);
+    color: #34d399;
+}
+.badge-live-stream .badge-pulse-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #10b981;
+    box-shadow: 0 0 8px #10b981;
+    animation: badgeLivePulse 1.5s infinite ease-in-out;
+}
+.badge-live-stream.badge-isro {
+    background: rgba(251, 146, 60, 0.14);
+    border-color: rgba(251, 146, 60, 0.38);
+    color: #fb923c;
+}
+.badge-live-stream.badge-isro .badge-pulse-dot {
+    background: #f97316;
+    box-shadow: 0 0 8px #f97316;
+}
+.badge-live-stream.badge-glofas {
+    background: rgba(56, 189, 248, 0.14);
+    border-color: rgba(56, 189, 248, 0.38);
+    color: #38bdf8;
+}
+.badge-live-stream.badge-glofas .badge-pulse-dot {
+    background: #0ea5e9;
+    box-shadow: 0 0 8px #0ea5e9;
+}
+.badge-live-stream.badge-usgs {
+    background: rgba(168, 85, 247, 0.14);
+    border-color: rgba(168, 85, 247, 0.38);
+    color: #c084fc;
+}
+.badge-live-stream.badge-usgs .badge-pulse-dot {
+    background: #a855f7;
+    box-shadow: 0 0 8px #a855f7;
+}
+@keyframes badgeLivePulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.35; transform: scale(0.7); }
+}
+
+/* 3D Digital Twin Mobile Layout Polish */
+@media (max-width: 960px) {
+    .dashboard-main-grid {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 1.25rem !important;
+    }
+    .panel.left-panel, .panel.right-panel {
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+    .three-d-sub-toolbar {
+        flex-wrap: wrap !important;
+        gap: 0.5rem !important;
+        justify-content: flex-start !important;
+    }
+    .cam-preset-btn-group, .nasa-direct-btn-wrap {
+        margin-left: 0 !important;
+    }
+    .terrain-3d-viewport {
+        min-height: 400px !important;
+        height: 400px !important;
+    }
+}
