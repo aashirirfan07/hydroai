@@ -398,15 +398,28 @@ function renderActiveConfig() {
 
 function copyActiveConfig() {
     const text = document.getElementById('mcpConfigDisplay').textContent;
+    const btn = event.currentTarget || document.querySelector('[onclick="copyActiveConfig()"]');
     navigator.clipboard.writeText(text).then(() => {
-        alert('MCP configuration copied to clipboard!');
+        if (btn) {
+            const orig = btn.innerHTML;
+            btn.innerHTML = '✅ Copied!';
+            btn.style.background = '#10b981';
+            setTimeout(() => { btn.innerHTML = orig; btn.style.background = ''; }, 2000);
+        }
     });
 }
 
 function copyToolResponse() {
     const text = document.getElementById('toolResultConsole').textContent;
+    const btn = event.currentTarget || document.querySelector('[onclick="copyToolResponse()"]');
     navigator.clipboard.writeText(text).then(() => {
-        alert('JSON response copied to clipboard!');
+        if (btn) {
+            const orig = btn.innerHTML;
+            btn.innerHTML = '✅ Copied!';
+            btn.style.borderColor = '#10b981';
+            btn.style.color = '#10b981';
+            setTimeout(() => { btn.innerHTML = orig; btn.style.borderColor = ''; btn.style.color = ''; }, 2000);
+        }
     });
 }
 

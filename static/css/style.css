@@ -6144,3 +6144,85 @@ h1, h2, h3, .section-title h2, .hub-main-title {
   0% { box-shadow: 0 0 5px rgba(56, 189, 248, 0.2); }
   100% { box-shadow: 0 0 15px rgba(56, 189, 248, 0.45); }
 }
+
+
+/* ==========================================================================
+   UI/UX PRO MAX (GITHUB DESIGN INTELLIGENCE SPECIFICATION)
+   - WCAG 2.2 AA Focus Visibility & Accessible Contrast (4.5:1 ratio)
+   - 44x44px Touch Target Safety & 80-150ms Tactile Press Feedback
+   - Tabular Numerics for Stream Telemetry Stability
+   - WCAG Prefers-Reduced-Motion Compliance
+   - Non-Blocking Skeleton Shimmer Loaders
+   ========================================================================== */
+
+/* 1. Global Focus Visibility for Keyboard Accessibility */
+:focus-visible {
+  outline: 2px solid #38bdf8 !important;
+  outline-offset: 3px !important;
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.5) !important;
+}
+
+button:focus:not(:focus-visible), a:focus:not(:focus-visible) {
+  outline: none !important;
+}
+
+/* 2. Tactile Press Feedback & Micro-Interactions */
+button, .btn, .nav-link-pill, .btn-cam-preset, .dock-btn, .copilot-nav-chip, .tool-item-card {
+  cursor: pointer;
+  transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.22s ease, border-color 0.22s ease, background 0.22s ease !important;
+}
+
+button:active:not(:disabled), .btn:active:not(:disabled), .nav-link-pill:active, .btn-cam-preset:active, .dock-btn:active {
+  transform: scale(0.97) !important;
+}
+
+/* 3. Non-Jittering Tabular Numerics for Real-Time Telemetry */
+.gauge-number, .widget-value, .hud-values, .stn-metrics, .badge, .stat-value, .counter-value, .font-mono, #floodHeightVal, #riskScoreNumber {
+  font-variant-numeric: tabular-nums lining-nums !important;
+  font-feature-settings: "tnum" 1, "lnum" 1 !important;
+}
+
+/* 4. Touch Target Safety for Mobile Devices (WCAG 2.2 Target Size) */
+@media (max-width: 768px) {
+  button, .btn, .nav-link-pill, .btn-cam-preset, .copilot-nav-chip, .btn-copilot-prompt, .lang-pill-btn, .btn-font-scale, .dock-btn {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  .copilot-exit-cross-btn {
+    width: 44px !important;
+    height: 44px !important;
+  }
+  .btn-palette-trigger-clean {
+    min-height: 38px;
+    padding: 0.4rem 0.8rem !important;
+  }
+}
+
+/* 5. Skeleton Shimmer Loading States */
+.skeleton-shimmer {
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.03) 25%, rgba(255, 255, 255, 0.08) 50%, rgba(255, 255, 255, 0.03) 75%);
+  background-size: 200% 100%;
+  animation: skeletonShimmer 1.8s infinite;
+  border-radius: 8px;
+}
+@keyframes skeletonShimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* 6. WCAG 2.2 AA Prefers-Reduced-Motion Compliance */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .aurora-orb, .pulse-beacon, .live-dot-pulse, .status-pulse-dot, .dispatch-pulse-ring, .skeleton-shimmer {
+    animation: none !important;
+    opacity: 0.85 !important;
+  }
+  .cyber-grid-backdrop {
+    background-attachment: scroll !important;
+  }
+}

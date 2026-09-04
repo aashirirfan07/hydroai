@@ -238,7 +238,7 @@
                 </div>
 
                 <!-- Quick Command Palette Chip -->
-                <button class="btn-palette-trigger-clean" onclick="toggleCommandPalette()" title="Command Palette (Ctrl + K / ⌘K)">
+                <button class="btn-palette-trigger-clean" onclick="toggleCommandPalette()" title="Command Palette (Ctrl + K / ⌘K)" aria-label="Open command palette (Ctrl+K)">
                     <i class="fa-solid fa-magnifying-glass"></i>
                     <kbd class="kbd-clean">⌘K</kbd>
                 </button>
@@ -251,7 +251,7 @@
 
                 <!-- Environmental Controls Popover -->
                 <div class="nav-settings-wrapper" id="navSettingsWrap">
-                    <button type="button" class="btn-clean-settings" onclick="toggleSettingsDropdown(event)" title="Atmosphere & Interface Controls">
+                    <button type="button" class="btn-clean-settings" onclick="toggleSettingsDropdown(event)" title="Atmosphere & Interface Controls" aria-label="Atmosphere and environmental settings">
                         <i class="fa-solid fa-sliders"></i>
                     </button>
                     <div class="settings-dropdown-menu liquid-glass">
@@ -684,7 +684,7 @@
                         <div class="mcp-copilot-pill" style="font-size: 0.65rem; background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.4); color: #38bdf8; padding: 2px 8px; border-radius: 9999px; font-family: var(--font-mono); margin-top: 4px; display: inline-flex; align-items: center; gap: 4px;"><span class="status-pulse-dot" style="width: 5px; height: 5px; background: #38bdf8;"></span> MCP AGENTIC CALLING ACTIVE</div>
                     </div>
                 </div>
-                <button class="copilot-exit-cross-btn" onclick="toggleCopilotHUD()" title="Exit Copilot (Esc)"></button>
+                <button class="copilot-exit-cross-btn" onclick="toggleCopilotHUD()" title="Exit Copilot (Esc)" aria-label="Close AI Disaster Copilot modal"></button>
             </div>
 
             <!-- Copilot In-Modal Quick Jump Navigation Bar -->
@@ -717,9 +717,9 @@
 
             <!-- Chat Input Box -->
             <form class="copilot-input-form" onsubmit="sendCopilotMessage(event)">
-                <button type="button" id="copilotMicBtn" class="btn-copilot-mic" onclick="startCopilotDictation()" title="Voice Dictation">🎙️</button>
+                <button type="button" id="copilotMicBtn" class="btn-copilot-mic" onclick="startCopilotDictation()" title="Voice Dictation" aria-label="Start voice dictation for AI Copilot">🎙️</button>
                 <input type="text" id="copilotQueryInput" placeholder="Ask AI Copilot anything about flood risk..." required autocomplete="off">
-                <button type="submit" class="btn-copilot-send"></button>
+                <button type="submit" class="btn-copilot-send" aria-label="Send query to AI Copilot"></button>
             </form>
         </div>
     </div>
