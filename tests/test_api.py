@@ -469,3 +469,38 @@ def test_route_aliases_and_error_handlers(client):
     res_404 = client.get('/non-existent-random-route-999')
     assert res_404.status_code == 404
     assert b'404' in res_404.data
+
+
+def test_nasa_live_page(client):
+    res = client.get('/nasa-live')
+    assert res.status_code == 200
+    assert b'NASA Real-Time Earth' in res.data
+    assert b'EONET v3' in res.data
+
+def test_api_nasa_endpoints(client):
+    # Real-time natural hazard events
+    res_events = client.get('/api/nasa/realtime-events')
+    assert res_events.status_code == 200
+    d_ev = res_events.get_json()
+    assert d_ev['status'] in ['SUCCESS', 'FALLBACK']
+    assert 'events' in d_ev
+
+    # EPIC deep space imagery
+    res_epic = client.get('/api/nasa/epic-imagery')
+    assert res_epic.status_code == 200
+    d_epic = res_epic.get_json()
+    assert d_epic['status'] in ['SUCCESS', 'FALLBACK']
+    assert 'imagery' in d_epic
+
+    # GPM Precipitation feed
+    res_gpm = client.get('/api/nasa/gpm-feed')
+    assert res_gpm.status_code == 200
+    d_gpm = res_gpm.get_json()
+    assert d_gpm['status'] == 'SUCCESS'
+    assert len(d_gpm['readings']) > 0
+
+    # Sync status
+    res_sync = client.get('/api/nasa/sync-status')
+    assert res_sync.status_code == 200
+    d_sync = res_sync.get_json()
+    assert d_sync['status'] == 'ONLINE'

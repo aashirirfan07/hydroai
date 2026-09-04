@@ -303,6 +303,12 @@
                     <img src="/static/img/badges/emblem_overview.svg" class="nav-micro-logo" alt="Time Machine">
                     <span>Time-Machine</span>
                 </a>
+                
+                <a href="{{ url_for('nasa_live_page') }}" class="nav-link-pill {% if request.endpoint == 'nasa_live_page' %}active{% endif %}" title="NASA Real-Time Earth Observation & Cyclone Downlink">
+                    <span style="color: #38bdf8; font-size: 0.85rem;">🛰️</span>
+                    <span>NASA Live</span>
+                </a>
+
                 <a href="{{ url_for('satellites_page') }}" class="nav-link-pill {% if request.endpoint == 'satellites_page' %}active{% endif %}">
                     <img src="/static/img/badges/emblem_3dtwin.svg" class="nav-micro-logo" alt="Satellites">
                     <span>Satellites</span>
@@ -446,7 +452,13 @@
 
                 <a href="{{ url_for('damage_assessment_page') }}">Satellite Damage Scan</a></li>
                         <li><a href="{{ url_for('uav_feed') }}">UAV Drone Thermal Feed</a></li>
-                        <li><a href="{{ url_for('satellites_page') }}">NASA GPM Constellations</a></li>
+                        <li>
+                <a href="{{ url_for('nasa_live_page') }}" class="nav-link-pill {% if request.endpoint == 'nasa_live_page' %}active{% endif %}" title="NASA Real-Time Earth Observation & Cyclone Downlink">
+                    <span style="color: #38bdf8; font-size: 0.85rem;">🛰️</span>
+                    <span>NASA Live</span>
+                </a>
+
+                <a href="{{ url_for('satellites_page') }}">NASA GPM Constellations</a></li>
                         <li><a href="{{ url_for('time_machine_page') }}">Disaster Time-Machine</a></li>
                     </ul>
                 </div>

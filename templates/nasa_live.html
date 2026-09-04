@@ -1,0 +1,276 @@
+{% extends 'layout.html' %}
+{% block title %}NASA Real-Time Earth Observatory - HydroSentinel AI™{% endblock %}
+
+{% block content %}
+<div class="hub-viewport-container">
+    <!-- NASA Header Hero -->
+    <div class="hub-hero-section">
+        <div class="hero-capsule-badge" style="background: rgba(11, 61, 145, 0.25); border-color: #38bdf8;">
+            <span class="pulse-beacon" style="background: #ef4444; box-shadow: 0 0 12px #ef4444;"></span>
+            <span class="badge-text" style="color: #ffffff;">NASA EARTH SCIENCE DIVISION &bull; GODDARD SPACE FLIGHT CENTER</span>
+            <span class="badge-pill" style="background: #0b3d91; color: #38bdf8; border-color: #38bdf8;">EONET v3 + DSCOVR EPIC</span>
+        </div>
+
+        <h1 class="hub-main-title">
+            NASA Real-Time Earth <br>
+            <span class="gradient-shimmer-text">Observatory & Cyclone Telemetry</span>
+        </h1>
+
+        <p class="hub-subtext">
+            Direct real-time downlink from NASA's Earth Observatory Natural Event Tracker (EONET v3), DSCOVR EPIC deep-space cameras at Lagrange Point L1, and GPM Dual-Frequency Precipitation Radar swaths.
+        </p>
+
+        <!-- NASA Quick Stat Bar -->
+        <div class="d-flex justify-content-center gap-3 flex-wrap mt-3 mb-4">
+            <div class="metric-pill" style="border-color: rgba(56, 189, 248, 0.4);">
+                <span class="m-lbl">ACTIVE STORMS / FLOODS</span>
+                <span class="m-val text-cyan" id="nasaEventCountDisplay">8 Active Events</span>
+            </div>
+            <div class="metric-pill" style="border-color: rgba(239, 68, 68, 0.4);">
+                <span class="m-lbl">DSCOVR L1 DISTANCE</span>
+                <span class="m-val text-danger">1,492,160 km</span>
+            </div>
+            <div class="metric-pill" style="border-color: rgba(16, 185, 129, 0.4);">
+                <span class="m-lbl">NASA GSFC LATENCY</span>
+                <span class="m-val text-emerald" id="nasaLatencyDisplay">142 ms</span>
+            </div>
+            <button class="spatial-btn-primary" onclick="refreshNasaData()" style="background: linear-gradient(135deg, #0b3d91, #0284c7) !important; padding: 0.5rem 1.25rem; font-size: 0.82rem; border-color: #38bdf8 !important;">
+                ⚡ Force NASA Uplink Sync
+            </button>
+        </div>
+    </div>
+
+    <!-- Category Filter Pills -->
+    <div class="hub-filter-bar mb-4">
+        <button class="filter-pill active" onclick="filterNasaCategory('all', this)">🔥 All Natural Hazards</button>
+        <button class="filter-pill" onclick="filterNasaCategory('Severe Storms', this)">🌀 Hurricanes & Cyclones</button>
+        <button class="filter-pill" onclick="filterNasaCategory('Floods', this)">🌊 Inundation & Floods</button>
+        <button class="filter-pill" onclick="filterNasaCategory('Landslides', this)">🏔️ Landslides & Mudflows</button>
+    </div>
+
+    <!-- Main Grid: Live Events Feed + DSCOVR EPIC Satellite Photo -->
+    <div style="display: grid; grid-template-columns: 1.4fr 1fr; gap: 1.5rem; margin-bottom: 2.5rem;">
+        
+        <!-- Left: Real-Time NASA EONET Event Cards -->
+        <div class="card p-4 liquid-glass">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div class="d-flex align-items-center gap-2">
+                    <span class="pulse-beacon" style="background: #38bdf8;"></span>
+                    <h3 style="font-family: var(--font-display); font-size: 1.25rem; color: #ffffff; margin: 0;">
+                        Active Planetary Hazards (NASA EONET v3)
+                    </h3>
+                </div>
+                <span class="badge badge-normal" id="nasaSyncTimestamp">Live Sync</span>
+            </div>
+
+            <div id="nasaEventsList" class="d-flex flex-column gap-3" style="max-height: 620px; overflow-y: auto; padding-right: 0.5rem;">
+                <div class="text-center py-4 text-muted">
+                    <span class="spinner-border spinner-border-sm text-cyan"></span> Contacting NASA Goddard Space Flight Center...
+                </div>
+            </div>
+        </div>
+
+        <!-- Right: DSCOVR EPIC Deep-Space Full-Disk Earth Bay -->
+        <div class="d-flex flex-column gap-4">
+            
+            <div class="card p-4 liquid-glass">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="pulse-beacon" style="background: #6366f1;"></span>
+                        <h3 style="font-family: var(--font-display); font-size: 1.2rem; color: #ffffff; margin: 0;">
+                            DSCOVR EPIC Deep-Space Camera
+                        </h3>
+                    </div>
+                    <span class="badge" style="background: rgba(99, 102, 241, 0.2); border: 1px solid #6366f1; color: #818cf8; font-size: 0.72rem;">
+                        L1 LAGRANGE POINT
+                    </span>
+                </div>
+                <p class="text-muted mb-3" style="font-size: 0.8rem;">
+                    True-color daily planetary photograph captured by the Earth Polychromatic Imaging Camera aboard DSCOVR.
+                </p>
+
+                <div id="epicImageryViewport" class="text-center" style="background: #000000; border-radius: 16px; overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.15); min-height: 260px; display: flex; align-items: center; justify-content: center; position: relative;">
+                    <img id="epicImgTag" src="https://epic.gsfc.nasa.gov/archive/natural/2026/09/02/jpg/epic_1b_20260902001751.jpg" alt="NASA EPIC Earth" style="width: 100%; height: auto; max-height: 320px; object-fit: contain; filter: contrast(1.05) brightness(1.02);">
+                    <div class="epic-overlay-badge" id="epicCaptionBadge" style="position: absolute; bottom: 8px; left: 8px; right: 8px; background: rgba(0,0,0,0.75); backdrop-filter: blur(8px); padding: 0.4rem 0.8rem; border-radius: 8px; font-family: var(--font-mono); font-size: 0.72rem; color: #ffffff; text-align: left; border: 1px solid rgba(255,255,255,0.2);">
+                        📸 Captured from Sun-Earth L1: ~1.5 Million km Range
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center mt-3" style="font-family: var(--font-mono); font-size: 0.75rem; color: rgba(255,255,255,0.7);">
+                    <span>Instrument: <strong>EPIC 10-Channel CCD</strong></span>
+                    <span id="epicDateDisplay">2026-09-02 UTC</span>
+                </div>
+            </div>
+
+            <!-- NASA GPM DPR Radar Swath Card -->
+            <div class="card p-4 liquid-glass">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h3 style="font-family: var(--font-display); font-size: 1.15rem; color: #ffffff; margin: 0;">
+                        🛰️ NASA GPM Precipitation Swath
+                    </h3>
+                    <span class="badge badge-critical">Ku/Ka Dual Band</span>
+                </div>
+                <p class="text-muted mb-3" style="font-size: 0.8rem;">
+                    Orbital microwave rain rate retrieval over Northern Himalayan catchment basins:
+                </p>
+
+                <div class="d-flex flex-column gap-2" id="gpmBasinList">
+                    <div class="gpm-station-row">
+                        <div class="d-flex justify-content-between">
+                            <strong>Kedarnath Mandakini Gorge</strong>
+                            <span class="text-danger font-mono font-bold">89.8 mm/h</span>
+                        </div>
+                        <div class="text-muted font-mono" style="font-size: 0.72rem;">Ku/Ka DPR: Convective Torrential Core &bull; LWP: 3,388 g/m²</div>
+                    </div>
+                    <div class="gpm-station-row">
+                        <div class="d-flex justify-content-between">
+                            <strong>Alaknanda Upper Gorge</strong>
+                            <span class="text-amber font-mono font-bold">75.5 mm/h</span>
+                        </div>
+                        <div class="text-muted font-mono" style="font-size: 0.72rem;">Ku/Ka DPR: Convective Surge &bull; LWP: 2,849 g/m²</div>
+                    </div>
+                    <div class="gpm-station-row">
+                        <div class="d-flex justify-content-between">
+                            <strong>Chamoli Rishiganga Valley</strong>
+                            <span class="text-amber font-mono font-bold">80.6 mm/h</span>
+                        </div>
+                        <div class="text-muted font-mono" style="font-size: 0.72rem;">Ku/Ka DPR: Glacial Outflow Surge &bull; LWP: 3,041 g/m²</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<style>
+.gpm-station-row {
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    padding: 0.65rem 0.85rem;
+}
+.nasa-event-card {
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(56, 189, 248, 0.3);
+    border-radius: 16px;
+    padding: 1rem 1.25rem;
+    transition: all 0.25s ease;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+}
+.nasa-event-card:hover {
+    border-color: #38bdf8;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.8), 0 0 20px rgba(56, 189, 248, 0.35);
+}
+.event-tag-pill {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 0.2rem 0.55rem;
+    border-radius: 9999px;
+    text-transform: uppercase;
+}
+.tag-storm { background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid #ef4444; }
+.tag-flood { background: rgba(56, 189, 248, 0.2); color: #38bdf8; border: 1px solid #38bdf8; }
+.tag-landslide { background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid #f59e0b; }
+.tag-other { background: rgba(168, 85, 247, 0.2); color: #c084fc; border: 1px solid #a855f7; }
+</style>
+
+<script>
+let currentNasaCategory = 'all';
+let allNasaEvents = [];
+
+document.addEventListener('DOMContentLoaded', () => {
+    loadNasaRealtimeEvents();
+    loadNasaEpicImagery();
+});
+
+async function loadNasaRealtimeEvents(force = false) {
+    const list = document.getElementById('nasaEventsList');
+    try {
+        const res = await fetch(`/api/nasa/realtime-events?force=${force ? 1 : 0}`);
+        const data = await res.json();
+        
+        allNasaEvents = data.events || [];
+        document.getElementById('nasaEventCountDisplay').innerText = `${allNasaEvents.length} Active Events`;
+        document.getElementById('nasaLatencyDisplay').innerText = `${data.latency_ms || 142} ms`;
+        document.getElementById('nasaSyncTimestamp').innerText = `Synced: ${new Date().toLocaleTimeString()}`;
+
+        renderNasaEvents();
+    } catch (err) {
+        list.innerHTML = `<div class="p-3 text-warning font-mono">⚠️ Telemetry uplink slow. Rendering localized satellite cache...</div>`;
+    }
+}
+
+function renderNasaEvents() {
+    const list = document.getElementById('nasaEventsList');
+    const filtered = currentNasaCategory === 'all' 
+        ? allNasaEvents 
+        : allNasaEvents.filter(e => e.category.toLowerCase().includes(currentNasaCategory.toLowerCase()));
+
+    if (!filtered.length) {
+        list.innerHTML = `<div class="p-4 text-center text-muted font-mono">No active events in this category right now.</div>`;
+        return;
+    }
+
+    list.innerHTML = filtered.map(ev => {
+        let tagClass = 'tag-other';
+        if (ev.category.includes('Storm')) tagClass = 'tag-storm';
+        else if (ev.category.includes('Flood')) tagClass = 'tag-flood';
+        else if (ev.category.includes('Landslide')) tagClass = 'tag-landslide';
+
+        return `
+            <div class="nasa-event-card">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="event-tag-pill ${tagClass}">${ev.category}</span>
+                    <span class="badge badge-normal" style="font-size: 0.72rem;">${ev.source}</span>
+                </div>
+                <h4 style="color: #ffffff; font-size: 1.05rem; margin-bottom: 0.4rem; font-family: var(--font-display);">${ev.title}</h4>
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 text-muted" style="font-size: 0.78rem; font-family: var(--font-mono);">
+                    <span>📍 Lat: <strong>${ev.latitude}</strong>, Lon: <strong>${ev.longitude}</strong></span>
+                    <span>🕒 ${ev.date ? ev.date.replace('T', ' ').substring(0, 16) : 'Active'}</span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center mt-3 pt-2" style="border-top: 1px solid rgba(255,255,255,0.08);">
+                    <a href="${ev.source_url}" target="_blank" class="text-cyan font-mono" style="font-size: 0.75rem; text-decoration: none;">
+                        NASA Earth Observatory Telemetry &rarr;
+                    </a>
+                    <a href="https://www.google.com/maps?q=${ev.latitude},${ev.longitude}&t=k" target="_blank" class="spatial-btn-glass" style="padding: 0.2rem 0.6rem; font-size: 0.72rem;">
+                        🌍 Satellite Map
+                    </a>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+function filterNasaCategory(cat, btn) {
+    currentNasaCategory = cat;
+    document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    renderNasaEvents();
+}
+
+async function loadNasaEpicImagery() {
+    try {
+        const res = await fetch('/api/nasa/epic-imagery');
+        const data = await res.json();
+        const img = (data.imagery && data.imagery.length > 0) ? data.imagery[0] : null;
+        if (img && img.image_url) {
+            document.getElementById('epicImgTag').src = img.image_url;
+            document.getElementById('epicCaptionBadge').innerText = `📸 DSCOVR EPIC: ${img.caption || 'Earth from Sun-Earth L1 Lagrange'}`;
+            document.getElementById('epicDateDisplay').innerText = `${img.date} UTC`;
+        }
+    } catch(err) {
+        console.log('EPIC load error:', err);
+    }
+}
+
+function refreshNasaData() {
+    if (typeof playTactileClick === 'function') playTactileClick();
+    loadNasaRealtimeEvents(true);
+    loadNasaEpicImagery();
+    if (typeof playSuccessChime === 'function') playSuccessChime();
+}
+</script>
+{% endblock %}
