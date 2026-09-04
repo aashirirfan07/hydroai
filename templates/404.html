@@ -1,0 +1,35 @@
+{% extends 'layout.html' %}
+{% block title %}404 - Sector Telemetry Not Found &bull; HydroSentinel AI™{% endblock %}
+
+{% block content %}
+<div class="hub-viewport-container" style="min-height: 70vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 3rem 1.5rem;">
+    <div class="hero-capsule-badge mb-3">
+        <span class="pulse-beacon" style="background: #f43f5e; box-shadow: 0 0 15px #f43f5e;"></span>
+        <span class="badge-text">ERROR CODE 404 &bull; ORBITAL DISCONNECT</span>
+        <span class="badge-pill">SECTOR UNKNOWN</span>
+    </div>
+
+    <h1 class="hub-main-title" style="font-size: 3rem; margin-bottom: 0.5rem;">
+        404 &bull; <span class="gradient-shimmer-text">Sector Telemetry Not Found</span>
+    </h1>
+
+    <p class="hub-subtext" style="max-width: 600px; margin-bottom: 2rem;">
+        The requested coordinates or endpoint could not be resolved in the real-time satellite mesh. Let's return you to active operations.
+    </p>
+
+    <div style="display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;">
+        <a href="{{ url_for('index') }}" class="spatial-btn-primary" style="padding: 0.8rem 1.8rem;">
+            <span>🚀 Mission Homepage</span> &rarr;
+        </a>
+        <a href="{{ url_for('dashboard') }}" class="spatial-btn-glass" style="padding: 0.8rem 1.6rem;">
+            🌐 3D Digital Twin
+        </a>
+        <a href="{{ url_for('early_warning') }}" class="spatial-btn-glass" style="padding: 0.8rem 1.6rem;">
+            🚨 Early Warning
+        </a>
+        <a href="{{ url_for('physics_sandbox_page') }}" class="spatial-btn-glass" style="padding: 0.8rem 1.6rem;">
+            🧪 Physics Lab
+        </a>
+    </div>
+</div>
+{% endblock %}

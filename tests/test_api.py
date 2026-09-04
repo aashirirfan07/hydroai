@@ -450,3 +450,22 @@ def test_api_send_instant_sms(client):
     assert 'tracking_id' in json_data
     assert 'whatsapp_url' in json_data
     assert 'cellular_sms_url' in json_data
+
+
+def test_route_aliases_and_error_handlers(client):
+    # Aliases
+    assert client.get('/predict-datapoint').status_code == 200
+    assert client.get('/simulator').status_code == 200
+    assert client.get('/models-hub').status_code == 200
+    assert client.get('/radar-storm-track').status_code == 200
+    assert client.get('/health').status_code == 200
+    assert client.get('/api/health').status_code == 200
+    assert client.get('/api/latest-metrics').status_code == 200
+    assert client.get('/api/briefing/latest').status_code == 200
+    assert client.get('/api/offline-pack').status_code == 200
+    assert client.get('/api/station-history/Kedarnath Mandakini Gorge').status_code == 200
+    
+    # 404 Handler
+    res_404 = client.get('/non-existent-random-route-999')
+    assert res_404.status_code == 404
+    assert b'404' in res_404.data

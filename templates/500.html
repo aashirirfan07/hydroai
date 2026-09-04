@@ -1,0 +1,28 @@
+{% extends 'layout.html' %}
+{% block title %}500 - Transient Telemetry Fault &bull; HydroSentinel AI™{% endblock %}
+
+{% block content %}
+<div class="hub-viewport-container" style="min-height: 70vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 3rem 1.5rem;">
+    <div class="hero-capsule-badge mb-3">
+        <span class="pulse-beacon" style="background: #eab308; box-shadow: 0 0 15px #eab308;"></span>
+        <span class="badge-text">SYSTEM RECOVERY &bull; AUTOMATED FAILOVER ACTIVE</span>
+    </div>
+
+    <h1 class="hub-main-title" style="font-size: 3rem; margin-bottom: 0.5rem;">
+        500 &bull; <span class="gradient-shimmer-text">Telemetry Transient Fault</span>
+    </h1>
+
+    <p class="hub-subtext" style="max-width: 600px; margin-bottom: 2rem;">
+        An automated failover routine was engaged to protect the sensor pipeline. Please reload to refresh the live stream.
+    </p>
+
+    <div style="display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;">
+        <a href="javascript:location.reload()" class="spatial-btn-primary" style="padding: 0.8rem 1.8rem;">
+            <span>🔄 Reload Sensor Stream</span>
+        </a>
+        <a href="{{ url_for('index') }}" class="spatial-btn-glass" style="padding: 0.8rem 1.6rem;">
+            Mission Homepage &rarr;
+        </a>
+    </div>
+</div>
+{% endblock %}

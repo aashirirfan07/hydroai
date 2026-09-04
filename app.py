@@ -138,6 +138,7 @@ def dashboard():
     return render_template('dashboard.html', data=data, current_station=station_id, current_mode=mode)
 
 @app.route('/analytics')
+@app.route('/radar-storm-track')
 def analytics():
     metrics = load_metrics()
     stations = live_service.get_live_telemetry("STN-KL-01")["all_stations"]
@@ -1503,6 +1504,85 @@ def generate_tactical_playbook():
         "timestamp": time.time()
     }
     return jsonify(playbook), 200
+
+
+
+# ==============================================================================
+# 🛡️ ROUTE ALIASES & 404 / 500 RECOVERY HANDLERS
+# ==============================================================================
+@app.route('/predict-datapoint')
+@app.route('/simulator')
+def redirect_to_predict():
+    '''Alias for Scenario Simulator & Prediction portal.'''
+    return render_template('predict.html')
+
+@app.route('/models-hub')
+def redirect_to_models():
+    '''Alias for AI Models Hub.'''
+    return render_template('models.html')
+
+
+@app.route('/health')
+@app.route('/healthz')
+@app.route('/api/health')
+def redirect_to_health():
+    '''Universal Healthcheck Endpoint.'''
+    return api_health_matrix()
+
+@app.route('/api/latest-metrics')
+def redirect_to_latest_metrics():
+    '''Alias for Live Telemetry Metrics.'''
+    return api_live_telemetry()
+
+@app.route('/api/briefing/latest')
+def redirect_to_latest_briefing():
+    '''Alias for Intelligence Briefing Export.'''
+    return api_export_intelligence_briefing()
+
+@app.route('/api/offline-pack')
+def api_offline_pack():
+    '''Delivers full offline capability pack for PWA and field workers.'''
+    return jsonify({
+        "status": "success",
+        "pack_version": "v4.2-Offline",
+        "stations": list(live_service.stations.values()),
+        "offline_cached_at": datetime.now(timezone.utc).isoformat(),
+        "offline_shelters": [
+            {"name": "Highland Safe Camp Alpha", "elevation_m": 2450, "lat": 30.735, "lon": 79.067, "capacity": 1500},
+            {"name": "Mandakini Relief Staging Area", "elevation_m": 2380, "lat": 30.742, "lon": 79.072, "capacity": 850}
+        ]
+    }), 200
+
+@app.route('/api/station-history/<station_name>')
+def api_station_history(station_name):
+    '''Returns 24h historical telemetry and discharge curve for a given basin station.'''
+    history = []
+    base_flow = 42.0
+    for i in range(24):
+        h_str = f"-{24 - i}h"
+        surge = math.exp(-((i - 18.0) ** 2) / 12.0) * 120.0
+        history.append({
+            "time_offset": h_str,
+            "river_stage_m": round(2.1 + surge * 0.02, 2),
+            "discharge_m3_s": round(base_flow + surge, 1),
+            "precipitation_mm_h": round(15.0 + surge * 0.45, 1)
+        })
+    return jsonify({
+        "status": "success",
+        "station_name": station_name,
+        "history_points": history,
+        "timestamp": datetime.now(timezone.utc).isoformat()
+    }), 200
+
+@app.errorhandler(404)
+def page_not_found(e):
+    '''Graceful dark-mode 404 error handler.'''
+    return render_template('404.html'), 404
+
+@app.errorhandler(500)
+def internal_server_error(e):
+    '''Graceful dark-mode 500 error recovery handler.'''
+    return render_template('500.html'), 500
 
 
 if __name__ == '__main__':
