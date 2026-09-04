@@ -1761,7 +1761,7 @@ def api_offline_survival_card():
 # ==============================================================================
 # 🌍 WORLD MONITOR • GLOBAL SITUATIONAL AWARENESS ROOM
 # ==============================================================================
-WM_PUBLIC_URL = os.environ.get('WM_PUBLIC_URL', 'https://knowledge-meanwhile-genesis-website.trycloudflare.com')
+WM_PUBLIC_URL = os.environ.get('WM_PUBLIC_URL', 'https://should-figure-chrome-start.trycloudflare.com')
 
 @app.route('/world-monitor')
 @app.route('/global-situation-room')
