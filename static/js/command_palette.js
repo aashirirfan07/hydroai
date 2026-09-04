@@ -5,6 +5,8 @@
 
 const COMMANDS_DATA = [
     // --- QUICK NAVIGATION ---
+    { id: 'nav-mcp', category: 'Navigation', icon: '⚡', title: 'Model Context Protocol (MCP) Tools & Agent Hub', shortcut: 'G C', action: () => window.location.href = '/mcp-hub' },
+    { id: 'act-mcp-tool', category: 'MCP Agent Tools', icon: '🤖', title: 'Execute XGBoost Flood Prediction Tool via MCP', shortcut: 'M P', action: () => window.location.href = '/mcp-hub' },
     { id: 'nav-dash', category: 'Navigation', icon: '🏔️', title: '3D Digital Twin Dashboard', shortcut: 'G D', action: () => window.location.href = '/dashboard' },
     { id: 'nav-uav', category: 'Navigation', icon: '🚁', title: 'Live UAV Drone Thermal Feed', shortcut: 'G U', action: () => window.location.href = '/uav-feed' },
     { id: 'nav-analytics', category: 'Navigation', icon: '📊', title: 'Analytics & Diagnostic Charts', shortcut: 'G A', action: () => window.location.href = '/analytics' },

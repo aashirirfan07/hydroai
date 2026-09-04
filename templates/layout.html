@@ -101,6 +101,10 @@
                     <span style="font-size: 0.95rem;">🌍</span>
                     <span>World Monitor</span>
                 </a>
+                <a href="{{ url_for('mcp_hub_page') }}" class="nav-link-pill {% if request.endpoint == 'mcp_hub_page' %}active{% endif %}" title="Model Context Protocol (MCP) AI Tools & Agent Hub">
+                    <span style="font-size: 0.95rem; color: #38bdf8;">⚡</span>
+                    <span>MCP Hub</span>
+                </a>
 
                 <!-- Sleek Tools & Labs Dropdown -->
                 <div class="nav-dropdown-wrapper" id="navToolsDropdown">
@@ -109,6 +113,13 @@
                         <i class="fa-solid fa-chevron-down nav-chevron"></i>
                     </button>
                     <div class="nav-dropdown-menu liquid-glass">
+                        <a href="{{ url_for('mcp_hub_page') }}" class="dropdown-item">
+                            <i class="fa-solid fa-bolt text-cyan"></i>
+                            <div>
+                                <span class="dd-title">⚡ MCP Tools & Agent Hub</span>
+                                <span class="dd-sub">Claude Desktop, Cursor & Agentic Stdio Protocol</span>
+                            </div>
+                        </a>
                         <a href="{{ url_for('world_monitor_page') }}" class="dropdown-item">
                             <i class="fa-solid fa-earth-americas text-cyan"></i>
                             <div>
@@ -670,6 +681,7 @@
                         <div style="font-weight: 800; color: #ffffff; font-size: 1.05rem;">HydroSentinel AI™ Copilot</div>
                     <button id="copilotVoiceToggle" class="btn-voice-toggle" onclick="toggleCopilotVoiceMode()" title="Toggle Voice Responses">🔊 Voice: ON</button>
                         <div style="font-size: 0.68rem; color: #05ffa1; font-family: var(--font-mono);"><span class="ticker-dot live-pulse"></span> 8 BASINS SYNCHRONIZED</div>
+                        <div class="mcp-copilot-pill" style="font-size: 0.65rem; background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.4); color: #38bdf8; padding: 2px 8px; border-radius: 9999px; font-family: var(--font-mono); margin-top: 4px; display: inline-flex; align-items: center; gap: 4px;"><span class="status-pulse-dot" style="width: 5px; height: 5px; background: #38bdf8;"></span> MCP AGENTIC CALLING ACTIVE</div>
                     </div>
                 </div>
                 <button class="copilot-exit-cross-btn" onclick="toggleCopilotHUD()" title="Exit Copilot (Esc)"></button>
@@ -678,6 +690,7 @@
             <!-- Copilot In-Modal Quick Jump Navigation Bar -->
             <div class="copilot-nav-shortcuts">
                 <span style="font-size: 0.68rem; color: #94a3b8; font-weight: 700; text-transform: uppercase;">Quick Jump:</span>
+                <a href="/mcp-hub" class="copilot-nav-chip" style="color: #38bdf8; border-color: rgba(56,189,248,0.4);">⚡ MCP Hub</a>
                 <a href="/dashboard" class="copilot-nav-chip"> 3D Twin</a>
                 <a href="/analytics" class="copilot-nav-chip"> Analytics</a>
                 <a href="/predict" class="copilot-nav-chip"> Simulator</a>
@@ -698,6 +711,8 @@
                 <button class="btn-copilot-prompt" onclick="askCopilotPrompt('What is the flood threat in Kedarnath right now?')">🚨 Kedarnath Threat</button>
                 <button class="btn-copilot-prompt" onclick="askCopilotPrompt('Where are the high-altitude evacuation shelters?')">🛡️ Evac Shelters</button>
                 <button class="btn-copilot-prompt" onclick="askCopilotPrompt('Explain Topographic Wetness Index formula')">📐 TWI Formula</button>
+                <button class="btn-copilot-prompt" onclick="askCopilotPrompt('Query live satellite pass telemetry for Kedarnath')">🛰️ Satellite Swath</button>
+                <button class="btn-copilot-prompt" onclick="askCopilotPrompt('Query global geohazards and earthquakes')">🌍 World Geohazards</button>
             </div>
 
             <!-- Chat Input Box -->
@@ -890,7 +905,15 @@
                 body: JSON.stringify({ query: query })
             });
             const data = await res.json();
-            typingMsg.querySelector('.msg-body').innerHTML = data.reply;
+            
+            let htmlContent = data.reply || '';
+            if (data.tools_invoked && data.tools_invoked.length > 0) {
+                const badges = data.tools_invoked.map(t => 
+                    `<span class="mcp-exec-tag" title="Executed via Model Context Protocol: ${t.tool}">⚡ ${t.tool}</span>`
+                ).join(' ');
+                htmlContent = `<div class="mcp-exec-header mb-2">${badges}</div>` + htmlContent;
+            }
+            typingMsg.querySelector('.msg-body').innerHTML = htmlContent;
             history.scrollTop = history.scrollHeight;
             if (typeof triggerHaptic === 'function') triggerHaptic('light');
         } catch(err) {

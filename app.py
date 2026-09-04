@@ -1,3 +1,4 @@
+from src.mcp_service import mcp_service
 from src.open_data_service import open_data_service
 from src.evacuation_service import evacuation_service
 from src.indian_telemetry_service import indian_service
@@ -434,36 +435,123 @@ def api_ingest_custom():
 
 @app.route('/api/copilot/chat', methods=['POST'])
 def api_copilot_chat():
-    '''AI Disaster Copilot providing real-time hydrometric reasoning, evacuation guidance, and physics explanations.'''
+    """AI Disaster Copilot executing real-time Model Context Protocol (MCP) tools for telemetry, prediction & rescue."""
     data = request.get_json() or {}
-    query = data.get('query', '').lower()
+    query = data.get('query', '').strip()
+    q_lower = query.lower()
     
-    response_text = ""
+    tools_invoked = []
     referenced_station = "STN-KD-05"
     
-    if "kedarnath" in query or "mandakini" in query or "kd-05" in query:
-        referenced_station = "STN-KD-05"
-        response_text = "🚨 **STN-KD-05 (Kedarnath Mandakini Basin)** is currently under **CRITICAL EVACUATION THREAT**. Radar precipitation is 88.0 mm/hr with soil saturation at 91.5%. Immediate evacuation recommended to Sector Civil Defense Bunkers (Elevation: 2,730m, 1.6km distance)."
-    elif "kullu" in query or "kl-01" in query:
+    # Station identification
+    if "alaknanda" in q_lower or "al-02" in q_lower:
+        referenced_station = "STN-AL-02"
+    elif "kullu" in q_lower or "kl-01" in q_lower:
         referenced_station = "STN-KL-01"
-        response_text = "⚠️ **STN-KL-01 (Kullu Valley Catchment)** is at **HIGH ADVISORY**. Precipitation is 42.0 mm/hr, stage level is 3.8m. Safe zone: Kullu High Plateau Summit (Elevation: 1,700m)."
-    elif "safe" in query or "evacuat" in query or "shelter" in query:
-        response_text = "🛡️ **Civil Defense Safe Zones Active**: High Plateau Summits and Regional Helipad Evacuation Grounds are open with an aggregate capacity of 5,350 personnel across Garhwal and Himachal sectors."
-    elif "twi" in query or "formula" in query or "darcy" in query:
+    elif "teesta" in q_lower or "ts-03" in q_lower or "sikkim" in q_lower:
+        referenced_station = "STN-TS-03"
+    elif "wayanad" in q_lower or "wy-07" in q_lower or "kerala" in q_lower:
+        referenced_station = "STN-WY-07"
+    elif "western ghats" in q_lower or "wg-04" in q_lower or "idukki" in q_lower:
+        referenced_station = "STN-WG-04"
+    elif "chamoli" in q_lower or "ch-06" in q_lower:
+        referenced_station = "STN-CH-06"
+    elif "brahmaputra" in q_lower or "as-08" in q_lower or "assam" in q_lower:
+        referenced_station = "STN-AS-08"
+
+    # Intent routing and MCP Tool execution
+    if any(k in q_lower for k in ["satellite", "orbit", "gpm", "sentinel", "insat", "sar", "radar swath"]):
+        tool_res = mcp_service.call_tool("hydrosentinel_get_satellite_swaths", {"station_id": referenced_station})
+        tools_invoked.append({"tool": "hydrosentinel_get_satellite_swaths", "args": {"station_id": referenced_station}, "result": tool_res.get("_raw")})
+        res_data = tool_res.get("_raw", {})
+        constellations = res_data.get("constellations", [])
+        gpm_info = next((c for c in constellations if "GPM" in c["mission"]), {})
+        sar_info = next((c for c in constellations if "Sentinel" in c["mission"]), {})
+        lines = [
+            f"🛰️ **Satellite Constellation Telemetry for {referenced_station}**:",
+            f"- **NASA GPM DPR**: Precipitation observed at **{gpm_info.get('precipitation_observed_mm_hr', 'N/A')} mm/hr** ({gpm_info.get('last_overpass', 'recent pass')}).",
+            f"- **ESA Sentinel-1 SAR**: {sar_info.get('cloud_penetration', 'All-weather')}, detected water mask of **{sar_info.get('inundation_water_mask_detected_sqkm', 'N/A')} sq km**.",
+            f"- **ISRO INSAT-3DR**: Convective cloudburst probability assessed at **94.2%** (Cloud Top Temp: -68.4°C)."
+        ]
+        response_text = "\n\n".join(lines)
+
+    elif any(k in q_lower for k in ["safe", "evacuat", "shelter", "escape", "route", "bunker", "waypoint"]):
+        tool_res = mcp_service.call_tool("hydrosentinel_compute_evacuation_route", {"station_id": referenced_station, "flood_depth_m": 4.2})
+        tools_invoked.append({"tool": "hydrosentinel_compute_evacuation_route", "args": {"station_id": referenced_station, "flood_depth_m": 4.2}, "result": tool_res.get("_raw")})
+        res_data = tool_res.get("_raw", {})
+        lines = [
+            f"🧭 **Topographic Evacuation Corridor Computed ({res_data.get('station_name', referenced_station)})**:",
+            f"- **Primary Assembly Shelter**: `{res_data.get('primary_assembly_point', 'Sector Bunker Alpha')}` (Safe Elevation: {res_data.get('safe_elevation_m')}m AGL)",
+            f"- **Route Metrics**: {res_data.get('total_route_distance_km')} km trek ({res_data.get('estimated_trek_time_mins')} min walk time, +{res_data.get('evacuation_clearance_vertical_m')}m vertical gain)",
+            f"- **Emergency VHF Frequency**: `{res_data.get('vhf_emergency_frequency', '148.550 MHz')}`",
+            f"- **Assisting Unit**: {res_data.get('ndrf_support_battalion', 'NDRF Response Unit')}"
+        ]
+        response_text = "\n\n".join(lines)
+
+    elif any(k in q_lower for k in ["world", "global", "earthquake", "geohazard", "usgs", "eonet", "glofas", "wildfire"]):
+        tool_res = mcp_service.call_tool("hydrosentinel_query_world_geohazards", {"hazard_type": "all", "limit": 4})
+        tools_invoked.append({"tool": "hydrosentinel_query_world_geohazards", "args": {"hazard_type": "all", "limit": 4}, "result": tool_res.get("_raw")})
+        res_data = tool_res.get("_raw", {})
+        events = res_data.get("events", [])
+        events_md = "\n".join([f"- **[{e.get('source')}] {e.get('type', '').upper()}**: {e.get('title') or e.get('location') or e.get('basin')} ({e.get('intensity') or e.get('anomaly') or e.get('magnitude')})" for e in events])
+        response_text = f"🌍 **Global Geohazard & Situational Telemetry**:\n\n{events_md}\n\n*Ingested via USGS, NASA EONET, and Copernicus GloFAS streams.*"
+
+    elif any(k in q_lower for k in ["dam", "breach", "glof", "surge", "burst", "tsunami"]):
+        tool_res = mcp_service.call_tool("hydrosentinel_simulate_dam_breach", {"station_id": referenced_station, "surge_height_m": 6.0, "release_volume_mcm": 15.0})
+        tools_invoked.append({"tool": "hydrosentinel_simulate_dam_breach", "args": {"station_id": referenced_station, "surge_height_m": 6.0, "release_volume_mcm": 15.0}, "result": tool_res.get("_raw")})
+        res_data = tool_res.get("_raw", {})
+        lines = [
+            f"🌊 **Hydrodynamic Surge & GLOF Simulation ({res_data.get('station_name')})**:",
+            f"- **Wave Front Velocity**: {res_data.get('wave_front_velocity_mps')} m/s ({res_data.get('wave_front_velocity_mps', 0)*3.6:.1f} km/h)",
+            f"- **Downstream Arrival Times**: 1km in {res_data.get('arrival_time_at_downstream_km_mins', {}).get('1km')}m, 5km in {res_data.get('arrival_time_at_downstream_km_mins', {}).get('5km')}m",
+            f"- **Safe Evacuation Window**: **{res_data.get('safe_evacuation_lead_time_mins')} minutes remaining** before first wave crest impact."
+        ]
+        response_text = "\n\n".join(lines)
+
+    elif any(k in q_lower for k in ["risk", "predict", "flood", "threat", "kedarnath", "mandakini", "stage", "rain"]):
+        tool_predict = mcp_service.call_tool("hydrosentinel_predict_flood_risk", {"station_id": referenced_station})
+        tool_telemetry = mcp_service.call_tool("hydrosentinel_get_telemetry", {"station_id": referenced_station})
+        tools_invoked.append({"tool": "hydrosentinel_predict_flood_risk", "args": {"station_id": referenced_station}, "result": tool_predict.get("_raw")})
+        tools_invoked.append({"tool": "hydrosentinel_get_telemetry", "args": {"station_id": referenced_station}, "result": tool_telemetry.get("_raw")})
+        pred_data = tool_predict.get("_raw", {})
+        tel_data = tool_telemetry.get("_raw", {}).get("telemetry", {})
+        lines = [
+            f"🚨 **Flash Flood Prediction for {pred_data.get('station_name', referenced_station)}**:",
+            f"- **Severity Level**: `{pred_data.get('alert_level')}` (Score: **{pred_data.get('risk_score')}/1200**)",
+            f"- **Flood Probability (24h)**: **{pred_data.get('flood_probability_pct')}%**",
+            f"- **Telemetry**: Rainfall {tel_data.get('precipitation_rate_mm_hr')} mm/h • Stage {tel_data.get('water_stage_level_m')}m • Discharge {tel_data.get('river_discharge_m3_s')} m³/s • Soil Saturation {tel_data.get('bedrock_soil_moisture_pct')}%",
+            f"- **Recommended Directive**: {pred_data.get('recommended_action')}"
+        ]
+        response_text = "\n\n".join(lines)
+
+    elif "twi" in q_lower or "formula" in q_lower or "darcy" in q_lower:
         response_text = "📐 **Hydrological Formulation**: Topographic Wetness Index is calculated as $\\text{TWI} = \\ln(a / \\tan\\beta)$, where $a$ is specific catchment drainage area and $\\beta$ is slope gradient in radians."
-    elif "model" in query or "accuracy" in query or "architecture" in query:
+    elif "model" in q_lower or "accuracy" in q_lower or "architecture" in q_lower:
         response_text = "🤖 **AI Architecture Benchmark**: The Gradient Boosting Regressor achieved the highest ensemble accuracy with **$R^2 = 0.9858$** and an inference latency of **$12\\text{ms}$**, outperforming Random Forest ($0.9712$) and Deep HydroNet ($0.9680$)."
     else:
-        response_text = f"🤖 **HydroSentinel Copilot AI**: 8 regional basins are actively synchronized. 2 basins (Kedarnath & Alaknanda) are in elevated surge state. Real-time inference latency is 12ms with 98.58% ensemble confidence. Ask me about specific stations, evacuation routes, or hydrodynamic formulas!"
-        
+        tool_res = mcp_service.call_tool("hydrosentinel_get_telemetry", {"station_id": referenced_station})
+        tools_invoked.append({"tool": "hydrosentinel_get_telemetry", "args": {"station_id": referenced_station}, "result": tool_res.get("_raw")})
+        stn_name = tool_res.get("_raw", {}).get("station_name", "Kedarnath")
+        tel = tool_res.get("_raw", {}).get("telemetry", {})
+        lines = [
+            f"🤖 **HydroSentinel AI Copilot (MCP Active)**:",
+            f"8 regional monitoring stations synchronized. Currently polling **{stn_name}** ({referenced_station}):",
+            f"- Precipitation: **{tel.get('precipitation_rate_mm_hr')} mm/hr** | Stage: **{tel.get('water_stage_level_m')} m**",
+            f"- Soil Saturation: **{tel.get('bedrock_soil_moisture_pct')}%** | Discharge: **{tel.get('river_discharge_m3_s')} m³/s**",
+            "Ask me to calculate flood predictions, find evacuation routes, query satellite passes, or inspect MCP tool schemas!"
+        ]
+        response_text = "\n\n".join(lines)
+
     return jsonify({
         "status": "SUCCESS",
         "query": query,
         "reply": response_text,
         "station_id": referenced_station,
-        "timestamp": datetime.now(timezone.utc).isoformat(),
-        "copilot_engine": "HydroSentinel-LLM-Hydrology-v2.9"
+        "tools_invoked": tools_invoked,
+        "copilot_engine": "HydroSentinel-MCP-Agent-v2.9",
+        "timestamp": datetime.now(timezone.utc).isoformat()
     }), 200
+
 
 
 @app.route('/api/anomalies', methods=['GET'])
@@ -1788,9 +1876,110 @@ def internal_server_error(e):
     return render_template('500.html'), 500
 
 
+# ==============================================================================
+# ⚡ MODEL CONTEXT PROTOCOL (MCP) • STANDARD AGENTIC TOOLS & PROTOCOL ENGINE
+# ==============================================================================
+
+@app.route('/mcp')
+@app.route('/mcp-hub')
+def mcp_hub_page():
+    '''Model Context Protocol (MCP) Developer Hub & Interactive Agent Console.'''
+    tools = mcp_service.list_tools()
+    resources = mcp_service.list_resources()
+    prompts = mcp_service.list_prompts()
+    stations = list(live_service.stations.values())
+    return render_template(
+        'mcp_hub.html',
+        tools=tools,
+        resources=resources,
+        prompts=prompts,
+        stations=stations,
+        server_name="hydrosentinel-mcp-server",
+        server_version="2.9.0",
+        protocol_version="2024-11-05"
+    )
+
+@app.route('/api/mcp', methods=['POST'])
+@app.route('/mcp', methods=['POST'])
+def api_mcp_handler():
+    '''Standard Model Context Protocol (MCP) JSON-RPC 2.0 Endpoint.'''
+    try:
+        data = request.get_json(force=True, silent=True) or {}
+        response = mcp_service.handle_jsonrpc(data)
+        return jsonify(response), 200
+    except Exception as e:
+        return jsonify({
+            "jsonrpc": "2.0",
+            "id": None,
+            "error": {"code": -32603, "message": f"Server Error: {str(e)}"}
+        }), 500
+
+@app.route('/api/mcp/sse', methods=['GET'])
+@app.route('/mcp/sse', methods=['GET'])
+def api_mcp_sse():
+    '''Server-Sent Events (SSE) Stream for Model Context Protocol (MCP) clients.'''
+    def event_stream():
+        endpoint_info = {
+            "type": "endpoint",
+            "endpoint": request.host_url.rstrip('/') + "/api/mcp"
+        }
+        yield f"event: endpoint\ndata: {json.dumps(endpoint_info)}\n\n"
+        heartbeat = {"type": "ping", "timestamp": datetime.now(timezone.utc).isoformat()}
+        yield f"event: ping\ndata: {json.dumps(heartbeat)}\n\n"
+
+    return Response(event_stream(), mimetype="text/event-stream")
+
+@app.route('/api/mcp/tools', methods=['GET'])
+def api_mcp_tools():
+    '''Returns full schema of all Model Context Protocol tools.'''
+    return jsonify({
+        "status": "SUCCESS",
+        "protocol_version": "2024-11-05",
+        "total_tools": len(mcp_service.list_tools()),
+        "tools": mcp_service.list_tools()
+    }), 200
+
+@app.route('/api/mcp/config', methods=['GET'])
+def api_mcp_config():
+    '''Generates ready-to-use client configs for Claude Desktop, Cursor, and Antigravity.'''
+    repo_dir = os.path.abspath(os.path.dirname(__file__))
+    mcp_py = os.path.join(repo_dir, 'mcp_server.py')
+    python_exe = sys.executable
+    host_url = request.host_url.rstrip('/')
+
+    config = {
+        "claude_desktop": {
+            "mcpServers": {
+                "hydrosentinel": {
+                    "command": python_exe,
+                    "args": [mcp_py]
+                }
+            }
+        },
+        "cursor": {
+            "mcpServers": {
+                "hydrosentinel": {
+                    "command": python_exe,
+                    "args": [mcp_py]
+                }
+            }
+        },
+        "remote_sse": {
+            "mcpServers": {
+                "hydrosentinel_live": {
+                    "url": f"{host_url}/api/mcp/sse"
+                }
+            }
+        }
+    }
+    return jsonify(config), 200
+
+
 if __name__ == '__main__':
     if not os.path.exists(os.path.join('artifacts', 'model.pkl')):
         train_pipeline = TrainPipeline()
         train_pipeline.run_pipeline()
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port, debug=False)
+
+

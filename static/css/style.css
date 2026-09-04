@@ -6115,3 +6115,32 @@ h1, h2, h3, .section-title h2, .hub-main-title {
         height: 400px !important;
     }
 }
+
+
+/* Model Context Protocol (MCP) UI Badges & Highlights */
+.mcp-exec-header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+.mcp-exec-tag {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #38bdf8;
+  background: rgba(56, 189, 248, 0.12);
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  border-radius: 4px;
+  padding: 0.15rem 0.45rem;
+  letter-spacing: 0.03em;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+.mcp-copilot-pill {
+  animation: mcpPillGlow 3s ease-in-out infinite alternate;
+}
+@keyframes mcpPillGlow {
+  0% { box-shadow: 0 0 5px rgba(56, 189, 248, 0.2); }
+  100% { box-shadow: 0 0 15px rgba(56, 189, 248, 0.45); }
+}

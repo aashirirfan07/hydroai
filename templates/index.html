@@ -231,6 +231,57 @@ function openHomeDirectMailApp() {
 }
 </script>
 
+
+<!-- Section: Model Context Protocol (MCP) Autonomous Agent Ecosystem -->
+<div class="spatial-section-container mb-5">
+    <div class="card p-4 liquid-glass" style="border: 1px solid rgba(56, 189, 248, 0.4); background: linear-gradient(135deg, rgba(3, 10, 24, 0.95), rgba(6, 18, 38, 0.95)); border-radius: 24px; position: relative; overflow: hidden;">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-4">
+            <div style="max-width: 760px;">
+                <div class="d-flex align-items-center gap-2 mb-2">
+                    <span class="badge" style="background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.4); font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.08em;">
+                        ⚡ MODEL CONTEXT PROTOCOL (MCP) • AGENTIC ECOSYSTEM
+                    </span>
+                    <span class="badge" style="background: rgba(16, 185, 129, 0.15); color: #10b981; font-family: var(--font-mono); font-size: 0.72rem;">
+                        8 Production Tools Online
+                    </span>
+                </div>
+                <h2 style="font-size: 1.85rem; font-weight: 900; color: #ffffff; margin-bottom: 0.6rem;">
+                    Autonomous AI Agent Integration & MCP Server
+                </h2>
+                <p style="color: #94a3b8; font-size: 0.92rem; line-height: 1.6; margin-bottom: 1.2rem;">
+                    HydroSentinel is equipped with a native <strong>Model Context Protocol (MCP)</strong> server (spec 2024-11-05). External AI agents (<strong>Claude Desktop, Cursor IDE, Antigravity, OpenAI swarm</strong>) can autonomously inspect mountain sensor meshes, execute XGBoost flood risk predictions, track satellite passes, and calculate evacuation routes over standard JSON-RPC 2.0 stdio & SSE streams.
+                </p>
+                <div class="d-flex gap-2 flex-wrap">
+                    <a href="{{ url_for('mcp_hub_page') }}" class="btn btn-primary" style="background: linear-gradient(135deg, #0284c7, #0ea5e9); border: none; font-weight: 700;">
+                        ⚡ Open MCP Tools & Agent Hub &rarr;
+                    </a>
+                    <button type="button" class="btn btn-outline" onclick="openCopilotWithPrompt('Predict flash flood risk for Kedarnath using MCP tools')" style="border-color: rgba(56, 189, 248, 0.4); color: #38bdf8;">
+                        🤖 Test via Copilot
+                    </button>
+                    <a href="/api/mcp/config" target="_blank" class="btn btn-outline" style="border-color: rgba(255, 255, 255, 0.2);">
+                        📋 Get Claude / Cursor Config
+                    </a>
+                </div>
+            </div>
+            <div style="flex: 1 1 300px; min-width: 280px; background: rgba(0, 0, 0, 0.45); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 16px; padding: 1.2rem; font-family: var(--font-mono); font-size: 0.75rem;">
+                <div style="color: #38bdf8; font-weight: 700; margin-bottom: 0.6rem; display: flex; align-items: center; gap: 0.4rem;">
+                    <span class="status-pulse-dot" style="background: #38bdf8;"></span>
+                    <span>MCP JSON-RPC DISPATCHER</span>
+                </div>
+                <div style="color: #64748b; margin-bottom: 0.4rem;">// Registered Geospatial Tools:</div>
+                <div style="color: #10b981; line-height: 1.6;">• hydrosentinel_predict_flood_risk</div>
+                <div style="color: #10b981; line-height: 1.6;">• hydrosentinel_get_telemetry</div>
+                <div style="color: #10b981; line-height: 1.6;">• hydrosentinel_compute_evacuation_route</div>
+                <div style="color: #10b981; line-height: 1.6;">• hydrosentinel_query_world_geohazards</div>
+                <div style="color: #10b981; line-height: 1.6;">• hydrosentinel_get_satellite_swaths</div>
+                <div style="margin-top: 0.8rem; padding-top: 0.6rem; border-top: 1px solid rgba(255,255,255,0.08); color: #94a3b8; font-size: 0.7rem;">
+                    Transports: <span style="color: #f59e0b;">stdio</span> + <span style="color: #38bdf8;">HTTP SSE</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Section 2: Active Telemetry Ingestion Grid -->
 <div class="spatial-section-container">
     <div class="section-header-spatial">
