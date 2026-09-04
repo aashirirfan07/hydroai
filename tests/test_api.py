@@ -516,3 +516,55 @@ def test_space_telemetry_live(client):
     assert 'isro_mosdac' in d['india']
     assert 'imd_doppler_radar' in d['india']
     assert 'cwc_river_network' in d['india']
+
+
+def test_open_data_mesh(client):
+    res = client.get('/api/open-data/mesh')
+    assert res.status_code == 200
+    data = res.get_json()
+    assert data['status'] == 'ONLINE'
+    assert data['zero_key_compliant'] is True
+    assert 'glofas_river_discharge' in data
+    assert 'severe_weather_cape' in data
+    assert 'usgs_seismic_geohazard' in data
+    assert 'elevation_profile' in data
+    assert len(data['open_source_apis']) >= 4
+
+
+def test_open_data_sub_endpoints(client):
+    # GloFAS flood forecast
+    res_f = client.get('/api/open-data/flood-forecast?lat=30.73&lon=79.07&days=3')
+    assert res_f.status_code == 200
+    d_f = res_f.get_json()
+    assert d_f['open_source'] is True
+    assert 'current_discharge_m3_s' in d_f
+
+    # Severe weather & CAPE
+    res_w = client.get('/api/open-data/severe-weather?lat=30.73&lon=79.07')
+    assert res_w.status_code == 200
+    d_w = res_w.get_json()
+    assert d_w['open_source'] is True
+    assert 'max_convective_cape_j_kg' in d_w
+
+    # USGS seismic hazards
+    res_s = client.get('/api/open-data/seismic-hazards?min_mag=2.5&limit=5')
+    assert res_s.status_code == 200
+    d_s = res_s.get_json()
+    assert d_s['open_source'] is True
+    assert 'landslide_glof_trigger_status' in d_s
+
+    # Elevation DEM
+    res_e = client.get('/api/open-data/elevation?lat=30.73&lon=79.07')
+    assert res_e.status_code == 200
+    d_e = res_e.get_json()
+    assert d_e['open_source'] is True
+    assert 'elevation_meters_amsl' in d_e
+
+
+def test_space_telemetry_live_with_open_mesh(client):
+    res = client.get('/api/space-telemetry/live')
+    assert res.status_code == 200
+    d = res.get_json()
+    assert d['status'] == 'SUCCESS'
+    assert 'open_mesh' in d
+    assert d['open_mesh']['zero_key_compliant'] is True

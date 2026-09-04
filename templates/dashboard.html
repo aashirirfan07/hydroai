@@ -1,6 +1,107 @@
 {% extends 'layout.html' %}
 
-{% block title %}Real-Time 3D Digital Twin & Sensor Telemetry - HydroSentinel AI™{% endblock %}
+{% block title %}Real-Time 3D Digital Twin & Sensor Telemetry - HydroSentinel AI™
+<script>
+// Real-time Space & Open Data Mesh Live Stream Ingestion
+async function updateOpenDataSpaceMesh() {
+    try {
+        const res = await fetch('/api/space-telemetry/live');
+        if (!res.ok) return;
+        const data = await res.json();
+        
+        // HUD Badge updates
+        if (data.nasa && data.nasa.gpm_precipitation_feed) {
+            const gpm = data.nasa.gpm_precipitation_feed[0] || {};
+            const gpmEl = document.getElementById('hudGpmVal');
+            if (gpmEl && gpm.gpm_precipitation_rate_mm_h) gpmEl.innerText = `${gpm.gpm_precipitation_rate_mm_h} mm/h`;
+            const cardGpm = document.getElementById('cardNasaGpm');
+            if (cardGpm && gpm.gpm_precipitation_rate_mm_h) cardGpm.innerText = `${gpm.gpm_precipitation_rate_mm_h} mm/h`;
+        }
+
+        if (data.india && data.india.isro_mosdac) {
+            const isro = data.india.isro_mosdac;
+            const cttEl = document.getElementById('hudCttVal');
+            if (cttEl) cttEl.innerText = `${isro.cloud_top_temperature_c}°C`;
+            const cardCtt = document.getElementById('cardIsroCtt');
+            if (cardCtt) cardCtt.innerText = `${isro.cloud_top_temperature_c}°C CTT`;
+        }
+
+        if (data.india && data.india.imd_doppler_radar) {
+            const imd = data.india.imd_doppler_radar;
+            const cardImd = document.getElementById('cardImdRadar');
+            if (cardImd) cardImd.innerText = `${imd.composite_reflectivity_dbz} dBZ`;
+        }
+
+        if (data.open_mesh) {
+            const mesh = data.open_mesh;
+            
+            // GloFAS
+            if (mesh.glofas_river_discharge) {
+                const flood = mesh.glofas_river_discharge;
+                const glofasEl = document.getElementById('hudGlofasVal');
+                if (glofasEl) glofasEl.innerText = `${flood.current_discharge_m3_s} m³/s`;
+                const cardFlow = document.getElementById('cardGlofasFlow');
+                if (cardFlow) cardFlow.innerText = `${flood.current_discharge_m3_s} m³/s`;
+                const cardSub = document.getElementById('cardGlofasSub');
+                if (cardSub) cardSub.innerText = `7-Day Peak: ${flood.peak_discharge_m3_s} m³/s • Status: ${flood.status} • Trend: ${flood.trend}`;
+            }
+
+            // CAPE
+            if (mesh.severe_weather_cape) {
+                const wx = mesh.severe_weather_cape;
+                const capeEl = document.getElementById('hudCapeVal');
+                if (capeEl) capeEl.innerText = `${wx.max_convective_cape_j_kg} J/kg`;
+                const cardCape = document.getElementById('cardCapeVal');
+                if (cardCape) cardCape.innerText = `${wx.max_convective_cape_j_kg} J/kg`;
+                const cardCapeSub = document.getElementById('cardCapeSub');
+                if (cardCapeSub) cardCapeSub.innerText = `Cloudburst Risk: ${wx.cloudburst_risk} • 24h Rain: ${wx.max_24h_precip_rate_mm_h} mm/h`;
+            }
+
+            // Seismic
+            if (mesh.usgs_seismic_geohazard) {
+                const seismic = mesh.usgs_seismic_geohazard;
+                const seismicEl = document.getElementById('hudSeismicVal');
+                const triggerText = seismic.landslide_glof_trigger_status || 'NOMINAL';
+                if (seismicEl) {
+                    seismicEl.innerText = triggerText.includes('NOMINAL') ? 'NOMINAL' : 'ELEVATED';
+                    seismicEl.className = triggerText.includes('NOMINAL') ? 'text-neon-green' : 'text-amber';
+                }
+                const cardTrigger = document.getElementById('cardSeismicTrigger');
+                if (cardTrigger) {
+                    cardTrigger.innerText = triggerText.includes('NOMINAL') ? 'NOMINAL' : 'ALERT';
+                    cardTrigger.className = triggerText.includes('NOMINAL') ? 'text-neon-green font-mono font-bold' : 'text-danger font-mono font-bold';
+                }
+                const cardSub = document.getElementById('cardSeismicSub');
+                if (cardSub) cardSub.innerText = triggerText;
+
+                if (seismic.recent_regional_events && seismic.recent_regional_events.length > 0) {
+                    const eq = seismic.recent_regional_events[0];
+                    const eqEl = document.getElementById('cardLatestQuake');
+                    if (eqEl) eqEl.innerText = eq.title;
+                    const eqSub = document.getElementById('cardLatestQuakeSub');
+                    if (eqSub) eqSub.innerText = `Depth: ${eq.depth_km} km • ${eq.place}`;
+                }
+            }
+
+            // DEM Elevation
+            if (mesh.elevation_dem_amsl_m) {
+                const demEl = document.getElementById('cardDemElev');
+                if (demEl) demEl.innerText = `${mesh.elevation_dem_amsl_m} m AMSL`;
+            }
+        }
+    } catch (e) {
+        console.warn('Space & Open Data Mesh poll notice:', e);
+    }
+}
+
+// Initial fetch and poll every 12 seconds
+document.addEventListener('DOMContentLoaded', () => {
+    updateOpenDataSpaceMesh();
+    setInterval(updateOpenDataSpaceMesh, 12000);
+});
+</script>
+
+{% endblock %}
 
 {% block content %}
 <div class="dashboard-topbar">
@@ -37,7 +138,7 @@
     <button class="tab-btn" onclick="switchDashboardTab('alert_sender')"> Phone & Email Alert Sender</button>
     <button class="tab-btn" onclick="switchDashboardTab('xai')"> XAI Attribution Radar</button>
     <button class="tab-btn" onclick="switchDashboardTab('safe_zones')"> Safe Zones & Evacuation</button>
-    <button class="tab-btn" onclick="switchDashboardTab('space_telemetry')">🛰️ NASA & Indian Remote Sensing (Live)</button>
+    <button class="tab-btn" onclick="switchDashboardTab('space_telemetry')">🛰️ NASA, ISRO & Open Data Mesh</button>
 </div>
 
 <!-- TAB 1: 3D DIGITAL TWIN -->
@@ -152,18 +253,22 @@
         </div>
     </div>
 
-        <!-- 🛰️ Floating Live NASA & Indian Remote Sensing HUD Overlay -->
+        <!-- 🛰️ Floating Live NASA, ISRO & Open Data Mesh HUD Overlay -->
             <div class="twin-space-hud-badge" id="twinSpaceHudBadge">
                 <div class="d-flex align-items-center gap-2">
-                    <span class="pulse-beacon" style="background: #38bdf8; width: 7px; height: 7px;"></span>
-                    <span class="hud-label">SPACE TELEMETRY:</span>
+                    <span class="pulse-beacon" style="background: #10b981; width: 7px; height: 7px;"></span>
+                    <span class="hud-label">OPEN DATA & SPACE MESH:</span>
                 </div>
                 <div class="hud-values">
-                    <span>🛰️ <strong>NASA GPM Ku/Ka:</strong> <span class="text-cyan">89.8 mm/h</span></span>
+                    <span>🛰️ <strong>NASA GPM:</strong> <span class="text-cyan" id="hudGpmVal">89.8 mm/h</span></span>
                     <span class="hud-sep">&bull;</span>
-                    <span>🇮🇳 <strong>ISRO INSAT-3DR CTT:</strong> <span class="text-danger">-68.4°C</span></span>
+                    <span>🇮🇳 <strong>ISRO CTT:</strong> <span class="text-danger" id="hudCttVal">-68.4°C</span></span>
                     <span class="hud-sep">&bull;</span>
-                    <span>🇮🇳 <strong>IMD DWR Dehradun:</strong> <span class="text-amber">54.2 dBZ</span></span>
+                    <span>🌊 <strong>GloFAS River Flow:</strong> <span class="text-cyan" id="hudGlofasVal">28.4 m³/s</span></span>
+                    <span class="hud-sep">&bull;</span>
+                    <span>⚡ <strong>CAPE Index:</strong> <span class="text-amber" id="hudCapeVal">1,240 J/kg</span></span>
+                    <span class="hud-sep">&bull;</span>
+                    <span>⛰️ <strong>USGS Seismicity:</strong> <span class="text-neon-green" id="hudSeismicVal">NOMINAL</span></span>
                 </div>
             </div>
             <div id="threeDViewportContainer" class="terrain-3d-viewport"></div>
@@ -311,177 +416,250 @@
 </div>
 
 
-<!-- TAB 5: NASA & INDIAN SPACE TELEMETRY -->
+<!-- TAB 5: NASA, ISRO & OPEN DATA MESH TELEMETRY -->
 <div id="tab-space_telemetry" class="tab-content">
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 1rem;">
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 1.5rem; margin-top: 1rem;">
         
-        <!-- NASA Live Earth Observation Card -->
-        <div class="card p-4 liquid-glass" style="border: 1px solid rgba(56, 189, 248, 0.4); background: rgba(3, 7, 18, 0.75);">
+        <!-- 1. NASA Live Earth Observation Card -->
+        <div class="card p-4 liquid-glass" style="border: 1px solid rgba(56, 189, 248, 0.4); background: rgba(3, 7, 18, 0.85);">
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <div class="d-flex align-items-center gap-2">
                     <span class="pulse-beacon" style="background: #38bdf8;"></span>
-                    <h3 style="font-family: var(--font-display); font-size: 1.25rem; color: #ffffff; margin: 0;">
-                        NASA Real-Time Earth Observation
+                    <h3 style="font-family: var(--font-display); font-size: 1.15rem; color: #ffffff; margin: 0;">
+                        NASA Goddard Space Flight Center
                     </h3>
                 </div>
-                <span class="badge" style="background: #0b3d91; color: #38bdf8; border: 1px solid #38bdf8;">
-                    NASA GSFC
+                <span class="badge" style="background: #0b3d91; color: #38bdf8; border: 1px solid #38bdf8; font-size: 0.72rem;">
+                    NASA GSFC &bull; ZERO-KEY
                 </span>
             </div>
 
-            <p style="color: rgba(255, 255, 255, 0.75); font-size: 0.85rem; margin-bottom: 1.25rem;">
-                Real-time orbital precipitation and natural event telemetry streaming from NASA Goddard Space Flight Center and GPM Core Observatory:
+            <p style="color: rgba(255, 255, 255, 0.75); font-size: 0.82rem; margin-bottom: 1.1rem;">
+                Live orbital precipitation and extreme event feeds from NASA Goddard Space Flight Center:
             </p>
 
-            <div class="d-flex flex-column gap-3 mb-4">
+            <div class="d-flex flex-column gap-2 mb-3">
                 <div class="space-telemetry-item">
                     <div class="d-flex justify-content-between">
-                        <strong style="color: #ffffff;">NASA GPM Core Observatory (DPR Radar)</strong>
-                        <span class="text-cyan font-mono font-bold">89.8 mm/h Inflow</span>
+                        <strong style="color: #ffffff; font-size: 0.82rem;">NASA GPM Core (Ku/Ka Radar)</strong>
+                        <span class="text-cyan font-mono font-bold" id="cardNasaGpm">89.8 mm/h</span>
                     </div>
-                    <div class="text-muted font-mono" style="font-size: 0.75rem;">
-                        Sensor: Ku-Band (13.6 GHz) & Ka-Band (35.5 GHz) Dual-Precipitation Radar &bull; Swath: 245 km &bull; LWP: 3,450 g/m²
+                    <div class="text-muted font-mono" style="font-size: 0.7rem;">
+                        Dual-Precipitation Radar &bull; Swath: 245 km &bull; LWP: 3,450 g/m²
                     </div>
                 </div>
 
                 <div class="space-telemetry-item">
                     <div class="d-flex justify-content-between">
-                        <strong style="color: #ffffff;">NASA EONET v3 Cyclone & Flood Tracker</strong>
-                        <span class="text-danger font-mono font-bold">8 Active Storms</span>
+                        <strong style="color: #ffffff; font-size: 0.82rem;">NASA EONET v3 Cyclone & Flood</strong>
+                        <span class="text-danger font-mono font-bold" id="cardNasaEvents">Active Tracks</span>
                     </div>
-                    <div class="text-muted font-mono" style="font-size: 0.75rem;">
-                        Real-time active severe storms & cyclone tracks &bull; Latency: ~140ms &bull; Ingestion: Global GSFC Feed
+                    <div class="text-muted font-mono" style="font-size: 0.7rem;">
+                        Real-time severe storms, tropical cyclones, and wildland flooding
                     </div>
                 </div>
 
                 <div class="space-telemetry-item">
                     <div class="d-flex justify-content-between">
-                        <strong style="color: #ffffff;">NASA DSCOVR EPIC (Lagrange L1)</strong>
+                        <strong style="color: #ffffff; font-size: 0.82rem;">NASA DSCOVR EPIC (Lagrange L1)</strong>
                         <span class="text-emerald font-mono font-bold">1,492,160 km</span>
                     </div>
-                    <div class="text-muted font-mono" style="font-size: 0.75rem;">
-                        Full-disk multi-spectral true-color Earth photography from Sun-Earth L1 gravitational balance point.
+                    <div class="text-muted font-mono" style="font-size: 0.7rem;">
+                        Sun-Earth L1 gravitational balance point true-color Earth photography
                     </div>
                 </div>
             </div>
 
             <div class="d-flex gap-2">
-                <a href="/api/nasa/realtime-events" target="_blank" class="spatial-btn-primary" style="padding: 0.4rem 1rem; font-size: 0.78rem;">
-                    📥 NASA EONET JSON Feed
+                <a href="/api/nasa/realtime-events" target="_blank" class="spatial-btn-primary" style="padding: 0.35rem 0.85rem; font-size: 0.74rem;">
+                    📥 NASA EONET JSON
                 </a>
-                <a href="/api/nasa/epic-imagery" target="_blank" class="spatial-btn-glass" style="padding: 0.4rem 1rem; font-size: 0.78rem;">
+                <a href="/api/nasa/epic-imagery" target="_blank" class="spatial-btn-glass" style="padding: 0.35rem 0.85rem; font-size: 0.74rem;">
                     🌍 NASA EPIC Data
                 </a>
             </div>
         </div>
 
-        <!-- Indian ISRO MOSDAC & IMD Telemetry Card -->
-        <div class="card p-4 liquid-glass" style="border: 1px solid rgba(251, 146, 60, 0.4); background: rgba(3, 7, 18, 0.75);">
+        <!-- 2. Indian ISRO MOSDAC & IMD Telemetry Card -->
+        <div class="card p-4 liquid-glass" style="border: 1px solid rgba(251, 146, 60, 0.4); background: rgba(3, 7, 18, 0.85);">
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <div class="d-flex align-items-center gap-2">
                     <span class="pulse-beacon" style="background: #fb923c;"></span>
-                    <h3 style="font-family: var(--font-display); font-size: 1.25rem; color: #ffffff; margin: 0;">
-                        Indian Remote Sensing & IMD Doppler Radar
+                    <h3 style="font-family: var(--font-display); font-size: 1.15rem; color: #ffffff; margin: 0;">
+                        ISRO MOSDAC & IMD Doppler Radar
                     </h3>
                 </div>
-                <span class="badge" style="background: rgba(251, 146, 60, 0.2); color: #fb923c; border: 1px solid #fb923c;">
+                <span class="badge" style="background: rgba(251, 146, 60, 0.2); color: #fb923c; border: 1px solid #fb923c; font-size: 0.72rem;">
                     ISRO + IMD + CWC
                 </span>
             </div>
 
-            <p style="color: rgba(255, 255, 255, 0.75); font-size: 0.85rem; margin-bottom: 1.25rem;">
-                Real-time Himalayan meteorological and hydrological data from Indian scientific agencies:
+            <p style="color: rgba(255, 255, 255, 0.75); font-size: 0.82rem; margin-bottom: 1.1rem;">
+                Himalayan meteorological and hydrologic telemetry from Indian national centers:
             </p>
 
-            <div class="d-flex flex-column gap-3 mb-4">
+            <div class="d-flex flex-column gap-2 mb-3">
                 <div class="space-telemetry-item" style="border-color: rgba(251, 146, 60, 0.3);">
                     <div class="d-flex justify-content-between">
-                        <strong style="color: #ffffff;">ISRO MOSDAC INSAT-3DR (74°E Geostationary)</strong>
-                        <span class="text-danger font-mono font-bold">-68.4°C CTT</span>
+                        <strong style="color: #ffffff; font-size: 0.82rem;">ISRO INSAT-3DR Geostationary (74°E)</strong>
+                        <span class="text-danger font-mono font-bold" id="cardIsroCtt">-68.4°C CTT</span>
                     </div>
-                    <div class="text-muted font-mono" style="font-size: 0.75rem;">
-                        Rapid Scan Imager (4.5 min intervals) &bull; Hydro-Estimator Rain: 84.5 mm/h &bull; Deep Convective Cumulonimbus
+                    <div class="text-muted font-mono" style="font-size: 0.7rem;">
+                        4.5 min Rapid Scan &bull; Hydro-Estimator Rain: 84.5 mm/h &bull; Deep Convective
                     </div>
                 </div>
 
                 <div class="space-telemetry-item" style="border-color: rgba(251, 146, 60, 0.3);">
                     <div class="d-flex justify-content-between">
-                        <strong style="color: #ffffff;">IMD Doppler Weather Radar (DWR Dehradun)</strong>
-                        <span class="text-amber font-mono font-bold">54.2 dBZ</span>
+                        <strong style="color: #ffffff; font-size: 0.82rem;">IMD DWR Dehradun Radar (2,757m)</strong>
+                        <span class="text-amber font-mono font-bold" id="cardImdRadar">54.2 dBZ</span>
                     </div>
-                    <div class="text-muted font-mono" style="font-size: 0.75rem;">
-                        Surkanda Devi Peak (2,757m) &bull; Cloudburst Warning: RED ALERT &bull; Radial Velocity: 24.8 m/s
+                    <div class="text-muted font-mono" style="font-size: 0.7rem;">
+                        C-Band 5.62 GHz &bull; Cloudburst Potential: CRITICAL &bull; Radial Velocity: 24.8 m/s
                     </div>
                 </div>
 
                 <div class="space-telemetry-item" style="border-color: rgba(251, 146, 60, 0.3);">
                     <div class="d-flex justify-content-between">
-                        <strong style="color: #ffffff;">CWC River Hydrograph Network (Mandakini)</strong>
-                        <span class="text-cyan font-mono font-bold">Stage: 3.42 m</span>
+                        <strong style="color: #ffffff; font-size: 0.82rem;">CWC River Gauge Network (Mandakini)</strong>
+                        <span class="text-cyan font-mono font-bold" id="cardCwcStage">Stage: 3.42 m</span>
                     </div>
-                    <div class="text-muted font-mono" style="font-size: 0.75rem;">
-                        Warning Level: 3.10 m (EXCEEDED) &bull; Danger Level: 3.50 m &bull; Trend: RISING (+0.18 m/hr)
+                    <div class="text-muted font-mono" style="font-size: 0.7rem;">
+                        Warning: 3.10 m (EXCEEDED) &bull; Danger: 3.50 m &bull; Flow: 385.4 m³/s
                     </div>
                 </div>
             </div>
 
             <div class="d-flex gap-2">
-                <a href="/api/space-telemetry/live" target="_blank" class="spatial-btn-primary" style="background: linear-gradient(135deg, #ea580c, #c2410c) !important; padding: 0.4rem 1rem; font-size: 0.78rem; border-color: #fb923c !important;">
-                    🇮🇳 Full Space & Hydrograph Feed
+                <a href="/api/space-telemetry/live" target="_blank" class="spatial-btn-primary" style="background: linear-gradient(135deg, #ea580c, #c2410c) !important; padding: 0.35rem 0.85rem; font-size: 0.74rem; border-color: #fb923c !important;">
+                    🇮🇳 Full Space Telemetry
                 </a>
-                <button type="button" class="spatial-btn-glass" onclick="alert('ISRO MOSDAC + IMD Telemetry Uplink Nominal: All 8 Himalayan Basins in Synoptic Range.')" style="padding: 0.4rem 1rem; font-size: 0.78rem;">
-                    📡 Sensor Health: 99.4%
-                </button>
+            </div>
+        </div>
+
+        <!-- 3. Open-Meteo GloFAS Flood & Severe Convective CAPE Card -->
+        <div class="card p-4 liquid-glass" style="border: 1px solid rgba(16, 185, 129, 0.4); background: rgba(3, 7, 18, 0.85);">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div class="d-flex align-items-center gap-2">
+                    <span class="pulse-beacon" style="background: #10b981;"></span>
+                    <h3 style="font-family: var(--font-display); font-size: 1.15rem; color: #ffffff; margin: 0;">
+                        Open-Meteo GloFAS & CAPE Storm Mesh
+                    </h3>
+                </div>
+                <span class="badge" style="background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid #10b981; font-size: 0.72rem;">
+                    COPERNICUS GloFAS &bull; OPEN-SOURCE
+                </span>
+            </div>
+
+            <p style="color: rgba(255, 255, 255, 0.75); font-size: 0.82rem; margin-bottom: 1.1rem;">
+                Global Flood Awareness System (GloFAS) river discharge forecasts and atmospheric instability:
+            </p>
+
+            <div class="d-flex flex-column gap-2 mb-3">
+                <div class="space-telemetry-item" style="border-color: rgba(16, 185, 129, 0.3);">
+                    <div class="d-flex justify-content-between">
+                        <strong style="color: #ffffff; font-size: 0.82rem;">GloFAS River Discharge Forecast</strong>
+                        <span class="text-cyan font-mono font-bold" id="cardGlofasFlow">28.4 m³/s</span>
+                    </div>
+                    <div class="text-muted font-mono" style="font-size: 0.7rem;" id="cardGlofasSub">
+                        7-Day Peak: 64.2 m³/s &bull; Status: ELEVATED INFLOW &bull; Trend: RISING
+                    </div>
+                </div>
+
+                <div class="space-telemetry-item" style="border-color: rgba(16, 185, 129, 0.3);">
+                    <div class="d-flex justify-content-between">
+                        <strong style="color: #ffffff; font-size: 0.82rem;">Convective CAPE (Cloudburst Metric)</strong>
+                        <span class="text-amber font-mono font-bold" id="cardCapeVal">1,240 J/kg</span>
+                    </div>
+                    <div class="text-muted font-mono" style="font-size: 0.7rem;" id="cardCapeSub">
+                        Cloudburst Risk: MODERATE CONVECTIVE SURGE &bull; Precip: 35.0 mm/h
+                    </div>
+                </div>
+
+                <div class="space-telemetry-item" style="border-color: rgba(16, 185, 129, 0.3);">
+                    <div class="d-flex justify-content-between">
+                        <strong style="color: #ffffff; font-size: 0.82rem;">90m Digital Elevation Model (DEM)</strong>
+                        <span class="text-neon-green font-mono font-bold" id="cardDemElev">3,549 m AMSL</span>
+                    </div>
+                    <div class="text-muted font-mono" style="font-size: 0.7rem;">
+                        High-Resolution Topographic Relief &bull; Copernicus DEM Global 90m
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex gap-2">
+                <a href="/api/open-data/mesh" target="_blank" class="spatial-btn-primary" style="background: linear-gradient(135deg, #059669, #047857) !important; padding: 0.35rem 0.85rem; font-size: 0.74rem; border-color: #10b981 !important;">
+                    🌐 Open Data Mesh JSON
+                </a>
+                <a href="/api/open-data/flood-forecast" target="_blank" class="spatial-btn-glass" style="padding: 0.35rem 0.85rem; font-size: 0.74rem;">
+                    🌊 7-Day Hydrograph
+                </a>
+            </div>
+        </div>
+
+        <!-- 4. USGS Real-Time Geohazard & Seismic Trigger Card -->
+        <div class="card p-4 liquid-glass" style="border: 1px solid rgba(168, 85, 247, 0.4); background: rgba(3, 7, 18, 0.85);">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div class="d-flex align-items-center gap-2">
+                    <span class="pulse-beacon" style="background: #a855f7;"></span>
+                    <h3 style="font-family: var(--font-display); font-size: 1.15rem; color: #ffffff; margin: 0;">
+                        USGS Real-Time Seismic & GLOF Trigger
+                    </h3>
+                </div>
+                <span class="badge" style="background: rgba(168, 85, 247, 0.2); color: #c084fc; border: 1px solid #a855f7; font-size: 0.72rem;">
+                    USGS GEOHAZARDS &bull; ZERO-KEY
+                </span>
+            </div>
+
+            <p style="color: rgba(255, 255, 255, 0.75); font-size: 0.82rem; margin-bottom: 1.1rem;">
+                Real-time tectonic tremor monitoring for mountain landslide-dammed lake (LLDL) and GLOF trigger prevention:
+            </p>
+
+            <div class="d-flex flex-column gap-2 mb-3">
+                <div class="space-telemetry-item" style="border-color: rgba(168, 85, 247, 0.3);">
+                    <div class="d-flex justify-content-between">
+                        <strong style="color: #ffffff; font-size: 0.82rem;">Himalayan Seismotectonic Trigger</strong>
+                        <span class="text-neon-green font-mono font-bold" id="cardSeismicTrigger">NOMINAL</span>
+                    </div>
+                    <div class="text-muted font-mono" style="font-size: 0.7rem;" id="cardSeismicSub">
+                        Background Seismicity: NORMAL &bull; No M4.0+ tremors near active glacial lakes
+                    </div>
+                </div>
+
+                <div class="space-telemetry-item" style="border-color: rgba(168, 85, 247, 0.3);">
+                    <div class="d-flex justify-content-between">
+                        <strong style="color: #ffffff; font-size: 0.82rem;">Latest Monitored Seismic Event</strong>
+                        <span class="text-purple font-mono font-bold" id="cardLatestQuake">M 3.2 Chamoli</span>
+                    </div>
+                    <div class="text-muted font-mono" style="font-size: 0.7rem;" id="cardLatestQuakeSub">
+                        Depth: 10.0 km &bull; Distance: 14 km NNE of Joshimath
+                    </div>
+                </div>
+
+                <div class="space-telemetry-item" style="border-color: rgba(168, 85, 247, 0.3);">
+                    <div class="d-flex justify-content-between">
+                        <strong style="color: #ffffff; font-size: 0.82rem;">Slope Failure Susceptibility</strong>
+                        <span class="text-cyan font-mono font-bold">LOW (Arias Int: 0.08 m/s)</span>
+                    </div>
+                    <div class="text-muted font-mono" style="font-size: 0.7rem;">
+                        Newmark displacement modeling calibrated to 3D LiDAR elevation
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex gap-2">
+                <a href="/api/open-data/seismic-hazards" target="_blank" class="spatial-btn-primary" style="background: linear-gradient(135deg, #7e22ce, #6b21a8) !important; padding: 0.35rem 0.85rem; font-size: 0.74rem; border-color: #a855f7 !important;">
+                    ⛰️ USGS Seismic Feed
+                </a>
+                <a href="https://earthquake.usgs.gov" target="_blank" class="spatial-btn-glass" style="padding: 0.35rem 0.85rem; font-size: 0.74rem;">
+                    🌐 USGS Global Network
+                </a>
             </div>
         </div>
 
     </div>
 </div>
 
-<style>
-.twin-space-hud-badge {
-    position: absolute;
-    top: 12px;
-    right: 12px;
-    z-index: 10;
-    background: rgba(3, 7, 18, 0.85);
-    border: 1px solid rgba(56, 189, 248, 0.4);
-    border-radius: 9999px;
-    padding: 0.35rem 0.85rem;
-    backdrop-filter: blur(12px);
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-    font-family: var(--font-mono);
-    font-size: 0.72rem;
-    color: #ffffff;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.8), 0 0 15px rgba(56, 189, 248, 0.25);
-    pointer-events: none;
-}
-.hud-label {
-    color: #38bdf8;
-    font-weight: 800;
-}
-.hud-values {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-.hud-sep {
-    color: rgba(255, 255, 255, 0.3);
-}
-.space-telemetry-item {
-    background: rgba(0, 0, 0, 0.4);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
-    padding: 0.75rem 0.95rem;
-}
-@media (max-width: 900px) {
-    .twin-space-hud-badge {
-        display: none;
-    }
-}
-</style>
 
 <!-- TAB 4: SAFE ZONES -->
 <div id="tab-safe_zones" class="tab-content">
@@ -508,4 +686,105 @@
 <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
 <script src="{{ url_for('static', filename='js/tactile_knobs.js') }}"></script>
 <script src="{{ url_for('static', filename='js/interactive_drone_flight.js') }}"></script>
+
+<script>
+// Real-time Space & Open Data Mesh Live Stream Ingestion
+async function updateOpenDataSpaceMesh() {
+    try {
+        const res = await fetch('/api/space-telemetry/live');
+        if (!res.ok) return;
+        const data = await res.json();
+        
+        // HUD Badge updates
+        if (data.nasa && data.nasa.gpm_precipitation_feed) {
+            const gpm = data.nasa.gpm_precipitation_feed[0] || {};
+            const gpmEl = document.getElementById('hudGpmVal');
+            if (gpmEl && gpm.gpm_precipitation_rate_mm_h) gpmEl.innerText = `${gpm.gpm_precipitation_rate_mm_h} mm/h`;
+            const cardGpm = document.getElementById('cardNasaGpm');
+            if (cardGpm && gpm.gpm_precipitation_rate_mm_h) cardGpm.innerText = `${gpm.gpm_precipitation_rate_mm_h} mm/h`;
+        }
+
+        if (data.india && data.india.isro_mosdac) {
+            const isro = data.india.isro_mosdac;
+            const cttEl = document.getElementById('hudCttVal');
+            if (cttEl) cttEl.innerText = `${isro.cloud_top_temperature_c}°C`;
+            const cardCtt = document.getElementById('cardIsroCtt');
+            if (cardCtt) cardCtt.innerText = `${isro.cloud_top_temperature_c}°C CTT`;
+        }
+
+        if (data.india && data.india.imd_doppler_radar) {
+            const imd = data.india.imd_doppler_radar;
+            const cardImd = document.getElementById('cardImdRadar');
+            if (cardImd) cardImd.innerText = `${imd.composite_reflectivity_dbz} dBZ`;
+        }
+
+        if (data.open_mesh) {
+            const mesh = data.open_mesh;
+            
+            // GloFAS
+            if (mesh.glofas_river_discharge) {
+                const flood = mesh.glofas_river_discharge;
+                const glofasEl = document.getElementById('hudGlofasVal');
+                if (glofasEl) glofasEl.innerText = `${flood.current_discharge_m3_s} m³/s`;
+                const cardFlow = document.getElementById('cardGlofasFlow');
+                if (cardFlow) cardFlow.innerText = `${flood.current_discharge_m3_s} m³/s`;
+                const cardSub = document.getElementById('cardGlofasSub');
+                if (cardSub) cardSub.innerText = `7-Day Peak: ${flood.peak_discharge_m3_s} m³/s • Status: ${flood.status} • Trend: ${flood.trend}`;
+            }
+
+            // CAPE
+            if (mesh.severe_weather_cape) {
+                const wx = mesh.severe_weather_cape;
+                const capeEl = document.getElementById('hudCapeVal');
+                if (capeEl) capeEl.innerText = `${wx.max_convective_cape_j_kg} J/kg`;
+                const cardCape = document.getElementById('cardCapeVal');
+                if (cardCape) cardCape.innerText = `${wx.max_convective_cape_j_kg} J/kg`;
+                const cardCapeSub = document.getElementById('cardCapeSub');
+                if (cardCapeSub) cardCapeSub.innerText = `Cloudburst Risk: ${wx.cloudburst_risk} • 24h Rain: ${wx.max_24h_precip_rate_mm_h} mm/h`;
+            }
+
+            // Seismic
+            if (mesh.usgs_seismic_geohazard) {
+                const seismic = mesh.usgs_seismic_geohazard;
+                const seismicEl = document.getElementById('hudSeismicVal');
+                const triggerText = seismic.landslide_glof_trigger_status || 'NOMINAL';
+                if (seismicEl) {
+                    seismicEl.innerText = triggerText.includes('NOMINAL') ? 'NOMINAL' : 'ELEVATED';
+                    seismicEl.className = triggerText.includes('NOMINAL') ? 'text-neon-green' : 'text-amber';
+                }
+                const cardTrigger = document.getElementById('cardSeismicTrigger');
+                if (cardTrigger) {
+                    cardTrigger.innerText = triggerText.includes('NOMINAL') ? 'NOMINAL' : 'ALERT';
+                    cardTrigger.className = triggerText.includes('NOMINAL') ? 'text-neon-green font-mono font-bold' : 'text-danger font-mono font-bold';
+                }
+                const cardSub = document.getElementById('cardSeismicSub');
+                if (cardSub) cardSub.innerText = triggerText;
+
+                if (seismic.recent_regional_events && seismic.recent_regional_events.length > 0) {
+                    const eq = seismic.recent_regional_events[0];
+                    const eqEl = document.getElementById('cardLatestQuake');
+                    if (eqEl) eqEl.innerText = eq.title;
+                    const eqSub = document.getElementById('cardLatestQuakeSub');
+                    if (eqSub) eqSub.innerText = `Depth: ${eq.depth_km} km • ${eq.place}`;
+                }
+            }
+
+            // DEM Elevation
+            if (mesh.elevation_dem_amsl_m) {
+                const demEl = document.getElementById('cardDemElev');
+                if (demEl) demEl.innerText = `${mesh.elevation_dem_amsl_m} m AMSL`;
+            }
+        }
+    } catch (e) {
+        console.warn('Space & Open Data Mesh poll notice:', e);
+    }
+}
+
+// Initial fetch and poll every 12 seconds
+document.addEventListener('DOMContentLoaded', () => {
+    updateOpenDataSpaceMesh();
+    setInterval(updateOpenDataSpaceMesh, 12000);
+});
+</script>
+
 {% endblock %}

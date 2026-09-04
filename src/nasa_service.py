@@ -44,7 +44,7 @@ class NASAEarthObservationService:
                 'User-Agent': 'HydroSentinel-AI-Disaster-Mesh/4.2 (NASA Earthdata Partner)'
             })
             t0 = time.time()
-            with urllib.request.urlopen(req, timeout=6) as res:
+            with urllib.request.urlopen(req, timeout=2.5) as res:
                 raw_data = json.loads(res.read().decode('utf-8'))
                 latency_ms = round((time.time() - t0) * 1000, 1)
                 
@@ -152,7 +152,7 @@ class NASAEarthObservationService:
         try:
             req = urllib.request.Request(url, headers={'User-Agent': 'HydroSentinel-AI-Disaster-Mesh/4.2'})
             t0 = time.time()
-            with urllib.request.urlopen(req, timeout=6) as res:
+            with urllib.request.urlopen(req, timeout=2.5) as res:
                 data = json.loads(res.read().decode('utf-8'))
                 latency_ms = round((time.time() - t0) * 1000, 1)
                 

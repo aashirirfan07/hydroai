@@ -70,19 +70,25 @@
         </div>
     </div>
 
-    <div class="navbar-floating-wrapper">
+        <div class="navbar-floating-wrapper">
         <header class="navbar-floating-inner liquid-glass">
-            <button class="header-mobile-menu-btn" onclick="toggleMobile3DNav()" style="display: none; background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.35); color: #38bdf8; width: 34px; height: 34px; border-radius: 8px; align-items: center; justify-content: center; margin-right: 0.5rem; cursor: pointer;"></button>
-            <div class="nav-brand">
+            <div class="nav-brand-group">
+                <button class="header-mobile-menu-btn" onclick="toggleMobile3DNav()" aria-label="Toggle Menu">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
                 <a href="{{ url_for('index') }}" class="brand-link">
                     <img src="{{ url_for('static', filename='img/hydrosentinel_logo.svg') }}" alt="HydroSentinel AI Logo" class="header-logo-img">
                     <div class="brand-text">
                         <div class="brand-title"><span class="brand-glow">HYDROSENTINEL</span> <span class="brand-badge-ai">AI v2.9</span></div>
                     </div>
                 </a>
+                <div class="nav-mesh-status-indicator" title="Open Data Mesh: GloFAS, USGS, Open-Meteo & NASA Synchronized">
+                    <span class="status-pulse-dot"></span>
+                    <span class="status-text">OPEN MESH LIVE</span>
+                </div>
             </div>
 
-            <!-- Center Floating Pill Navigation with Aesthetic Micro-Logos (No Box Glyphs) -->
+            <!-- Center Floating Pill Navigation: Clean & Curated -->
             <nav class="nav-pill-group">
                 <a href="{{ url_for('index') }}" class="nav-link-pill {% if request.endpoint == 'index' %}active{% endif %}">
                     <img src="/static/img/badges/emblem_overview.svg" class="nav-micro-logo" alt="Overview">
@@ -92,129 +98,206 @@
                     <img src="/static/img/badges/emblem_3dtwin.svg" class="nav-micro-logo" alt="3D Twin">
                     <span>3D Twin</span>
                 </a>
+                <a href="{{ url_for('early_warning') }}" class="nav-link-pill {% if request.endpoint == 'early_warning' %}active{% endif %}">
+                    <img src="/static/img/badges/emblem_alerts.svg" class="nav-micro-logo" alt="Early Warning">
+                    <span>Early Warning</span>
+                </a>
                 <a href="{{ url_for('analytics') }}" class="nav-link-pill {% if request.endpoint == 'analytics' %}active{% endif %}">
                     <img src="/static/img/badges/emblem_analytics.svg" class="nav-micro-logo" alt="Analytics">
                     <span>Analytics</span>
                 </a>
-                
-                
-                
-                
                 <a href="{{ url_for('physics_sandbox_page') }}" class="nav-link-pill {% if request.endpoint == 'physics_sandbox_page' %}active{% endif %}">
                     <img src="/static/img/badges/emblem_simulator.svg" class="nav-micro-logo" alt="Physics">
                     <span>Physics Lab</span>
                 </a>
 
-                <a href="{{ url_for('components_hub_page') }}" class="nav-link-pill {% if request.endpoint == 'components_hub_page' %}active{% endif %}">
-                    <img src="/static/img/badges/emblem_models.svg" class="nav-micro-logo" alt="Hub">
-                    <span>21st UI Hub</span>
-                </a>
-
-                <a href="{{ url_for('report_incident_page') }}" class="nav-link-pill {% if request.endpoint == 'report_incident_page' %}active{% endif %}">
-                    <img src="/static/img/badges/emblem_alerts.svg" class="nav-micro-logo" alt="SOS">
-                    <span>Citizen SOS</span>
-                </a>
-
-                <a href="{{ url_for('damage_assessment_page') }}" class="nav-link-pill {% if request.endpoint == 'damage_assessment_page' %}active{% endif %}">
-                    <img src="/static/img/badges/emblem_analytics.svg" class="nav-micro-logo" alt="Damage">
-                    <span>Damage Scan</span>
-                </a>
-
-                <a href="{{ url_for('early_warning') }}" class="nav-link-pill {% if request.endpoint == 'early_warning' %}active{% endif %}">
-                    <img src="/static/img/badges/emblem_alerts.svg" class="nav-micro-logo" alt="Alerts">
-                    <span>Early Warning</span>
-                </a>
-                <a href="{{ url_for('predict_datapoint') }}" class="nav-link-pill {% if request.endpoint == 'predict_datapoint' %}active{% endif %}">
-                    <img src="/static/img/badges/emblem_simulator.svg" class="nav-micro-logo" alt="Simulator">
-                    <span>Simulator</span>
-                </a>
-                <a href="{{ url_for('time_machine_page') }}" class="nav-link-pill {% if request.endpoint == 'time_machine_page' %}active{% endif %}">
-                    <img src="/static/img/badges/emblem_overview.svg" class="nav-micro-logo" alt="Time Machine">
-                    <span>Time-Machine</span>
-                </a>
-                
-                <a href="{{ url_for('satellites_page') }}" class="nav-link-pill {% if request.endpoint == 'satellites_page' %}active{% endif %}">
-                    <img src="/static/img/badges/emblem_3dtwin.svg" class="nav-micro-logo" alt="Satellites">
-                    <span>Satellites</span>
-                </a>
-                <a href="{{ url_for('models_hub') }}" class="nav-link-pill {% if request.endpoint == 'models_hub' %}active{% endif %}">
-                    <img src="/static/img/badges/emblem_models.svg" class="nav-micro-logo" alt="Model Hub">
-                    <span>Model Hub</span>
-                </a>
-                <a href="{{ url_for('feedback_page') }}" class="nav-link-pill {% if request.endpoint == 'feedback_page' %}active{% endif %}">
-                    <img src="/static/img/badges/emblem_reviews.svg" class="nav-micro-logo" alt="Reviews">
-                    <span>Reviews</span>
-                </a>
-                <a href="{{ url_for('about') }}" class="nav-link-pill {% if request.endpoint == 'about' %}active{% endif %}">
-                    <img src="/static/img/badges/emblem_team.svg" class="nav-micro-logo" alt="Team">
-                    <span>Team</span>
-                </a>
+                <!-- Sleek Tools & Labs Dropdown -->
+                <div class="nav-dropdown-wrapper" id="navToolsDropdown">
+                    <button type="button" class="nav-link-pill nav-dropdown-trigger" onclick="toggleNavDropdown(event)">
+                        <span>Tools & Labs</span>
+                        <i class="fa-solid fa-chevron-down nav-chevron"></i>
+                    </button>
+                    <div class="nav-dropdown-menu liquid-glass">
+                        <a href="{{ url_for('satellites_page') }}" class="dropdown-item">
+                            <i class="fa-solid fa-satellite text-cyan"></i>
+                            <div>
+                                <span class="dd-title">Satellites & Telemetry</span>
+                                <span class="dd-sub">NASA EONET, DSCOVR & GPM</span>
+                            </div>
+                        </a>
+                        <a href="{{ url_for('predict_datapoint') }}" class="dropdown-item">
+                            <i class="fa-solid fa-bolt text-amber"></i>
+                            <div>
+                                <span class="dd-title">AI Simulator</span>
+                                <span class="dd-sub">Catastrophic Basin Surge Scenarios</span>
+                            </div>
+                        </a>
+                        <a href="{{ url_for('time_machine_page') }}" class="dropdown-item">
+                            <i class="fa-solid fa-clock-rotate-left text-purple"></i>
+                            <div>
+                                <span class="dd-title">Time Machine</span>
+                                <span class="dd-sub">Historical Flood Replay & Hindcasting</span>
+                            </div>
+                        </a>
+                        <a href="{{ url_for('damage_assessment_page') }}" class="dropdown-item">
+                            <i class="fa-solid fa-camera-retro text-rose"></i>
+                            <div>
+                                <span class="dd-title">Damage Assessment</span>
+                                <span class="dd-sub">Computer Vision Post-Disaster Scan</span>
+                            </div>
+                        </a>
+                        <a href="{{ url_for('report_incident_page') }}" class="dropdown-item">
+                            <i class="fa-solid fa-triangle-exclamation text-red"></i>
+                            <div>
+                                <span class="dd-title">Citizen SOS Portal</span>
+                                <span class="dd-sub">Crowdsourced Incident Ingestion</span>
+                            </div>
+                        </a>
+                        <a href="{{ url_for('models_hub') }}" class="dropdown-item">
+                            <i class="fa-solid fa-brain text-cyan"></i>
+                            <div>
+                                <span class="dd-title">AI Model Hub</span>
+                                <span class="dd-sub">Ensemble Weights & Metrics</span>
+                            </div>
+                        </a>
+                        <a href="{{ url_for('components_hub_page') }}" class="dropdown-item">
+                            <i class="fa-solid fa-shapes text-emerald"></i>
+                            <div>
+                                <span class="dd-title">21st UI Component Hub</span>
+                                <span class="dd-sub">Design System & Primitives</span>
+                            </div>
+                        </a>
+                        <a href="{{ url_for('feedback_page') }}" class="dropdown-item">
+                            <i class="fa-solid fa-star text-amber"></i>
+                            <div>
+                                <span class="dd-title">Reviews & Feedback</span>
+                                <span class="dd-sub">Hydrologist Testimonials</span>
+                            </div>
+                        </a>
+                        <a href="{{ url_for('about') }}" class="dropdown-item">
+                            <i class="fa-solid fa-users text-blue"></i>
+                            <div>
+                                <span class="dd-title">Team & Architecture</span>
+                                <span class="dd-sub">Team Quantum Minds</span>
+                            </div>
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a href="/api-explorer" class="dropdown-item">
+                            <i class="fa-solid fa-network-wired text-cyan"></i>
+                            <div>
+                                <span class="dd-title">Open API Explorer</span>
+                                <span class="dd-sub">Public Mesh Endpoints</span>
+                            </div>
+                        </a>
+                        <a href="/api/export-cap-alert" target="_blank" class="dropdown-item">
+                            <i class="fa-solid fa-rss text-orange"></i>
+                            <div>
+                                <span class="dd-title">OASIS CAP v1.2</span>
+                                <span class="dd-sub">WMO-Standard Disaster Broadcast</span>
+                            </div>
+                        </a>
+                    </div>
+                </div>
             </nav>
 
-            <!-- Right CTAs -->
+            <!-- Right Clean Action Controls -->
             <div class="nav-right-actions">
-                
-                <!-- Raycast Command Palette Shortcut Chip -->
-                
-                <!-- Weather Atmosphere Mode Controller Pill -->
-                
-                <!-- Multi-Language Regional Disaster Switcher (EN / HI / ML) -->
-                
-                <!-- Spatial Sonic Web Audio Toggle -->
-                
-                <!-- PWA Offline Install Button -->
-                
-                
-                <button type="button" class="btn-sms-nav-pill" onclick="openGlobalZeroKeySmsModal()" title="Send Instant Emergency Flood Alert SMS to Any Mobile Phone (No API Key Required)">
-                    📱 Send SMS
-                </button>
-
-                <button type="button" class="btn-email-nav-pill" onclick="openGlobalZeroKeyEmailModal()" title="Send Instant Emergency Flood Alert Email (No API Key Required)">
-                    ✉️ Send Email
-                </button>
-
-                <button id="pwaInstallBtn" class="btn-pwa-install-pill" onclick="triggerPWAInstall()" title="Install Disaster Defense PWA for 100% Offline Access">
-                    📲 Install PWA
-                </button>
-
-                <button id="globalAudioToggleBtn" class="btn-sonic-toggle-pill" onclick="toggleGlobalAudio()" title="Toggle Procedural Web Audio Haptics (Glass Clicks, Flood Drones, Radio Squelch)">
-                    🔊 Sound: ON
-                </button>
-
-                <div class="lang-selector-group" title="Regional Disaster Language (English, Hindi for Uttarakhand, Malayalam for Wayanad)">
-                    <button class="lang-pill-btn active" data-lang="en" onclick="setLanguage('en')">EN</button>
-                    <button class="lang-pill-btn" data-lang="hi" onclick="setLanguage('hi')">हिंदी</button>
-                    <button class="lang-pill-btn" data-lang="ml" onclick="setLanguage('ml')">മലയാളം</button>
+                <!-- Emergency Alert Dispatcher Dropdown -->
+                <div class="nav-alert-dispatch-wrap" id="navDispatchWrap">
+                    <button type="button" class="btn-clean-dispatch" onclick="toggleDispatchDropdown(event)" title="Zero-Key Emergency Alert Dispatcher">
+                        <span class="dispatch-pulse-ring"></span>
+                        <i class="fa-solid fa-bullhorn"></i>
+                        <span>Alert Dispatch</span>
+                        <i class="fa-solid fa-chevron-down" style="font-size: 0.65rem; margin-left: 2px;"></i>
+                    </button>
+                    <div class="dispatch-dropdown-menu liquid-glass">
+                        <button type="button" class="dispatch-item" onclick="openGlobalZeroKeySmsModal(); closeAllNavDropdowns();">
+                            <i class="fa-solid fa-mobile-screen"></i>
+                            <div>
+                                <strong>Send Phone SMS</strong>
+                                <p>Instant mobile alert (No API Key)</p>
+                            </div>
+                        </button>
+                        <button type="button" class="dispatch-item" onclick="openGlobalZeroKeyEmailModal(); closeAllNavDropdowns();">
+                            <i class="fa-solid fa-paper-plane"></i>
+                            <div>
+                                <strong>Send Direct Email</strong>
+                                <p>Civil Defense broadcast (No API Key)</p>
+                            </div>
+                        </button>
+                    </div>
                 </div>
 
-                <button class="btn-atmo-control-pill" onclick="toggleNextAtmosphere()" title="Click to Cycle Weather Atmosphere (Storm / Sun / FLIR / Surge)">
-                    <span id="atmoCurrentModeText">⛈️ Cloudburst Storm</span>
+                <!-- Quick Command Palette Chip -->
+                <button class="btn-palette-trigger-clean" onclick="toggleCommandPalette()" title="Command Palette (Ctrl + K / ⌘K)">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <kbd class="kbd-clean">⌘K</kbd>
                 </button>
 
-                <button class="btn-palette-trigger-chip" onclick="toggleCommandPalette()" title="Open Global Command Palette (Ctrl + K)">
-                    <span class="search-icon">🔍</span>
-                    <span class="search-label">Quick Actions</span>
-                    <kbd class="kbd-badge">⌘K</kbd>
-                </button>
+                <!-- Environmental Controls Popover -->
+                <div class="nav-settings-wrapper" id="navSettingsWrap">
+                    <button type="button" class="btn-clean-settings" onclick="toggleSettingsDropdown(event)" title="Atmosphere & Interface Controls">
+                        <i class="fa-solid fa-sliders"></i>
+                    </button>
+                    <div class="settings-dropdown-menu liquid-glass">
+                        <div class="settings-menu-header">Environmental Controls</div>
+                        
+                        <div class="settings-menu-row">
+                            <span><i class="fa-solid fa-volume-high"></i> Audio Haptics</span>
+                            <button id="globalAudioToggleBtn" class="settings-toggle-btn" onclick="toggleGlobalAudio()">
+                                <span>ON</span>
+                            </button>
+                        </div>
 
-                <div class="font-scale-group" title="Adjust Interface Typography Scale">
-                    <button class="btn-font-scale" onclick="adjustGlobalFontSize(-1)" title="Decrease Font Size">A-</button>
-                    <button class="btn-font-scale" onclick="adjustGlobalFontSize(1)" title="Increase Font Size">A+</button>
+                        <div class="settings-menu-row">
+                            <span><i class="fa-solid fa-cloud-bolt"></i> Weather Mode</span>
+                            <button class="settings-toggle-btn" onclick="toggleNextAtmosphere()">
+                                <span id="atmoCurrentModeText">⛈️ Storm</span>
+                            </button>
+                        </div>
+
+                        <div class="settings-menu-row">
+                            <span><i class="fa-solid fa-language"></i> Language</span>
+                            <div class="lang-selector-group">
+                                <button class="lang-pill-btn active" data-lang="en" onclick="setLanguage('en')">EN</button>
+                                <button class="lang-pill-btn" data-lang="hi" onclick="setLanguage('hi')">हिंदी</button>
+                                <button class="lang-pill-btn" data-lang="ml" onclick="setLanguage('ml')">മലയാളം</button>
+                            </div>
+                        </div>
+
+                        <div class="settings-menu-row">
+                            <span><i class="fa-solid fa-text-height"></i> Text Size</span>
+                            <div class="font-scale-group">
+                                <button class="btn-font-scale" onclick="adjustGlobalFontSize(-1)">A-</button>
+                                <button class="btn-font-scale" onclick="adjustGlobalFontSize(1)">A+</button>
+                            </div>
+                        </div>
+
+                        <div class="settings-menu-row">
+                            <span><i class="fa-solid fa-bell"></i> Emergency Siren</span>
+                            <button class="settings-toggle-btn" id="sirenAudioToggleBtn" onclick="toggleEmergencySiren()">
+                                <span id="sirenBtnText">Siren</span>
+                            </button>
+                        </div>
+
+                        <div class="settings-menu-row">
+                            <span><i class="fa-solid fa-download"></i> Disaster App</span>
+                            <button id="pwaInstallBtn" class="settings-toggle-btn" onclick="triggerPWAInstall()">
+                                Install PWA
+                            </button>
+                        </div>
+                    </div>
                 </div>
 
-                <a href="/api-explorer" class="btn-pill btn-liquid liquid-glass"> API Hub</a>
-                <a href="/api/export-cap-alert" target="_blank" class="btn-pill btn-liquid liquid-glass">
-                     CAP v1.2
+                <!-- Launch 3D Cockpit CTA -->
+                <a href="{{ url_for('dashboard') }}" class="btn-clean-hud" title="Launch Interactive 3D Digital Twin Cockpit">
+                    <i class="fa-solid fa-cube"></i>
+                    <span>3D Cockpit</span>
                 </a>
-                <a href="{{ url_for('dashboard') }}" class="btn-pill btn-white">
-                    Launch 3D HUD
-                </a>
-                <button class="btn-pill btn-siren-pill" id="sirenAudioToggleBtn" onclick="toggleEmergencySiren()" title="Emergency Siren">
-                     <span id="sirenBtnText">Siren</span>
-                </button>
             </div>
         </header>
     </div>
+
 
     <!-- Main Content -->
     <main class="app-container page-{{ request.endpoint }}">
@@ -398,85 +481,87 @@
     </nav>
 
     
-    <!-- 3D Holographic Navigation Menu Drawer (Mobile) -->
+        <!-- 3D Holographic Navigation Menu Drawer (Mobile) -->
     <div id="mobile3DNavDrawer" class="mobile-3d-drawer">
         <div class="drawer-header">
             <div class="drawer-logo">
                 <img src="{{ url_for('static', filename='img/hydrosentinel_logo.svg') }}" alt="HydroSentinel AI" class="drawer-brand-logo-img">
-                <span style="font-weight: 800; color: #ffffff; font-size: 1.1rem; letter-spacing: -0.02em;">HydroSentinel AI™</span>
+                <span style="font-weight: 800; color: #ffffff; font-size: 1.05rem; letter-spacing: -0.02em;">HydroSentinel AI™</span>
             </div>
-            <button class="drawer-close-btn" onclick="toggleMobile3DNav()"></button>
-            <a href="{{ url_for('uav_feed') }}" class="drawer-3d-card {% if request.endpoint == 'uav_feed' %}active{% endif %}">
-                <div class="d3-icon"><img src="/static/img/badges/emblem_alerts.svg" style="width: 28px; height: 28px;"></div>
-                <div class="d3-info"><strong>UAV Drone Feed</strong><span>Live Thermal AI Vision</span></div>
-            </a>
-
+            <button class="drawer-close-btn" onclick="toggleMobile3DNav()" aria-label="Close Menu">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
         </div>
         <div class="drawer-links-grid">
-            <a href="{{ url_for('index') }}" class="drawer-3d-card {% if request.endpoint == 'index' %}active{% endif %}">
-                <div class="d3-icon"><img src="/static/img/badges/emblem_overview.svg" style="width: 28px; height: 28px;"></div>
+            <a href="{{ url_for('index') }}" class="drawer-3d-card {% if request.endpoint == 'index' %}active{% endif %}" onclick="toggleMobile3DNav()">
+                <div class="d3-icon"><img src="/static/img/badges/emblem_overview.svg" style="width: 24px; height: 24px;"></div>
                 <div class="d3-info"><strong>Global Command</strong><span>Live Neural Stream</span></div>
             </a>
-            <a href="{{ url_for('dashboard') }}" class="drawer-3d-card {% if request.endpoint == 'dashboard' %}active{% endif %}">
-                <div class="d3-icon"><img src="/static/img/badges/emblem_3dtwin.svg" style="width: 28px; height: 28px;"></div>
+            <a href="{{ url_for('dashboard') }}" class="drawer-3d-card {% if request.endpoint == 'dashboard' %}active{% endif %}" onclick="toggleMobile3DNav()">
+                <div class="d3-icon"><img src="/static/img/badges/emblem_3dtwin.svg" style="width: 24px; height: 24px;"></div>
                 <div class="d3-info"><strong>3D Digital Twin</strong><span>Terrain LiDAR & Inundation</span></div>
             </a>
-            <a href="{{ url_for('analytics') }}" class="drawer-3d-card {% if request.endpoint == 'analytics' %}active{% endif %}">
-                <div class="d3-icon"><img src="/static/img/badges/emblem_analytics.svg" style="width: 28px; height: 28px;"></div>
+            <a href="{{ url_for('early_warning') }}" class="drawer-3d-card {% if request.endpoint == 'early_warning' %}active{% endif %}" onclick="toggleMobile3DNav()">
+                <div class="d3-icon"><img src="/static/img/badges/emblem_alerts.svg" style="width: 24px; height: 24px;"></div>
+                <div class="d3-info"><strong>Early Warning</strong><span>Voice PA & Alerts</span></div>
+            </a>
+            <a href="{{ url_for('analytics') }}" class="drawer-3d-card {% if request.endpoint == 'analytics' %}active{% endif %}" onclick="toggleMobile3DNav()">
+                <div class="d3-icon"><img src="/static/img/badges/emblem_analytics.svg" style="width: 24px; height: 24px;"></div>
                 <div class="d3-info"><strong>Geospatial Analytics</strong><span>48h Hydrograph & Risk Radar</span></div>
             </a>
-            <a href="{{ url_for('predict_datapoint') }}" class="drawer-3d-card {% if request.endpoint == 'predict_datapoint' %}active{% endif %}">
-                <div class="d3-icon"><img src="/static/img/badges/emblem_simulator.svg" style="width: 28px; height: 28px;"></div>
-                <div class="d3-info"><strong>Scenario Simulator</strong><span>Real-Time 3D Basin & SHAP</span></div>
+            <a href="{{ url_for('physics_sandbox_page') }}" class="drawer-3d-card {% if request.endpoint == 'physics_sandbox_page' %}active{% endif %}" onclick="toggleMobile3DNav()">
+                <div class="d3-icon"><img src="/static/img/badges/emblem_simulator.svg" style="width: 24px; height: 24px;"></div>
+                <div class="d3-info"><strong>Physics Sandbox</strong><span>Fluid Dynamics Simulation</span></div>
             </a>
-            
-                
-                
-                
-                <a href="{{ url_for('physics_sandbox_page') }}" class="nav-link-pill {% if request.endpoint == 'physics_sandbox_page' %}active{% endif %}">
-                    <img src="/static/img/badges/emblem_simulator.svg" class="nav-micro-logo" alt="Physics">
-                    <span>Physics Lab</span>
-                </a>
-
-                <a href="{{ url_for('components_hub_page') }}" class="nav-link-pill {% if request.endpoint == 'components_hub_page' %}active{% endif %}">
-                    <img src="/static/img/badges/emblem_models.svg" class="nav-micro-logo" alt="Hub">
-                    <span>21st UI Hub</span>
-                </a>
-
-                <a href="{{ url_for('report_incident_page') }}" class="nav-link-pill {% if request.endpoint == 'report_incident_page' %}active{% endif %}">
-                    <img src="/static/img/badges/emblem_alerts.svg" class="nav-micro-logo" alt="SOS">
-                    <span>Citizen SOS</span>
-                </a>
-
-                <a href="{{ url_for('damage_assessment_page') }}" class="nav-link-pill {% if request.endpoint == 'damage_assessment_page' %}active{% endif %}">
-                    <img src="/static/img/badges/emblem_analytics.svg" class="nav-micro-logo" alt="Damage">
-                    <span>Damage Scan</span>
-                </a>
-
-                <a href="{{ url_for('early_warning') }}" class="drawer-3d-card {% if request.endpoint == 'early_warning' %}active{% endif %}">
-                <div class="d3-icon"><img src="/static/img/badges/emblem_alerts.svg" style="width: 28px; height: 28px;"></div>
-                <div class="d3-info"><strong>Civil Defense</strong><span>Voice PA & Siren Audio</span></div>
+            <a href="{{ url_for('satellites_page') }}" class="drawer-3d-card {% if request.endpoint == 'satellites_page' %}active{% endif %}" onclick="toggleMobile3DNav()">
+                <div class="d3-icon"><i class="fa-solid fa-satellite" style="font-size: 20px; color: #38bdf8;"></i></div>
+                <div class="d3-info"><strong>Satellites & Space</strong><span>NASA & ISRO Telemetry</span></div>
             </a>
-            <a href="{{ url_for('models_hub') }}" class="drawer-3d-card {% if request.endpoint == 'models_hub' %}active{% endif %}">
-                <div class="d3-icon"><img src="/static/img/badges/emblem_models.svg" style="width: 28px; height: 28px;"></div>
+            <a href="{{ url_for('predict_datapoint') }}" class="drawer-3d-card {% if request.endpoint == 'predict_datapoint' %}active{% endif %}" onclick="toggleMobile3DNav()">
+                <div class="d3-icon"><img src="/static/img/badges/emblem_simulator.svg" style="width: 24px; height: 24px;"></div>
+                <div class="d3-info"><strong>Scenario Simulator</strong><span>Basin Surge Scenarios</span></div>
+            </a>
+            <a href="{{ url_for('time_machine_page') }}" class="drawer-3d-card {% if request.endpoint == 'time_machine_page' %}active{% endif %}" onclick="toggleMobile3DNav()">
+                <div class="d3-icon"><i class="fa-solid fa-clock-rotate-left" style="font-size: 20px; color: #a855f7;"></i></div>
+                <div class="d3-info"><strong>Time Machine</strong><span>Historical Surge Replay</span></div>
+            </a>
+            <a href="{{ url_for('damage_assessment_page') }}" class="drawer-3d-card {% if request.endpoint == 'damage_assessment_page' %}active{% endif %}" onclick="toggleMobile3DNav()">
+                <div class="d3-icon"><i class="fa-solid fa-camera-retro" style="font-size: 20px; color: #f43f5e;"></i></div>
+                <div class="d3-info"><strong>Damage Scan</strong><span>CV Flood Impact Analysis</span></div>
+            </a>
+            <a href="{{ url_for('report_incident_page') }}" class="drawer-3d-card {% if request.endpoint == 'report_incident_page' %}active{% endif %}" onclick="toggleMobile3DNav()">
+                <div class="d3-icon"><i class="fa-solid fa-triangle-exclamation" style="font-size: 20px; color: #ef4444;"></i></div>
+                <div class="d3-info"><strong>Citizen SOS</strong><span>Instant Incident Ingestion</span></div>
+            </a>
+            <a href="{{ url_for('models_hub') }}" class="drawer-3d-card {% if request.endpoint == 'models_hub' %}active{% endif %}" onclick="toggleMobile3DNav()">
+                <div class="d3-icon"><img src="/static/img/badges/emblem_models.svg" style="width: 24px; height: 24px;"></div>
                 <div class="d3-info"><strong>AI Models Hub</strong><span>4-Architecture Matrix</span></div>
             </a>
-            <a href="{{ url_for('api_explorer') }}" class="drawer-3d-card {% if request.endpoint == 'api_explorer' %}active{% endif %}">
-                <div class="d3-icon"><img src="/static/img/badges/emblem_api.svg" style="width: 28px; height: 28px;"></div>
-                <div class="d3-info"><strong>API & Ingestion</strong><span>Webhooks & REST Endpoints</span></div>
+            <a href="{{ url_for('components_hub_page') }}" class="drawer-3d-card {% if request.endpoint == 'components_hub_page' %}active{% endif %}" onclick="toggleMobile3DNav()">
+                <div class="d3-icon"><i class="fa-solid fa-shapes" style="font-size: 20px; color: #10b981;"></i></div>
+                <div class="d3-info"><strong>21st UI Hub</strong><span>Design Primitives</span></div>
             </a>
-                        <a href="{{ url_for('feedback_page') }}" class="drawer-3d-card {% if request.endpoint == 'feedback_page' %}active{% endif %}">
-                <div class="d3-icon"><img src="/static/img/badges/emblem_reviews.svg" style="width: 28px; height: 28px;"></div>
-                <div class="d3-info"><strong>Community Reviews</strong><span>Satisfaction & Insights</span></div>
+            <a href="{{ url_for('feedback_page') }}" class="drawer-3d-card {% if request.endpoint == 'feedback_page' %}active{% endif %}" onclick="toggleMobile3DNav()">
+                <div class="d3-icon"><img src="/static/img/badges/emblem_reviews.svg" style="width: 24px; height: 24px;"></div>
+                <div class="d3-info"><strong>Community Reviews</strong><span>Testimonials & Scores</span></div>
             </a>
-            <a href="{{ url_for('about') }}" class="drawer-3d-card {% if request.endpoint == 'about' %}active{% endif %}">
-                <div class="d3-icon"><img src="/static/img/badges/emblem_team.svg" style="width: 28px; height: 28px;"></div>
+            <a href="{{ url_for('about') }}" class="drawer-3d-card {% if request.endpoint == 'about' %}active{% endif %}" onclick="toggleMobile3DNav()">
+                <div class="d3-icon"><img src="/static/img/badges/emblem_team.svg" style="width: 24px; height: 24px;"></div>
                 <div class="d3-info"><strong>About & Physics</strong><span>Team Quantum Minds</span></div>
             </a>
         </div>
+        
+        <div class="drawer-bottom-actions">
+            <button type="button" class="mob-drawer-btn mob-sms" onclick="toggleMobile3DNav(); openGlobalZeroKeySmsModal();">
+                <i class="fa-solid fa-mobile-screen"></i> Send Phone SMS
+            </button>
+            <button type="button" class="mob-drawer-btn mob-email" onclick="toggleMobile3DNav(); openGlobalZeroKeyEmailModal();">
+                <i class="fa-solid fa-paper-plane"></i> Send Direct Email
+            </button>
+        </div>
     </div>
 
-    
+
     <!-- Floating Visitor Feedback Pill Button with Aesthetic SVG Emblem -->
     <button id="floatingFeedbackBtn" class="floating-feedback-pill" onclick="openFeedbackModal()" title="Share Feedback & Suggestions">
         <img src="/static/img/badges/emblem_reviews.svg" class="pill-logo-icon" alt="Feedback">
@@ -1435,6 +1520,49 @@ async function sendGlobalZeroKeySms(e) {
     }
 }
 </script>
+
+
+    <script>
+    // Clean Navbar Dropdown Controllers
+    function toggleNavDropdown(e) {
+        if (e) e.stopPropagation();
+        const wrap = document.getElementById('navToolsDropdown');
+        if (!wrap) return;
+        const isOpen = wrap.classList.contains('open');
+        closeAllNavDropdowns();
+        if (!isOpen) wrap.classList.add('open');
+    }
+
+    function toggleDispatchDropdown(e) {
+        if (e) e.stopPropagation();
+        const wrap = document.getElementById('navDispatchWrap');
+        if (!wrap) return;
+        const isOpen = wrap.classList.contains('open');
+        closeAllNavDropdowns();
+        if (!isOpen) wrap.classList.add('open');
+    }
+
+    function toggleSettingsDropdown(e) {
+        if (e) e.stopPropagation();
+        const wrap = document.getElementById('navSettingsWrap');
+        if (!wrap) return;
+        const isOpen = wrap.classList.contains('open');
+        closeAllNavDropdowns();
+        if (!isOpen) wrap.classList.add('open');
+    }
+
+    function closeAllNavDropdowns() {
+        document.querySelectorAll('.nav-dropdown-wrapper.open, .nav-alert-dispatch-wrap.open, .nav-settings-wrapper.open').forEach(el => {
+            el.classList.remove('open');
+        });
+    }
+
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('.nav-dropdown-wrapper') && !e.target.closest('.nav-alert-dispatch-wrap') && !e.target.closest('.nav-settings-wrapper')) {
+            closeAllNavDropdowns();
+        }
+    });
+    </script>
 
 </body>
 </html>

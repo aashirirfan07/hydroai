@@ -1,3 +1,4 @@
+from src.open_data_service import open_data_service
 from src.indian_telemetry_service import indian_service
 from src.nasa_service import nasa_service
 import urllib.parse
@@ -1151,13 +1152,18 @@ def nasa_live_page():
 
 @app.route('/api/space-telemetry/live', methods=['GET'])
 def api_space_telemetry_live():
-    '''Returns combined real-time NASA Earth Observation + Indian ISRO/IMD/CWC Telemetry.'''
+    '''Returns combined real-time NASA Earth Observation + Indian ISRO/IMD/CWC Telemetry + Open-Meteo & USGS Mesh.'''
     station_id = request.args.get('station', 'STN-KD-05')
+    stn = live_service.stations.get(station_id, {})
+    lat = float(stn.get('latitude', stn.get('lat', 30.7346)))
+    lon = float(stn.get('longitude', stn.get('lon', 79.0669)))
+
     nasa_events = nasa_service.get_realtime_events(limit=5)
     nasa_gpm = nasa_service.get_gpm_precipitation_feed(live_service.stations)
     isro_telemetry = indian_service.get_isro_mosdac_telemetry(station_id)
     imd_radar = indian_service.get_imd_doppler_radar(station_id)
     cwc_network = indian_service.get_cwc_river_network()
+    open_mesh = open_data_service.get_unified_mesh(station_id=station_id, lat=lat, lon=lon)
     
     return jsonify({
         "status": "SUCCESS",
@@ -1172,8 +1178,52 @@ def api_space_telemetry_live():
             "imd_doppler_radar": imd_radar,
             "cwc_river_network": cwc_network
         },
+        "open_mesh": open_mesh,
         "timestamp": datetime.now(timezone.utc).isoformat()
     }), 200
+
+@app.route('/api/open-data/mesh', methods=['GET'])
+def api_open_data_mesh():
+    '''Consolidated multi-agency open-source telemetry mesh (GloFAS + CAPE Weather + USGS Earthquakes + DEM).'''
+    station_id = request.args.get('station', 'STN-KD-05')
+    stn = live_service.stations.get(station_id, {})
+    lat = float(request.args.get('lat', stn.get('latitude', stn.get('lat', 30.7346))))
+    lon = float(request.args.get('lon', stn.get('longitude', stn.get('lon', 79.0669))))
+    mesh = open_data_service.get_unified_mesh(station_id=station_id, lat=lat, lon=lon)
+    return jsonify(mesh), 200
+
+@app.route('/api/open-data/flood-forecast', methods=['GET'])
+def api_open_data_flood():
+    '''GloFAS river discharge forecast from Open-Meteo Flood API.'''
+    lat = float(request.args.get('lat', 30.7346))
+    lon = float(request.args.get('lon', 79.0669))
+    days = int(request.args.get('days', 7))
+    forecast = open_data_service.get_glofas_flood_forecast(lat=lat, lon=lon, days=days)
+    return jsonify(forecast), 200
+
+@app.route('/api/open-data/severe-weather', methods=['GET'])
+def api_open_data_severe_weather():
+    '''High-resolution severe convective weather & CAPE cloudburst index from Open-Meteo.'''
+    lat = float(request.args.get('lat', 30.7346))
+    lon = float(request.args.get('lon', 79.0669))
+    weather = open_data_service.get_severe_weather_and_cape(lat=lat, lon=lon)
+    return jsonify(weather), 200
+
+@app.route('/api/open-data/seismic-hazards', methods=['GET'])
+def api_open_data_seismic():
+    '''Real-time USGS earthquake feed for Himalayan landslide & GLOF trigger detection.'''
+    min_mag = float(request.args.get('min_mag', 2.5))
+    limit = int(request.args.get('limit', 10))
+    seismic = open_data_service.get_usgs_seismic_hazards(min_magnitude=min_mag, limit=limit)
+    return jsonify(seismic), 200
+
+@app.route('/api/open-data/elevation', methods=['GET'])
+def api_open_data_elevation():
+    '''90m Digital Elevation Model (DEM) topographic altitude from Open-Meteo.'''
+    lat = float(request.args.get('lat', 30.7346))
+    lon = float(request.args.get('lon', 79.0669))
+    elev = open_data_service.get_topographic_elevation(lat=lat, lon=lon)
+    return jsonify(elev), 200
 
 @app.route('/api/nasa/realtime-events', methods=['GET'])
 def api_nasa_realtime_events():
