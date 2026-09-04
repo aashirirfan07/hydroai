@@ -136,11 +136,78 @@
         });
     };
 
+    // 3. Dynamic Cursor Spotlight Tracker for Cybernetic Backdrop Grid
+    let lastSpotlightRaf = null;
+    window.addEventListener('mousemove', function(e) {
+        if (lastSpotlightRaf) return;
+        lastSpotlightRaf = requestAnimationFrame(function() {
+            const x = e.clientX + 'px';
+            const y = e.clientY + 'px';
+            document.documentElement.style.setProperty('--spotlight-x', x);
+            document.documentElement.style.setProperty('--spotlight-y', y);
+            lastSpotlightRaf = null;
+        });
+    }, { passive: true });
+
+    // 4. Tactical Blueprint Grid Mode Controller
+    const GRID_MODES = ['tactical', 'minimal', 'off'];
+    window.setGridDisplayMode = function(mode) {
+        if (!GRID_MODES.includes(mode)) mode = 'tactical';
+        GRID_MODES.forEach(m => document.body.classList.remove('grid-mode-' + m));
+        document.body.classList.add('grid-mode-' + mode);
+        try { localStorage.setItem('hydrosentinel_grid_mode', mode); } catch(e){}
+
+        const labels = {
+            'tactical': 'Tactical',
+            'minimal': 'Minimal',
+            'off': 'Off'
+        };
+
+        const btnSpan = document.getElementById('gridModeBtnText');
+        if (btnSpan) {
+            btnSpan.textContent = `📐 ${labels[mode]}`;
+        }
+        const navPill = document.getElementById('navGridPillLabel');
+        if (navPill) {
+            navPill.textContent = labels[mode];
+        }
+        const quickBtn = document.getElementById('quickGridToggleBtn');
+        if (quickBtn) {
+            quickBtn.setAttribute('title', `Blueprint Grid: ${labels[mode]} (Click to cycle)`);
+            if (mode === 'off') {
+                quickBtn.style.opacity = '0.45';
+                quickBtn.style.borderColor = 'rgba(255,255,255,0.12)';
+            } else if (mode === 'minimal') {
+                quickBtn.style.opacity = '0.8';
+                quickBtn.style.borderColor = 'rgba(255,255,255,0.3)';
+            } else {
+                quickBtn.style.opacity = '1';
+                quickBtn.style.borderColor = 'rgba(56,189,248,0.5)';
+            }
+        }
+    };
+
+    window.cycleGridMode = function() {
+        const current = (function() {
+            try { return localStorage.getItem('hydrosentinel_grid_mode') || 'tactical'; } catch(e){ return 'tactical'; }
+        })();
+        const nextIdx = (GRID_MODES.indexOf(current) + 1) % GRID_MODES.length;
+        window.setGridDisplayMode(GRID_MODES[nextIdx]);
+    };
+
     // Initialize on DOM load and when tabs change
+    const initialGridMode = (function() {
+        try { return localStorage.getItem('hydrosentinel_grid_mode') || 'tactical'; } catch(e){ return 'tactical'; }
+    })();
+
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initLovable3DTilt);
+        document.addEventListener('DOMContentLoaded', () => {
+            initLovable3DTilt();
+            window.setGridDisplayMode(initialGridMode);
+        });
     } else {
         initLovable3DTilt();
+        window.setGridDisplayMode(initialGridMode);
     }
 
     // Re-bind when dynamic content is inserted

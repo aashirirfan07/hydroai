@@ -18,6 +18,7 @@ let current3DMode = 'realistic';
 let currentAtmosphere = 'cloudburst';
 let radarSweepLine = null;
 let radarSweepAngle = 0;
+let tacticalGridGroup = null;
 
 document.addEventListener('DOMContentLoaded', () => {
     init3DScene();
@@ -88,12 +89,33 @@ function init3DScene() {
     createDopplerRadarSweep(scene);
     buildHydrodynamicStreamlines();
 
-    // Add 3D Grid back (Cybernetic Wireframe Grid)
-    const gridHelper = new THREE.GridHelper(100, 50, 0x00f0ff, 0x005577);
-    gridHelper.position.y = -4.4; // Just below the lowest valley point
-    gridHelper.material.transparent = true;
-    gridHelper.material.opacity = 0.3;
-    scene.add(gridHelper);
+    // 10. Build 3D Tactical Holographic Coordinate Grid Group
+    tacticalGridGroup = new THREE.Group();
+    tacticalGridGroup.name = 'tacticalGridGroup';
+
+    // Primary Floor Grid (Cyan Tactical Blueprint)
+    const baseGridHelper = new THREE.GridHelper(120, 60, 0x00f0ff, 0x0284c7);
+    baseGridHelper.position.y = -4.4; // Just below lowest valley point
+    baseGridHelper.material.transparent = true;
+    baseGridHelper.material.opacity = 0.42;
+    tacticalGridGroup.add(baseGridHelper);
+
+    // Warning Stage Elevation Grid Ring (Amber Contour y = 2.0)
+    const warningGrid = new THREE.GridHelper(90, 30, 0xf59e0b, 0x78350f);
+    warningGrid.position.y = 2.0;
+    warningGrid.material.transparent = true;
+    warningGrid.material.opacity = 0.22;
+    tacticalGridGroup.add(warningGrid);
+
+    // High Peak Danger Grid Ring (Crimson Contour y = 7.5)
+    const peakGrid = new THREE.GridHelper(60, 20, 0xef4444, 0x7f1d1d);
+    peakGrid.position.y = 7.5;
+    peakGrid.material.transparent = true;
+    peakGrid.material.opacity = 0.18;
+    tacticalGridGroup.add(peakGrid);
+
+    scene.add(tacticalGridGroup);
+    window.tacticalGridGroup = tacticalGridGroup;
 
 
     window.addEventListener('resize', onWindowResize);
@@ -175,6 +197,26 @@ window.setLovable3DCameraPreset = function(preset) {
         btn.classList.remove('active');
         if (btn.dataset.preset === preset) btn.classList.add('active');
     });
+};
+
+window.toggleTacticalGrid = function(forceState) {
+    if (!window.tacticalGridGroup) return;
+    const newState = (forceState !== undefined) ? forceState : !window.tacticalGridGroup.visible;
+    window.tacticalGridGroup.visible = newState;
+    const btn = document.getElementById('btnToggleTacticalGrid');
+    if (btn) {
+        if (newState) {
+            btn.classList.add('active');
+            btn.innerHTML = '📐 3D Grid: ON';
+            btn.style.borderColor = 'rgba(56, 189, 248, 0.8)';
+            btn.style.color = '#38bdf8';
+        } else {
+            btn.classList.remove('active');
+            btn.innerHTML = '📐 3D Grid: OFF';
+            btn.style.borderColor = 'rgba(255, 255, 255, 0.15)';
+            btn.style.color = '#94a3b8';
+        }
+    }
 };
 
 function setupLighting() {

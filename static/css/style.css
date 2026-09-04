@@ -2128,18 +2128,125 @@ body, p, .lead-text {
    MOTIONSITES.AI DOT-GRID SPOTLIGHT & HIGH-VELOCITY BENTO STYLES
    ========================================================================== */
 
-/* MotionSites Micro-Dot Grid with Cursor Spotlight */
+/* Tactical Dual-Scale Blueprint & Cyber Grid with Dynamic Spotlight */
 .cyber-grid-backdrop {
   --spotlight-x: 50vw;
-  --spotlight-y: 50vh;
+  --spotlight-y: 35vh;
   position: fixed;
   inset: 0;
+  background-color: #030712;
   background-image: 
-    radial-gradient(circle at var(--spotlight-x) var(--spotlight-y), rgba(0, 240, 255, 0.12) 0%, transparent 450px),
-    radial-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px);
-  background-size: 100% 100%, 32px 32px;
+    /* Cursor / Ambient Radial Spotlight */
+    radial-gradient(circle at var(--spotlight-x) var(--spotlight-y), rgba(56, 189, 248, 0.18) 0%, transparent 550px),
+    /* Major Tactical Grid Lines (144px) */
+    linear-gradient(to right, rgba(56, 189, 248, 0.14) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(56, 189, 248, 0.14) 1px, transparent 1px),
+    /* Minor Precision Grid Lines (36px) */
+    linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 100% 100%, 144px 144px, 144px 144px, 36px 36px, 36px 36px;
   pointer-events: none;
   z-index: 0;
+  opacity: 0.95;
+  transition: opacity 0.3s ease, background-size 0.3s ease;
+}
+
+/* User-Selectable Grid Intensity Modes */
+body.grid-mode-tactical .cyber-grid-backdrop {
+  opacity: 1 !important;
+  background-size: 100% 100%, 120px 120px, 120px 120px, 30px 30px, 30px 30px;
+}
+
+body.grid-mode-minimal .cyber-grid-backdrop {
+  opacity: 0.55 !important;
+  background-image: 
+    radial-gradient(circle at var(--spotlight-x) var(--spotlight-y), rgba(56, 189, 248, 0.12) 0%, transparent 450px),
+    linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 100% 100%, 40px 40px, 40px 40px;
+}
+
+body.grid-mode-off .cyber-grid-backdrop {
+  opacity: 0 !important;
+}
+
+/* Tactical Bento Grid Layout Architecture */
+.bento-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 1.25rem;
+}
+
+.bento-col-12 { grid-column: span 12; }
+.bento-col-8  { grid-column: span 8; }
+.bento-col-6  { grid-column: span 6; }
+.bento-col-4  { grid-column: span 4; }
+.bento-col-3  { grid-column: span 3; }
+
+@media (max-width: 1024px) {
+  .bento-col-8, .bento-col-6, .bento-col-4, .bento-col-3 {
+    grid-column: span 6;
+  }
+}
+@media (max-width: 640px) {
+  .bento-col-8, .bento-col-6, .bento-col-4, .bento-col-3 {
+    grid-column: span 12;
+  }
+}
+
+/* Tactical Corner Crosshairs for Cards */
+.card, .panel, .spatial-card, .station-glass-card, .bento-card {
+  position: relative;
+}
+
+.card::before, .spatial-card::before, .station-glass-card::before, .bento-card::before {
+  content: '+';
+  position: absolute;
+  top: 5px;
+  left: 8px;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.72rem;
+  color: rgba(56, 189, 248, 0.45);
+  line-height: 1;
+  pointer-events: none;
+  z-index: 2;
+  transition: color 0.25s ease, transform 0.25s ease;
+}
+
+.card::after, .spatial-card::after, .station-glass-card::after, .bento-card::after {
+  content: '+';
+  position: absolute;
+  bottom: 5px;
+  right: 8px;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.72rem;
+  color: rgba(56, 189, 248, 0.45);
+  line-height: 1;
+  pointer-events: none;
+  z-index: 2;
+  transition: color 0.25s ease, transform 0.25s ease;
+}
+
+.card:hover::before, .spatial-card:hover::before, .station-glass-card:hover::before, .bento-card:hover::before,
+.card:hover::after, .spatial-card:hover::after, .station-glass-card:hover::after, .bento-card:hover::after {
+  color: rgba(56, 189, 248, 0.95);
+  transform: scale(1.15);
+}
+
+/* Tactical Grid Coordinate Pill */
+.grid-coordinate-tag {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.65rem;
+  color: rgba(56, 189, 248, 0.85);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: rgba(56, 189, 248, 0.08);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
 }
 
 /* MotionSites Bento Grid Card Edge Glare */
@@ -2637,8 +2744,13 @@ body {
 
 @media (max-width: 768px) {
   /* Eliminate heavy compositing layers */
-  #ambient3DCanvas, #cursorRippleCanvas, .cyber-grid-backdrop {
+  #ambient3DCanvas, #cursorRippleCanvas {
     display: none !important;
+  }
+  .cyber-grid-backdrop {
+    display: block !important;
+    opacity: 0.8 !important;
+    background-size: 100% 100%, 120px 120px, 120px 120px, 30px 30px, 30px 30px;
   }
 
   body {

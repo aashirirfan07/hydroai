@@ -232,6 +232,12 @@
                     <kbd class="kbd-clean">⌘K</kbd>
                 </button>
 
+                <!-- Blueprint Grid Quick Mode Pill -->
+                <button type="button" class="btn-palette-trigger-clean" id="quickGridToggleBtn" onclick="cycleGridMode()" title="Cycle Blueprint Grid (Tactical / Minimal / Off)">
+                    <i class="fa-solid fa-border-all"></i>
+                    <span id="navGridPillLabel">Tactical</span>
+                </button>
+
                 <!-- Environmental Controls Popover -->
                 <div class="nav-settings-wrapper" id="navSettingsWrap">
                     <button type="button" class="btn-clean-settings" onclick="toggleSettingsDropdown(event)" title="Atmosphere & Interface Controls">
@@ -239,6 +245,13 @@
                     </button>
                     <div class="settings-dropdown-menu liquid-glass">
                         <div class="settings-menu-header">Environmental Controls</div>
+                        
+                        <div class="settings-menu-row">
+                            <span><i class="fa-solid fa-border-all"></i> Blueprint Grid</span>
+                            <button id="globalGridToggleBtn" class="settings-toggle-btn" onclick="cycleGridMode()" title="Cycle Blueprint Grid (Tactical / Minimal / Off)">
+                                <span id="gridModeBtnText">📐 Tactical</span>
+                            </button>
+                        </div>
                         
                         <div class="settings-menu-row">
                             <span><i class="fa-solid fa-volume-high"></i> Audio Haptics</span>
