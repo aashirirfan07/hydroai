@@ -568,3 +568,46 @@ def test_space_telemetry_live_with_open_mesh(client):
     assert d['status'] == 'SUCCESS'
     assert 'open_mesh' in d
     assert d['open_mesh']['zero_key_compliant'] is True
+
+
+def test_evacuation_route_default(client):
+    """Tests AI evacuation route generation for regional catchments."""
+    res = client.get('/api/evacuation-route?station=STN-KD-05')
+    assert res.status_code == 200
+    d = res.get_json()
+    assert d['status'] == 'SUCCESS'
+    assert d['station_id'] == 'STN-KD-05'
+    assert 'primary_shelter' in d
+    assert 'waypoints' in d
+    assert len(d['waypoints']) >= 2
+    assert d['estimated_trek_time_minutes'] > 0
+    assert 'vhf_frequency_mhz' in d
+
+
+def test_evacuation_route_custom_coords(client):
+    """Tests dynamic evacuation corridor from GPS coordinates."""
+    res = client.get('/api/evacuation-route?lat=30.55&lon=79.56')
+    assert res.status_code == 200
+    d = res.get_json()
+    assert d['status'] == 'SUCCESS'
+    assert 'calculated_from_gps' in d
+    assert 'waypoints' in d
+
+
+def test_offline_survival_card_page(client):
+    """Tests printable offline emergency survival card HTML render."""
+    res = client.get('/offline-survival-card?station=STN-KD-05')
+    assert res.status_code == 200
+    html = res.data.decode('utf-8')
+    assert 'TACTICAL SURVIVAL BRIEFING CARD' in html
+    assert 'Sector Civil Defense Bunker Alpha' in html
+    assert '148.550 MHz' in html
+
+
+def test_offline_survival_card_api(client):
+    """Tests offline survival card API endpoint."""
+    res = client.get('/api/offline-survival-card?station=STN-AL-02')
+    assert res.status_code == 200
+    d = res.get_json()
+    assert d['station_id'] == 'STN-AL-02'
+    assert 'Joshimath Cantt High Ground Safe Zone' in d['primary_shelter']

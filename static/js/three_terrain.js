@@ -903,3 +903,164 @@ function toggleStreamlines() {
 function setStreamlineVelocity(val) {
     streamlineSpeedMultiplier = parseFloat(val);
 }
+
+
+// ==============================================================================
+// ⛰️ SLOPE HAZARD HEATMAP & 3D EVACUATION PATH SUITE
+// ==============================================================================
+let slopeHazardActive = false;
+let savedTerrainVertexColors = null;
+let evacPathLine = null;
+let evacWaypointMarkers = [];
+
+function toggleSlopeHazardHeatmap() {
+    if (!terrainMesh || !terrainMesh.geometry) return;
+    const geo = terrainMesh.geometry;
+    slopeHazardActive = !slopeHazardActive;
+
+    const count = geo.attributes.position.count;
+    if (!geo.attributes.color) {
+        geo.setAttribute('color', new THREE.BufferAttribute(new Float32Array(count * 3), 3));
+    }
+
+    const pos = geo.attributes.position.array;
+    const col = geo.attributes.color.array;
+
+    if (slopeHazardActive) {
+        // Save original colors if not already saved
+        if (!savedTerrainVertexColors) {
+            savedTerrainVertexColors = new Float32Array(col);
+        }
+
+        // Color based on height gradient and altitude
+        for (let i = 0; i < count; i++) {
+            const idx = i * 3;
+            const y = pos[idx + 1];
+            const distFromCenter = Math.sqrt(pos[idx] * pos[idx] + pos[idx + 2] * pos[idx + 2]);
+            const steepnessRatio = Math.abs(y) / (distFromCenter + 0.1);
+
+            if (y > 18 || steepnessRatio > 0.85) {
+                // High Landslide / Rockfall Risk (>35 degrees) -> Crimson Red
+                col[idx] = 0.94;     // R
+                col[idx + 1] = 0.22; // G
+                col[idx + 2] = 0.22; // B
+            } else if (y > 9 || steepnessRatio > 0.45) {
+                // Moderate Risk -> Amber / Orange
+                col[idx] = 0.98;
+                col[idx + 1] = 0.65;
+                col[idx + 2] = 0.12;
+            } else {
+                // Low Risk / Safe Ridge Traversal -> Emerald Neon
+                col[idx] = 0.10;
+                col[idx + 1] = 0.85;
+                col[idx + 2] = 0.50;
+            }
+        }
+
+        if (terrainMesh.material) {
+            terrainMesh.material.vertexColors = true;
+            terrainMesh.material.needsUpdate = true;
+        }
+    } else {
+        // Restore standard elevation gradient
+        if (savedTerrainVertexColors) {
+            col.set(savedTerrainVertexColors);
+        } else {
+            for (let i = 0; i < count; i++) {
+                const idx = i * 3;
+                const y = pos[idx + 1];
+                if (y < 2) {
+                    col[idx] = 0.12; col[idx + 1] = 0.35; col[idx + 2] = 0.20;
+                } else if (y < 12) {
+                    col[idx] = 0.40; col[idx + 1] = 0.45; col[idx + 2] = 0.35;
+                } else {
+                    col[idx] = 0.85; col[idx + 1] = 0.90; col[idx + 2] = 0.95;
+                }
+            }
+        }
+    }
+
+    geo.attributes.color.needsUpdate = true;
+
+    const btn = document.getElementById('btnToggleSlopeHazard');
+    if (btn) {
+        btn.innerHTML = slopeHazardActive ? '⛰️ Slope Hazard: ACTIVE' : '⛰️ Slope Hazard Heatmap';
+        btn.classList.toggle('active', slopeHazardActive);
+    }
+}
+
+function toggle3DEvacuationPath(forceState = null) {
+    if (!scene) return;
+    const shouldShow = forceState !== null ? forceState : (evacPathLine ? !evacPathLine.visible : true);
+
+    if (!evacPathLine) {
+        // Construct 3D spline curve winding up mountain slope away from floodwater
+        const curvePoints = [
+            new THREE.Vector3(0, 1.8, 0),         // Valley floor riverbed
+            new THREE.Vector3(5, 5.2, -6),        // Lateral spur
+            new THREE.Vector3(12, 12.5, -14),     // Highland contour ridge
+            new THREE.Vector3(18, 19.8, -20),     // Intermediate plateau
+            new THREE.Vector3(26, 25.5, -28)      // Bunker Alpha Safe Zone
+        ];
+
+        const curve = new THREE.CatmullRomCurve3(curvePoints);
+        const points = curve.getPoints(80);
+        const pathGeo = new THREE.BufferGeometry().setFromPoints(points);
+
+        const pathMat = new THREE.LineDashedMaterial({
+            color: 0x10b981, // Emerald neon
+            linewidth: 3,
+            scale: 1,
+            dashSize: 1.5,
+            gapSize: 0.8
+        });
+
+        evacPathLine = new THREE.Line(pathGeo, pathMat);
+        evacPathLine.computeLineDistances();
+        scene.add(evacPathLine);
+
+        // Add 3D Waypoint checkpoint beacons
+        curvePoints.forEach((pt, idx) => {
+            const beaconGeo = new THREE.SphereGeometry(idx === 0 ? 0.8 : (idx === curvePoints.length - 1 ? 1.4 : 0.6), 16, 16);
+            const beaconMat = new THREE.MeshBasicMaterial({
+                color: idx === 0 ? 0xef4444 : (idx === curvePoints.length - 1 ? 0x10b981 : 0x06b6d4),
+                wireframe: true
+            });
+            const mesh = new THREE.Mesh(beaconGeo, beaconMat);
+            mesh.position.copy(pt);
+            scene.add(mesh);
+            evacWaypointMarkers.push(mesh);
+        });
+    }
+
+    if (evacPathLine) evacPathLine.visible = shouldShow;
+    evacWaypointMarkers.forEach(m => m.visible = shouldShow);
+
+    const btn = document.getElementById('btnToggleEvacPath');
+    if (btn) {
+        btn.innerHTML = shouldShow ? '🧭 Evac Corridor: ON' : '🧭 3D Evac Corridor';
+        btn.classList.toggle('active', shouldShow);
+    }
+}
+
+function setFloodSurge(targetMeters = 5.0) {
+    const slider = document.getElementById('floodWaterSlider');
+    if (slider) slider.value = targetMeters;
+    if (typeof onFloodSliderChange === 'function') {
+        onFloodSliderChange(targetMeters);
+    }
+    // Color shift if surge exceeds critical 4m
+    if (waterMesh && waterMesh.material) {
+        if (targetMeters >= 4.0) {
+            waterMesh.material.color.setHex(0xb91c1c); // Turbid mud crimson
+        } else {
+            waterMesh.material.color.setHex(0x0088cc); // Standard alpine blue
+        }
+    }
+}
+
+// Global exposure
+window.toggleSlopeHazardHeatmap = toggleSlopeHazardHeatmap;
+window.toggle3DEvacuationPath = toggle3DEvacuationPath;
+window.setFloodSurge = setFloodSurge;
+window.onFloodSliderChange = onFloodSliderChange;

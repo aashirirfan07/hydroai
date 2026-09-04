@@ -1,4 +1,5 @@
 from src.open_data_service import open_data_service
+from src.evacuation_service import evacuation_service
 from src.indian_telemetry_service import indian_service
 from src.nasa_service import nasa_service
 import urllib.parse
@@ -1629,6 +1630,44 @@ def generate_tactical_playbook():
     }
     return jsonify(playbook), 200
 
+
+
+# ==============================================================================
+# 🧭 AI EVACUATION CORRIDORS & SURVIVAL BRIEFS
+# ==============================================================================
+@app.route('/api/evacuation-route', methods=['GET', 'POST'])
+def api_evacuation_route():
+    '''Calculates optimized mountain escape corridor, waypoints, safe bridges & VHF frequencies.'''
+    station_id = request.args.get('station', 'STN-KD-05')
+    lat = request.args.get('lat', type=float)
+    lon = request.args.get('lon', type=float)
+
+    if request.method == 'POST' and request.is_json:
+        body = request.get_json() or {}
+        station_id = body.get('station_id', station_id)
+        if 'lat' in body and 'lon' in body:
+            lat = float(body['lat'])
+            lon = float(body['lon'])
+
+    if lat is not None and lon is not None:
+        corridor = evacuation_service.compute_custom_route(lat, lon)
+    else:
+        corridor = evacuation_service.get_corridor_for_station(station_id)
+
+    return jsonify(corridor), 200
+
+@app.route('/offline-survival-card', methods=['GET'])
+def offline_survival_card():
+    '''Renders high-visibility, printable, zero-network survival briefing card.'''
+    station_id = request.args.get('station', 'STN-KD-05')
+    corridor = evacuation_service.get_corridor_for_station(station_id)
+    return render_template('offline_survival_card.html', corridor=corridor)
+
+@app.route('/api/offline-survival-card', methods=['GET'])
+def api_offline_survival_card():
+    station_id = request.args.get('station', 'STN-KD-05')
+    corridor = evacuation_service.get_corridor_for_station(station_id)
+    return jsonify(corridor), 200
 
 
 # ==============================================================================

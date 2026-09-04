@@ -36,7 +36,7 @@
     <button class="tab-btn active" onclick="switchDashboardTab('twin')"> 3D Digital Twin</button>
     <button class="tab-btn" onclick="switchDashboardTab('alert_sender')"> Phone & Email Alert Sender</button>
     <button class="tab-btn" onclick="switchDashboardTab('xai')"> XAI Attribution Radar</button>
-    <button class="tab-btn" onclick="switchDashboardTab('safe_zones')"> Safe Zones & Evacuation</button>
+    <button class="tab-btn" onclick="switchDashboardTab('safe_zones')">🧭 AI Evacuation & Rescue Hub</button>
     <button class="tab-btn" onclick="switchDashboardTab('space_telemetry')">🛰️ NASA, ISRO & Open Data Mesh</button>
 </div>
 
@@ -124,6 +124,21 @@
                 <div class="nasa-direct-btn-wrap">
                     <button type="button" class="btn-nasa-direct-glow" onclick="switchDashboardTab('space_telemetry', this)" title="Open Real-Time NASA EONET, GPM & ISRO Telemetry Deck">
                         <span class="live-dot-pulse"></span> 🛰️ NASA Telemetry
+                    </button>
+                </div>
+
+                <div class="hazard-tools-btn-group" style="display: flex; gap: 0.35rem; align-items: center;">
+                    <button type="button" id="btnToggleSlopeHazard" class="btn-cam-preset" onclick="toggleSlopeHazardHeatmap()" title="Highlight steep slope faces prone to landslides & rockfalls">
+                        ⛰️ Slope Hazard
+                    </button>
+                    <button type="button" id="btnToggleEvacPath" class="btn-cam-preset" onclick="toggle3DEvacuationPath()" title="Render 3D High-Ground Escape Corridor on terrain">
+                        🧭 3D Evac Corridor
+                    </button>
+                    <button type="button" class="btn-cam-preset" onclick="setFloodSurge(5.5)" title="Simulate +3m Inundation Surge">
+                        🌊 +3m Surge
+                    </button>
+                    <button type="button" id="btnCockpitSiren" class="btn-cam-preset" style="border-color: rgba(239,68,68,0.5); color: #fca5a5;" onclick="startEmergencySirenAndVoice('{{ current_station }}', 'bilingual')" title="Sound Web Audio acoustic siren and speak Hindi/English evacuation broadcast">
+                        📢 Sound Voice Siren
                     </button>
                 </div>
                 <div class="sim-actions-group" style="display: flex; gap: 0.5rem; margin-left: auto;">
@@ -586,24 +601,193 @@
 </div>
 
 
-<!-- TAB 4: SAFE ZONES -->
+<!-- TAB 4: AI TACTICAL EVACUATION & RESCUE HUB -->
 <div id="tab-safe_zones" class="tab-content">
-    <div class="card p-4">
-        <div class="card-header mb-3">
-            <h3> Designated Safe Zones & Evacuation Altitudes</h3>
-            <span class="badge badge-success">NDRF Verified</span>
-        </div>
-        <div style="display: flex; flex-direction: column; gap: 1rem;">
-            {% for sz in data.safe_zones %}
-            <div class="safe-zone-mini">
-                <div>
-                    <strong> {{ sz.name }}</strong>
-                    <small>Elevation: {{ sz.elevation_m }}m | Distance: {{ sz.distance_km }} km</small>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 1.5rem; margin-top: 1rem;">
+        
+        <!-- SECTION 1: AI EVACUATION ROUTE NAVIGATOR -->
+        <div class="card p-4 liquid-glass" style="border: 1px solid rgba(16, 185, 129, 0.4); background: rgba(3, 7, 18, 0.85);">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div class="d-flex align-items-center gap-2">
+                    <span class="pulse-beacon" style="background: #10b981;"></span>
+                    <h3 style="font-family: var(--font-display); font-size: 1.15rem; color: #ffffff; margin: 0;">
+                        🧭 AI Safe Escape Corridor Navigator
+                    </h3>
                 </div>
-                <span class="badge badge-info">{{ sz.capacity }} Persons</span>
+                <span class="badge" style="background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid #10b981; font-size: 0.72rem;">
+                    TOPOGRAPHIC PATHFINDER
+                </span>
             </div>
-            {% endfor %}
+
+            <p style="color: rgba(255, 255, 255, 0.75); font-size: 0.82rem; margin-bottom: 1rem;">
+                Calculates optimized escape waypoints avoiding gorge floodplains, inundated culverts, and high-gradient debris paths:
+            </p>
+
+            <div class="d-flex gap-2 mb-3">
+                <select id="evacStationSelect" class="custom-select" style="background: rgba(15, 23, 42, 0.8); color: #ffffff; border: 1px solid rgba(255,255,255,0.2); padding: 0.4rem 0.8rem; border-radius: 6px; font-size: 0.82rem; flex: 1;">
+                    <option value="STN-KD-05" {% if current_station == 'STN-KD-05' %}selected{% endif %}>Kedarnath Mandakini Basin (STN-KD-05)</option>
+                    <option value="STN-AL-02" {% if current_station == 'STN-AL-02' %}selected{% endif %}>Alaknanda Upper Gorge (STN-AL-02)</option>
+                    <option value="STN-CH-06" {% if current_station == 'STN-CH-06' %}selected{% endif %}>Chamoli Rishiganga Gorge (STN-CH-06)</option>
+                    <option value="STN-KL-01" {% if current_station == 'STN-KL-01' %}selected{% endif %}>Kullu Valley Catchment (STN-KL-01)</option>
+                </select>
+                <button type="button" class="spatial-btn-primary" onclick="computeAiEvacuationRoute()" style="padding: 0.4rem 0.9rem; font-size: 0.78rem;">
+                    🧭 Compute Escape Corridor
+                </button>
+            </div>
+
+            <!-- Dynamic Route Metrics -->
+            <div id="evacMetricsBox" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; margin-bottom: 1rem;">
+                <div style="background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.1); padding: 0.6rem; border-radius: 6px; text-align: center;">
+                    <span style="font-size: 0.7rem; color: #94a3b8; display: block;">ESTIMATED TREK</span>
+                    <strong id="evacTrekTime" class="text-neon-green font-mono" style="font-size: 1.1rem;">86 Mins</strong>
+                </div>
+                <div style="background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.1); padding: 0.6rem; border-radius: 6px; text-align: center;">
+                    <span style="font-size: 0.7rem; color: #94a3b8; display: block;">ELEVATION GAIN</span>
+                    <strong id="evacElevGain" class="text-cyan font-mono" style="font-size: 1.1rem;">+480 m</strong>
+                </div>
+                <div style="background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.1); padding: 0.6rem; border-radius: 6px; text-align: center;">
+                    <span style="font-size: 0.7rem; color: #94a3b8; display: block;">ESCAPE DISTANCE</span>
+                    <strong id="evacDistance" class="text-amber font-mono" style="font-size: 1.1rem;">1.6 km</strong>
+                </div>
+            </div>
+
+            <!-- Turn-by-Turn Waypoints Display -->
+            <div id="evacWaypointsList" style="display: flex; flex-direction: column; gap: 0.6rem; max-height: 240px; overflow-y: auto; margin-bottom: 1.25rem; padding-right: 0.3rem;">
+                <div class="space-telemetry-item">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <strong style="color: #ffffff; font-size: 0.8rem;">Step 1: Immediate Riverbed Departure</strong>
+                        <span class="badge badge-danger" style="font-size: 0.65rem;">CRITICAL MOVE</span>
+                    </div>
+                    <p style="color: #cbd5e1; font-size: 0.75rem; margin: 0.2rem 0;">Immediately abandon low-lying riverbank walkways. Ascend EAST towards GMVN Upper Spur.</p>
+                    <small class="text-muted font-mono" style="font-size: 0.68rem;">Elevation: 2,260m &bull; 0.2 km from riverbed</small>
+                </div>
+                <div class="space-telemetry-item">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <strong style="color: #ffffff; font-size: 0.8rem;">Step 2: Civil Defense Bunker Alpha</strong>
+                        <span class="badge badge-success" style="font-size: 0.65rem;">SAFE REFUGE</span>
+                    </div>
+                    <p style="color: #cbd5e1; font-size: 0.75rem; margin: 0.2rem 0;">Enter reinforced civil defense sanctuary. Obtain rations and satellite phone relay.</p>
+                    <small class="text-muted font-mono" style="font-size: 0.68rem;">Elevation: 2,730m &bull; 1.6 km total</small>
+                </div>
+            </div>
+
+            <div class="d-flex gap-2 flex-wrap">
+                <a id="btnOpenSurvivalCard" href="/offline-survival-card?station={{ current_station }}" target="_blank" class="spatial-btn-primary" style="padding: 0.4rem 0.9rem; font-size: 0.78rem;">
+                    🖨️ Printable Survival Card (PDF)
+                </a>
+                <button type="button" class="spatial-btn-glass" onclick="toggle3DEvacuationPath(true)" style="padding: 0.4rem 0.9rem; font-size: 0.78rem;">
+                    🌐 Project Corridor on 3D Twin
+                </button>
+            </div>
         </div>
+
+        <!-- SECTION 2: EMERGENCY BILINGUAL SIREN & BROADCASTER -->
+        <div class="card p-4 liquid-glass" style="border: 1px solid rgba(239, 68, 68, 0.4); background: rgba(3, 7, 18, 0.85);">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div class="d-flex align-items-center gap-2">
+                    <span class="pulse-beacon" style="background: #ef4444;"></span>
+                    <h3 style="font-family: var(--font-display); font-size: 1.15rem; color: #ffffff; margin: 0;">
+                        📢 Emergency Voice Siren & Public Broadcaster
+                    </h3>
+                </div>
+                <span class="badge" style="background: rgba(239, 68, 68, 0.2); color: #fca5a5; border: 1px solid #ef4444; font-size: 0.72rem;">
+                    WEB AUDIO + SPEECH SYNTHESIS
+                </span>
+            </div>
+
+            <p style="color: rgba(255, 255, 255, 0.75); font-size: 0.82rem; margin-bottom: 1rem;">
+                Broadcast simulated multi-tone acoustic air-raid flood sirens and spoken bilingual evacuation commands for village panchayats:
+            </p>
+
+            <div class="d-flex gap-2 align-items-center mb-3">
+                <select id="sirenLangSelect" class="custom-select" style="background: rgba(15, 23, 42, 0.8); color: #ffffff; border: 1px solid rgba(255,255,255,0.2); padding: 0.4rem 0.8rem; border-radius: 6px; font-size: 0.82rem; flex: 1;">
+                    <option value="bilingual">🌐 Bilingual Broadcast (Hindi + English)</option>
+                    <option value="hi">🇮🇳 Hindi Voice Only (हिंदी उद्घोषणा)</option>
+                    <option value="en">🇬🇧 English Voice Only</option>
+                </select>
+            </div>
+
+            <div class="d-flex gap-2 mb-3">
+                <button type="button" class="btn-siren-toggle spatial-btn-primary" style="background: linear-gradient(135deg, #ef4444, #b91c1c) !important; border-color: #ef4444 !important; flex: 2; padding: 0.5rem;" onclick="triggerSirenConsole()">
+                    📢 Sound Acoustic Siren & Voice Broadcast
+                </button>
+                <button type="button" class="spatial-btn-glass" style="flex: 1; padding: 0.5rem;" onclick="stopEmergencySiren()">
+                    ⏹️ Silence
+                </button>
+            </div>
+
+            <div style="background: rgba(0, 0, 0, 0.4); border: 1px dashed rgba(239, 68, 68, 0.3); border-radius: 6px; padding: 0.75rem; font-size: 0.78rem; line-height: 1.6;">
+                <strong style="color: #fca5a5; display: block; margin-bottom: 0.25rem;">Broadcast Script Preview:</strong>
+                <p style="color: #e2e8f0; margin-bottom: 0.35rem;"><strong>English:</strong> <em>"Critical flash flood emergency warning. Immediate evacuation to high ground safe zones required. Avoid river valleys and culverts."</em></p>
+                <p style="color: #fef08a;"><strong>हिंदी:</strong> <em>"सावधान! आपातकालीन बाढ़ चेतावनी। सभी नागरिक तुरंत ऊंचे सुरक्षित स्थानों की ओर जाएं। नदी तट से दूर रहें।"</em></p>
+            </div>
+
+            <div style="margin-top: 1rem; font-size: 0.76rem; color: #94a3b8;">
+                <strong>Emergency Radio Frequencies:</strong> Garhwal VHF: <span class="text-cyan font-mono">148.550 MHz</span> &bull; NDRF QRT: <span class="text-neon-green font-mono">152.125 MHz</span> &bull; SDRF: <span class="text-amber font-mono">164.225 MHz</span>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- SECTION 3: DESIGNATED SAFE ZONES TABLE & COMMUNITY SOS DISTRESS FEED -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 1.5rem; margin-top: 1.5rem;">
+        
+        <!-- Safe Shelters List -->
+        <div class="card p-4 liquid-glass" style="background: rgba(3, 7, 18, 0.85); border: 1px solid rgba(255, 255, 255, 0.1);">
+            <div class="card-header mb-3 d-flex justify-content-between align-items-center">
+                <h3 style="font-family: var(--font-display); font-size: 1.15rem; color: #ffffff; margin: 0;">
+                    🏔️ Designated High-Altitude Safe Shelters
+                </h3>
+                <span class="badge badge-success">NDRF Verified</span>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                {% for sz in data.safe_zones %}
+                <div class="safe-zone-mini" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); padding: 0.75rem; border-radius: 6px; display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <strong style="color: #ffffff; display: block; font-size: 0.85rem;">{{ sz.name }}</strong>
+                        <small class="text-muted font-mono">Altitude: {{ sz.elevation_m }}m | Distance: {{ sz.distance_km }} km</small>
+                    </div>
+                    <span class="badge badge-info" style="font-size: 0.75rem;">{{ sz.capacity }} Persons</span>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Community SOS Distress Triage -->
+        <div class="card p-4 liquid-glass" style="background: rgba(3, 7, 18, 0.85); border: 1px solid rgba(255, 255, 255, 0.1);">
+            <div class="card-header mb-3 d-flex justify-content-between align-items-center">
+                <h3 style="font-family: var(--font-display); font-size: 1.15rem; color: #ffffff; margin: 0;">
+                    🚨 Community Distress (SOS) Triage Feed
+                </h3>
+                <span class="badge" style="background: rgba(239, 68, 68, 0.2); color: #fca5a5; border: 1px solid #ef4444; font-size: 0.72rem;">LIVE TRIAGE</span>
+            </div>
+            <div id="citizenReportsFeed" style="display: flex; flex-direction: column; gap: 0.75rem; max-height: 240px; overflow-y: auto;">
+                <div style="background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.3); padding: 0.65rem; border-radius: 6px;">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <strong style="color: #ef4444; font-size: 0.82rem;">SOS #402: 8 Pilgrims Stranded at Rambara Bridge</strong>
+                        <span class="badge badge-danger" style="font-size: 0.65rem;">CRITICAL RESCUE</span>
+                    </div>
+                    <p style="color: #cbd5e1; font-size: 0.75rem; margin: 0.25rem 0;">Mandakini surge washed footpath. Water level rising +1.2m/hr. High rock ledge refuge.</p>
+                    <div class="d-flex justify-content-between align-items-center mt-2">
+                        <small class="text-muted font-mono" style="font-size: 0.68rem;">GPS: 30.738°N, 79.071°E &bull; 14 mins ago</small>
+                        <button type="button" class="spatial-btn-primary" style="padding: 0.2rem 0.55rem; font-size: 0.68rem;" onclick="this.innerHTML='✓ QRT Dispatched'; this.style.background='#10b981';">Dispatch NDRF QRT</button>
+                    </div>
+                </div>
+
+                <div style="background: rgba(245, 158, 11, 0.08); border: 1px solid rgba(245, 158, 11, 0.3); padding: 0.65rem; border-radius: 6px;">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <strong style="color: #f59e0b; font-size: 0.82rem;">Report #398: Debris Chute on Joshimath Road</strong>
+                        <span class="badge" style="background: rgba(245, 158, 11, 0.2); color: #fbbf24; font-size: 0.65rem;">ROAD BLOCK</span>
+                    </div>
+                    <p style="color: #cbd5e1; font-size: 0.75rem; margin: 0.25rem 0;">Boulder slide impassable for light vehicles. Heavy earth-mover deployed.</p>
+                    <div class="d-flex justify-content-between align-items-center mt-2">
+                        <small class="text-muted font-mono" style="font-size: 0.68rem;">Alaknanda Sector KM 14 &bull; 32 mins ago</small>
+                        <button type="button" class="spatial-btn-glass" style="padding: 0.2rem 0.55rem; font-size: 0.68rem;" onclick="this.innerHTML='✓ Alert Cleared';">Acknowledge</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 </div>
 
@@ -744,6 +928,62 @@ document.addEventListener('DOMContentLoaded', () => {
     updateOpenDataSpaceMesh();
     setInterval(updateOpenDataSpaceMesh, 12000);
 });
+
+// ==============================================================================
+// 🧭 AI EVACUATION & SIREN CONTROLLERS
+// ==============================================================================
+async function computeAiEvacuationRoute() {
+    const sel = document.getElementById('evacStationSelect');
+    const stn = sel ? sel.value : 'STN-KD-05';
+    try {
+        const res = await fetch(`/api/evacuation-route?station=${stn}`);
+        if (!res.ok) return;
+        const data = await res.json();
+        
+        const tEl = document.getElementById('evacTrekTime');
+        if (tEl) tEl.innerText = `${data.estimated_trek_time_minutes} Mins`;
+        const gEl = document.getElementById('evacElevGain');
+        if (gEl) gEl.innerText = `+${data.elevation_gain_m} m`;
+        const dEl = document.getElementById('evacDistance');
+        if (dEl) dEl.innerText = `${data.total_distance_km} km`;
+        
+        const cardLink = document.getElementById('btnOpenSurvivalCard');
+        if (cardLink) cardLink.href = `/offline-survival-card?station=${stn}`;
+
+        // Populate waypoints
+        const list = document.getElementById('evacWaypointsList');
+        if (list && data.waypoints) {
+            list.innerHTML = data.waypoints.map(wp => `
+                <div class="space-telemetry-item">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <strong style="color: #ffffff; font-size: 0.8rem;">Step ${wp.step}: ${wp.title}</strong>
+                        <span class="badge ${wp.hazard_level.includes('SAFE') ? 'badge-success' : 'badge-danger'}" style="font-size: 0.65rem;">${wp.hazard_level}</span>
+                    </div>
+                    <p style="color: #cbd5e1; font-size: 0.75rem; margin: 0.2rem 0;">${wp.instruction}</p>
+                    <small class="text-muted font-mono" style="font-size: 0.68rem;">Elevation: ${wp.elevation_m}m &bull; ${wp.distance_from_origin_km} km from origin</small>
+                </div>
+            `).join('');
+        }
+
+        // Project corridor on 3D terrain
+        if (typeof toggle3DEvacuationPath === 'function') {
+            toggle3DEvacuationPath(true);
+        }
+    } catch (e) {
+        console.warn('AI Evacuation route calculation warning:', e);
+    }
+}
+
+function triggerSirenConsole() {
+    const sel = document.getElementById('sirenLangSelect');
+    const lang = sel ? sel.value : 'bilingual';
+    const stnSel = document.getElementById('evacStationSelect');
+    const stnName = stnSel ? stnSel.options[stnSel.selectedIndex].text : 'Kedarnath Mandakini Basin';
+    if (typeof startEmergencySirenAndVoice === 'function') {
+        startEmergencySirenAndVoice(stnName, lang);
+    }
+}
+
 </script>
 
 {% endblock %}

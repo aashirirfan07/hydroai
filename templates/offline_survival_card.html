@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OFFLINE EMERGENCY SURVIVAL BRIEFING CARD • HydroSentinel</title>
+    <style>
+        :root {
+            --bg-dark: #090d16;
+            --card-bg: #111827;
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --success: #10b981;
+            --cyan: #06b6d4;
+            --border: rgba(255, 255, 255, 0.15);
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            padding: 1.5rem;
+            line-height: 1.5;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .survival-header {
+            border: 2px solid var(--danger);
+            background: rgba(239, 68, 68, 0.1);
+            border-radius: 8px;
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .header-title h1 {
+            font-size: 1.4rem;
+            color: var(--danger);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .header-title p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+        .btn-print {
+            background: var(--danger);
+            color: #ffffff;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+        }
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 1.25rem;
+            margin-bottom: 1.5rem;
+        }
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.25rem;
+        }
+        .card h2 {
+            font-size: 1.1rem;
+            color: var(--cyan);
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+        }
+        th, td {
+            padding: 0.5rem 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+        th {
+            color: var(--text-muted);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+        }
+        .badge {
+            display: inline-block;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .badge-danger { background: rgba(239, 68, 68, 0.2); color: var(--danger); }
+        .badge-success { background: rgba(16, 185, 129, 0.2); color: var(--success); }
+        .checklist {
+            list-style: none;
+        }
+        .checklist li {
+            padding: 0.5rem 0;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .radio-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 0.75rem;
+        }
+        .radio-item {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            padding: 0.75rem;
+            border-radius: 6px;
+        }
+        .radio-item strong {
+            display: block;
+            font-size: 0.8rem;
+            color: var(--warning);
+        }
+        .radio-item span {
+            font-family: monospace;
+            font-size: 0.95rem;
+            color: #ffffff;
+        }
+        @media print {
+            body { background: #ffffff; color: #000000; padding: 0.5cm; }
+            .card { background: #ffffff; border: 1px solid #000000; color: #000000; }
+            .survival-header { background: #ffffff; border: 2px solid #000000; color: #000000; }
+            .header-title h1 { color: #000000; }
+            .btn-print { display: none; }
+            table, th, td { border-bottom: 1px solid #000000; color: #000000; }
+            .badge { border: 1px solid #000000; color: #000000; background: none; }
+            .radio-item { border: 1px solid #000000; background: none; color: #000000; }
+            .radio-item strong, .radio-item span { color: #000000; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="survival-header">
+            <div class="header-title">
+                <h1>⚡ TACTICAL SURVIVAL BRIEFING CARD</h1>
+                <p>Catchment: <strong>{{ corridor.station_name }}</strong> | ID: <strong>{{ corridor.station_id }}</strong> | Generated: <strong>{{ corridor.timestamp[:19] }}Z</strong></p>
+            </div>
+            <div>
+                <button class="btn-print" onclick="window.print()">🖨️ Print / Save Offline PDF</button>
+            </div>
+        </div>
+
+        <div class="grid-2">
+            <!-- Left: Safe Shelters & Escape Corridor -->
+            <div class="card">
+                <h2>🏔️ Verified High-Altitude Shelters</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Shelter Name</th>
+                            <th>Elevation</th>
+                            <th>Distance</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>{{ corridor.primary_shelter }}</strong></td>
+                            <td>{{ corridor.shelter_elevation_m }}m</td>
+                            <td>{{ corridor.total_distance_km }} km</td>
+                            <td><span class="badge badge-success">PRIMARY REFUGE</span></td>
+                        </tr>
+                        <tr>
+                            <td>Regional Helipad Evac Ground</td>
+                            <td>2,960m</td>
+                            <td>3.8 km</td>
+                            <td><span class="badge badge-success">AIR EVAC READY</span></td>
+                        </tr>
+                        <tr>
+                            <td>GMVN High Plateau Summit</td>
+                            <td>2,870m</td>
+                            <td>2.4 km</td>
+                            <td><span class="badge badge-success">CAPACITY 1,500</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div style="margin-top: 1rem; font-size: 0.82rem; color: var(--text-muted);">
+                    <strong>Bridge Status:</strong> {{ corridor.bridge_status }}<br>
+                    <strong>Estimated Trek Time:</strong> {{ corridor.estimated_trek_time_minutes }} minutes on foot (+{{ corridor.elevation_gain_m }}m gain).
+                </div>
+            </div>
+
+            <!-- Right: Emergency Radio & Communication Nets -->
+            <div class="card">
+                <h2>📻 Disaster Emergency VHF / UHF Nets</h2>
+                <div class="radio-grid mb-3">
+                    <div class="radio-item">
+                        <strong>PRIMARY DISASTER VHF</strong>
+                        <span>{{ corridor.vhf_frequency_mhz }}</span>
+                    </div>
+                    <div class="radio-item">
+                        <strong>NDRF QRT TACTICAL</strong>
+                        <span>152.125 MHz (CH 2)</span>
+                    </div>
+                    <div class="radio-item">
+                        <strong>SDRF MOUNTAIN RESCUE</strong>
+                        <span>164.225 MHz (CH 5)</span>
+                    </div>
+                    <div class="radio-item">
+                        <strong>INDIAN ARMY AIR DISPATCH</strong>
+                        <span>121.500 MHz (AM GUARD)</span>
+                    </div>
+                </div>
+                <h2 style="margin-top: 1rem; font-size: 0.95rem;">📞 Priority Hotlines (Satellite / Cellular)</h2>
+                <div style="font-size: 0.85rem; line-height: 1.8;">
+                    &bull; <strong>NDRF National Control:</strong> 1078 / +91-11-24363260<br>
+                    &bull; <strong>State Disaster Response (SDRF):</strong> 1070 / 9557444486<br>
+                    &bull; <strong>Indian Red Cross Disaster Relief:</strong> +91-11-23716441
+                </div>
+            </div>
+        </div>
+
+        <div class="grid-2">
+            <!-- Turn by Turn Waypoints -->
+            <div class="card">
+                <h2>🧭 Step-by-Step Safe Escape Waypoints</h2>
+                <ul class="checklist">
+                    {% for wp in corridor.waypoints %}
+                    <li>
+                        <span style="font-weight: bold; color: var(--cyan);">Step {{ wp.step }}:</span>
+                        <div>
+                            <strong>{{ wp.title }} ({{ wp.elevation_m }}m &bull; {{ wp.distance_from_origin_km }} km)</strong>
+                            <p style="color: var(--text-muted); font-size: 0.8rem;">{{ wp.instruction }}</p>
+                            <span class="badge badge-danger" style="margin-top: 0.2rem;">{{ wp.hazard_level }}</span>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <!-- Immediate Survival Instructions -->
+            <div class="card">
+                <h2>⚠️ Immediate Life-Safety Protocols</h2>
+                <ul class="checklist">
+                    <li>
+                        <span>1.</span>
+                        <div>
+                            <strong>Move Perpendicular to the Riverbed:</strong>
+                            <p style="color: var(--text-muted); font-size: 0.8rem;">Do not run down the valley along roads. Immediately climb adjacent ridges to gain at least 50 meters of vertical clearance above flood waterline.</p>
+                        </div>
+                    </li>
+                    <li>
+                        <span>2.</span>
+                        <div>
+                            <strong>Strictly Avoid Dry Ravines & Gully Confluences:</strong>
+                            <p style="color: var(--text-muted); font-size: 0.8rem;">Secondary debris avalanches and mudflows canalize through small ravines with zero warning.</p>
+                        </div>
+                    </li>
+                    <li>
+                        <span>3.</span>
+                        <div>
+                            <strong>Audio & Visual Signaling:</strong>
+                            <p style="color: var(--text-muted); font-size: 0.8rem;">Sound 3 sharp whistle blasts every 2 minutes. Wave bright red/orange cloth toward aerial UAV/helicopter search paths.</p>
+                        </div>
+                    </li>
+                    <li>
+                        <span>4.</span>
+                        <div>
+                            <strong>Water Disinfection:</strong>
+                            <p style="color: var(--text-muted); font-size: 0.8rem;">Turbid flood waters contain deadly bacteriological pathogens and silt. Use Halazone/Chlorine tablets or boil vigorously for 5 minutes.</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
