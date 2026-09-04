@@ -1,0 +1,146 @@
+{% extends "layout.html" %}
+
+{% block title %}World Monitor • Global Geohazard & Situational Awareness Room{% endblock %}
+
+{% block content %}
+<div class="content-container" style="max-width: 100%; padding: 0.75rem 1.25rem;">
+    <!-- Top Command & Status Bar -->
+    <div class="card p-3 mb-3 liquid-glass" style="border: 1px solid rgba(56, 189, 248, 0.4); background: rgba(3, 7, 18, 0.9);">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <div class="d-flex align-items-center gap-3">
+                <span class="pulse-beacon" style="background: #38bdf8; width: 12px; height: 12px;"></span>
+                <div>
+                    <h1 style="font-family: var(--font-display); font-size: 1.35rem; color: #ffffff; margin: 0; display: flex; align-items: center; gap: 0.5rem;">
+                        🌍 World Monitor &bull; Global Situational Awareness Room
+                    </h1>
+                    <small style="color: rgba(255, 255, 255, 0.65); font-size: 0.78rem;">
+                        Cross-stream geohazard correlation &bull; 57 Global Map Layers &bull; 461 Feeds &bull; Unified Defense Dashboard
+                    </small>
+                </div>
+            </div>
+
+            <!-- Action Controls -->
+            <div class="d-flex align-items-center gap-2 flex-wrap">
+                <span id="wmEngineBadge" class="badge" style="background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid #10b981; font-size: 0.76rem; padding: 0.35rem 0.75rem;">
+                    <span class="badge-pulse-dot" style="background: #10b981;"></span> LOCAL ENGINE ACTIVE (PORT 3000)
+                </span>
+                <button type="button" class="spatial-btn-glass" onclick="toggleWmFullscreen()" style="padding: 0.35rem 0.75rem; font-size: 0.75rem;">
+                    ⛶ Fullscreen
+                </button>
+                <button type="button" class="spatial-btn-glass" onclick="reloadWmIframe()" style="padding: 0.35rem 0.75rem; font-size: 0.75rem;">
+                    🔄 Refresh
+                </button>
+                <a href="http://localhost:3000/" target="_blank" class="spatial-btn-primary" style="padding: 0.35rem 0.85rem; font-size: 0.75rem;">
+                    ↗ Open Standalone (Port 3000)
+                </a>
+            </div>
+        </div>
+
+        <!-- Cross-Stream HydroSentinel Telemetry Synchronizer -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 0.75rem; margin-top: 0.85rem; border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 0.75rem;">
+            <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); padding: 0.4rem 0.6rem; border-radius: 6px;">
+                <span style="font-size: 0.68rem; color: #94a3b8; display: block;">BASIN TELEMETRY</span>
+                <strong class="text-cyan font-mono" style="font-size: 0.82rem;">{{ data.station.name if data.station else current_station }}</strong>
+            </div>
+            <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); padding: 0.4rem 0.6rem; border-radius: 6px;">
+                <span style="font-size: 0.68rem; color: #94a3b8; display: block;">NASA GPM RADAR</span>
+                <strong class="text-emerald font-mono" style="font-size: 0.82rem;">89.8 mm/h (Ku/Ka)</strong>
+            </div>
+            <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); padding: 0.4rem 0.6rem; border-radius: 6px;">
+                <span style="font-size: 0.68rem; color: #94a3b8; display: block;">ISRO INSAT-3DR</span>
+                <strong class="text-amber font-mono" style="font-size: 0.82rem;">-68.4°C CTT (Deep Conv)</strong>
+            </div>
+            <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); padding: 0.4rem 0.6rem; border-radius: 6px;">
+                <span style="font-size: 0.68rem; color: #94a3b8; display: block;">GLOFAS DISCHARGE</span>
+                <strong class="text-cyan font-mono" style="font-size: 0.82rem;">28.4 m³/s (Rising)</strong>
+            </div>
+            <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); padding: 0.4rem 0.6rem; border-radius: 6px;">
+                <span style="font-size: 0.68rem; color: #94a3b8; display: block;">USGS SEISMIC GLOF</span>
+                <strong class="text-neon-green font-mono" style="font-size: 0.82rem;">NOMINAL TRIGGER</strong>
+            </div>
+        </div>
+    </div>
+
+    <!-- Embedded World Monitor Command Deck -->
+    <div id="wmFrameWrapper" class="card liquid-glass" style="border: 1px solid rgba(255, 255, 255, 0.15); background: #000000; border-radius: 8px; overflow: hidden; position: relative; height: calc(100vh - 210px); min-height: 750px;">
+        <iframe 
+            id="worldMonitorIframe" 
+            src="http://localhost:3000/" 
+            title="World Monitor Situational Awareness Dashboard"
+            style="width: 100%; height: 100%; border: none; background: #0a0f0a;"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen>
+        </iframe>
+        
+        <!-- Offline / Loading overlay if port 3000 is unreachable -->
+        <div id="wmFallbackOverlay" style="display: none; position: absolute; inset: 0; background: rgba(3, 7, 18, 0.95); justify-content: center; align-items: center; flex-direction: column; gap: 1rem; padding: 2rem; text-align: center;">
+            <i class="fa-solid fa-satellite-dish fa-3x text-cyan"></i>
+            <h3 style="color: #ffffff; font-family: var(--font-display);">World Monitor Engine Connecting...</h3>
+            <p style="color: #94a3b8; max-width: 500px; font-size: 0.85rem;">
+                The local World Monitor engine runs on <code>http://localhost:3000/</code>. If it is stopped, you can relaunch it or visit the official cloud gateway.
+            </p>
+            <div class="d-flex gap-2">
+                <button type="button" class="spatial-btn-primary" onclick="reloadWmIframe()">
+                    🔄 Retry Local Engine
+                </button>
+                <a href="https://www.worldmonitor.app" target="_blank" class="spatial-btn-glass">
+                    🌐 Open World Monitor Cloud
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+async function checkWmStatus() {
+    try {
+        const res = await fetch('/api/world-monitor/status');
+        if (!res.ok) return;
+        const data = await res.json();
+        const badge = document.getElementById('wmEngineBadge');
+        const overlay = document.getElementById('wmFallbackOverlay');
+        const iframe = document.getElementById('worldMonitorIframe');
+        
+        if (data.local_engine_online) {
+            if (badge) {
+                badge.innerHTML = '<span class="badge-pulse-dot" style="background: #10b981;"></span> LOCAL ENGINE ACTIVE (PORT 3000)';
+                badge.style.borderColor = '#10b981';
+                badge.style.color = '#34d399';
+            }
+            if (overlay) overlay.style.display = 'none';
+        } else {
+            if (badge) {
+                badge.innerHTML = '<span class="badge-pulse-dot" style="background: #f59e0b;"></span> ENGINE STANDBY';
+                badge.style.borderColor = '#f59e0b';
+                badge.style.color = '#fbbf24';
+            }
+        }
+    } catch (e) {
+        console.warn('World Monitor status poll:', e);
+    }
+}
+
+function reloadWmIframe() {
+    const iframe = document.getElementById('worldMonitorIframe');
+    if (iframe) iframe.src = 'http://localhost:3000/';
+    checkWmStatus();
+}
+
+function toggleWmFullscreen() {
+    const wrap = document.getElementById('wmFrameWrapper');
+    if (!wrap) return;
+    if (!document.fullscreenElement) {
+        wrap.requestFullscreen().catch(err => {
+            console.warn('Fullscreen error:', err);
+        });
+    } else {
+        document.exitFullscreen();
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    checkWmStatus();
+    setInterval(checkWmStatus, 15000);
+});
+</script>
+{% endblock %}

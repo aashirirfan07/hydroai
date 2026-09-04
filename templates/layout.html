@@ -97,6 +97,10 @@
                     <img src="/static/img/badges/emblem_simulator.svg" class="nav-micro-logo" alt="Physics">
                     <span>Physics Lab</span>
                 </a>
+                <a href="{{ url_for('world_monitor_page') }}" class="nav-link-pill {% if request.endpoint == 'world_monitor_page' %}active{% endif %}" title="Global Geohazard & Situational Awareness Room">
+                    <span style="font-size: 0.95rem;">🌍</span>
+                    <span>World Monitor</span>
+                </a>
 
                 <!-- Sleek Tools & Labs Dropdown -->
                 <div class="nav-dropdown-wrapper" id="navToolsDropdown">
@@ -105,6 +109,13 @@
                         <i class="fa-solid fa-chevron-down nav-chevron"></i>
                     </button>
                     <div class="nav-dropdown-menu liquid-glass">
+                        <a href="{{ url_for('world_monitor_page') }}" class="dropdown-item">
+                            <i class="fa-solid fa-earth-americas text-cyan"></i>
+                            <div>
+                                <span class="dd-title">🌍 World Monitor</span>
+                                <span class="dd-sub">Global Situation Room & Geohazard Radar</span>
+                            </div>
+                        </a>
                         <a href="{{ url_for('satellites_page') }}" class="dropdown-item">
                             <i class="fa-solid fa-satellite text-cyan"></i>
                             <div>

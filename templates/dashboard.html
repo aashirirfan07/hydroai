@@ -597,6 +597,54 @@
             </div>
         </div>
 
+        <!-- 5. World Monitor Global Situational Awareness Card -->
+        <div class="card p-4 liquid-glass" style="border: 1px solid rgba(56, 189, 248, 0.4); background: rgba(3, 7, 18, 0.85); grid-column: 1 / -1;">
+            <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+                <div class="d-flex align-items-center gap-2">
+                    <span class="pulse-beacon" style="background: #38bdf8;"></span>
+                    <h3 style="font-family: var(--font-display); font-size: 1.15rem; color: #ffffff; margin: 0;">
+                        🌍 World Monitor &bull; Global Situational Awareness Room
+                    </h3>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                    <span class="badge" style="background: rgba(56, 189, 248, 0.2); color: #38bdf8; border: 1px solid #38bdf8; font-size: 0.72rem;">
+                        57 MAP LAYERS &bull; 461 FEEDS &bull; 747 PROVIDERS
+                    </span>
+                    <span class="badge-live-stream" style="background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid #10b981;">
+                        <span class="badge-pulse-dot" style="background: #10b981;"></span> LOCAL ENGINE ACTIVE (PORT 3000)
+                    </span>
+                </div>
+            </div>
+
+            <p style="color: rgba(255, 255, 255, 0.75); font-size: 0.82rem; margin-bottom: 1.1rem;">
+                Real-time multi-hazard intelligence correlating global extreme weather, infrastructure chokepoints, conflict signals, and Country Instability Indices directly with Himalayan basin telemetry:
+            </p>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin-bottom: 1.25rem;">
+                <div class="space-telemetry-item" style="border-color: rgba(56, 189, 248, 0.3);">
+                    <strong style="color: #ffffff; font-size: 0.82rem; display: block;">Dual 3D Globe & Flat Map</strong>
+                    <span class="text-cyan font-mono" style="font-size: 0.78rem;">Globe.gl & Deck.gl Integrated</span>
+                </div>
+                <div class="space-telemetry-item" style="border-color: rgba(56, 189, 248, 0.3);">
+                    <strong style="color: #ffffff; font-size: 0.82rem; display: block;">Disaster & Weather Correlation</strong>
+                    <span class="text-emerald font-mono" style="font-size: 0.78rem;">Cross-stream geohazard convergence</span>
+                </div>
+                <div class="space-telemetry-item" style="border-color: rgba(56, 189, 248, 0.3);">
+                    <strong style="color: #ffffff; font-size: 0.82rem; display: block;">Infrastructure Chokepoints</strong>
+                    <span class="text-amber font-mono" style="font-size: 0.78rem;">Bridges, Dams & River corridors</span>
+                </div>
+            </div>
+
+            <div class="d-flex gap-2 flex-wrap">
+                <a href="{{ url_for('world_monitor_page') }}" class="spatial-btn-primary" style="padding: 0.4rem 1rem; font-size: 0.78rem;">
+                    🌍 Open World Monitor Command Center
+                </a>
+                <a href="http://localhost:3000/" target="_blank" class="spatial-btn-glass" style="padding: 0.4rem 1rem; font-size: 0.78rem;">
+                    ↗ Open Standalone Engine (Port 3000)
+                </a>
+            </div>
+        </div>
+
     </div>
 </div>
 

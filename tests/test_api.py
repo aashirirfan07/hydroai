@@ -611,3 +611,24 @@ def test_offline_survival_card_api(client):
     d = res.get_json()
     assert d['station_id'] == 'STN-AL-02'
     assert 'Joshimath Cantt High Ground Safe Zone' in d['primary_shelter']
+
+
+def test_world_monitor_page(client):
+    """Tests World Monitor integrated Global Situation Room page."""
+    res = client.get('/world-monitor')
+    assert res.status_code == 200
+    html = res.data.decode('utf-8')
+    assert 'World Monitor' in html
+    assert 'Global Situational Awareness Room' in html
+    assert 'localhost:3000' in html
+
+
+def test_world_monitor_status(client):
+    """Tests World Monitor engine status API endpoint."""
+    res = client.get('/api/world-monitor/status')
+    assert res.status_code == 200
+    d = res.get_json()
+    assert d['status'] == 'SUCCESS'
+    assert 'local_engine_online' in d
+    assert d['map_layers'] == 57
+    assert d['feeds'] == 461

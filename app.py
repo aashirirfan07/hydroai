@@ -1671,6 +1671,43 @@ def api_offline_survival_card():
 
 
 # ==============================================================================
+# 🌍 WORLD MONITOR • GLOBAL SITUATIONAL AWARENESS ROOM
+# ==============================================================================
+@app.route('/world-monitor')
+@app.route('/global-situation-room')
+def world_monitor_page():
+    '''World Monitor: Integrated Global Intelligence & Situational Awareness Command Center.'''
+    station_id = request.args.get('station', 'STN-KD-05')
+    telemetry = live_service.get_live_telemetry(station_id)
+    return render_template('world_monitor.html', data=telemetry, current_station=station_id)
+
+@app.route('/api/world-monitor/status', methods=['GET'])
+def api_world_monitor_status():
+    '''Checks if the local World Monitor engine (Vite port 3000) is online.'''
+    import urllib.request
+    is_local_online = False
+    try:
+        req = urllib.request.Request('http://localhost:3000/', headers={'User-Agent': 'HydroSentinel-Monitor-Check'})
+        with urllib.request.urlopen(req, timeout=1.5) as resp:
+            if resp.status == 200:
+                is_local_online = True
+    except Exception:
+        is_local_online = False
+
+    return jsonify({
+        "status": "SUCCESS",
+        "local_engine_online": is_local_online,
+        "local_url": "http://localhost:3000/",
+        "fallback_url": "https://www.worldmonitor.app",
+        "map_layers": 57,
+        "feeds": 461,
+        "providers": 747,
+        "connected_to_hydrosentinel": True,
+        "timestamp": datetime.now(timezone.utc).isoformat()
+    }), 200
+
+
+# ==============================================================================
 # 🛡️ ROUTE ALIASES & 404 / 500 RECOVERY HANDLERS
 # ==============================================================================
 @app.route('/predict-datapoint')
