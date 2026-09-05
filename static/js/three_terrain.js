@@ -1106,3 +1106,28 @@ window.toggleSlopeHazardHeatmap = toggleSlopeHazardHeatmap;
 window.toggle3DEvacuationPath = toggle3DEvacuationPath;
 window.setFloodSurge = setFloodSurge;
 window.onFloodSliderChange = onFloodSliderChange;
+
+// Multi-Source Real-Time Telemetry Sync
+function syncWithMultiSourceRealtime() {
+    try {
+        fetch('/api/realtime/multi-source')
+            .then(res => res.json())
+            .then(data => {
+                if (data && data.stations) {
+                    const stn = data.stations.find(s => s.id === 'STN-KD-05') || data.stations[0];
+                    if (stn && !manualFloodOverride) {
+                        targetFloodHeight = Math.min(8.5, Math.max(0.8, stn.river_stage_m * 1.15));
+                        rainSpeed = Math.min(2.5, Math.max(0.4, stn.rainfall_mm_h / 40.0));
+                    }
+                }
+            })
+            .catch(() => {});
+    } catch(e) {}
+}
+
+if (typeof window !== 'undefined') {
+    window.addEventListener('DOMContentLoaded', () => {
+        setTimeout(syncWithMultiSourceRealtime, 2000);
+        setInterval(syncWithMultiSourceRealtime, 6000);
+    });
+}

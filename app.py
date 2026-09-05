@@ -1590,6 +1590,43 @@ def api_ingest_batch_multi_source():
     }), 200
 
 
+@app.route('/api/realtime/multi-source', methods=['GET'])
+def api_realtime_multi_source():
+    """Returns unified real-time multi-source telemetry mesh aggregating 8 open scientific pipelines."""
+    try:
+        payload = ingestion_service.get_multi_source_realtime_payload()
+        return jsonify(payload), 200
+    except Exception as e:
+        logger.error(f"Error serving realtime multi-source telemetry: {e}")
+        return jsonify({"status": "ERROR", "message": str(e)}), 500
+
+
+@app.route('/api/realtime/stream', methods=['GET'])
+def api_realtime_stream():
+    """Server-Sent Events (SSE) streaming live multi-source telemetry updates to clients."""
+    def event_stream():
+        initial_data = ingestion_service.get_multi_source_realtime_payload()
+        yield f"data: {json.dumps(initial_data)}\n\n"
+        
+        loops = 0
+        while loops < 30:
+            time.sleep(3.0)
+            payload = ingestion_service.get_multi_source_realtime_payload()
+            yield f"data: {json.dumps(payload)}\n\n"
+            loops += 1
+
+    return Response(
+        event_stream(),
+        mimetype='text/event-stream',
+        headers={
+            'Cache-Control': 'no-cache, no-transform',
+            'Connection': 'keep-alive',
+            'X-Accel-Buffering': 'no',
+            'Access-Control-Allow-Origin': '*'
+        }
+    )
+
+
 @app.route('/api/stress-test', methods=['POST'])
 def api_stress_test():
     '''Senior Engineering: Simulates catastrophic multi-basin cloudburst surge (250mm/hr) to evaluate failover resiliency.'''
@@ -1761,7 +1798,7 @@ def api_offline_survival_card():
 # ==============================================================================
 # 🌍 WORLD MONITOR • GLOBAL SITUATIONAL AWARENESS ROOM
 # ==============================================================================
-WM_PUBLIC_URL = os.environ.get('WM_PUBLIC_URL', 'https://should-figure-chrome-start.trycloudflare.com')
+WM_PUBLIC_URL = os.environ.get('WM_PUBLIC_URL', 'https://hampshire-bloomberg-preparation-serves.trycloudflare.com')
 
 @app.route('/world-monitor')
 @app.route('/global-situation-room')

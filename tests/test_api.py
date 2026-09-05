@@ -632,3 +632,28 @@ def test_world_monitor_status(client):
     assert 'local_engine_online' in d
     assert d['map_layers'] == 57
     assert d['feeds'] == 461
+
+
+def test_realtime_multi_source_api(client):
+    """Tests unified real-time multi-source telemetry mesh endpoint."""
+    res = client.get('/api/realtime/multi-source')
+    assert res.status_code == 200
+    d = res.get_json()
+    assert d['status'] == 'SUCCESS'
+    assert d['active_pipelines_count'] >= 8
+    assert len(d['stations']) == 6
+    assert len(d['satellites']) == 4
+    assert len(d['global_hazards']) >= 1
+    assert 'sources' in d
+    assert 'OPEN_METEO_GLOFAS' in d['sources']
+    assert 'NASA_EONET' in d['sources']
+    assert 'USGS_SEISMIC' in d['sources']
+
+
+def test_realtime_stream_api(client):
+    """Tests Server-Sent Events (SSE) live multi-source streaming endpoint."""
+    res = client.get('/api/realtime/stream')
+    assert res.status_code == 200
+    assert 'text/event-stream' in res.content_type
+    first_chunk = next(res.response)
+    assert b'data: {"status": "SUCCESS"' in first_chunk

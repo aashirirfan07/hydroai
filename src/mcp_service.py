@@ -289,6 +289,21 @@ class ModelContextProtocolService:
                     },
                     "required": ["station_id"]
                 }
+            },
+            {
+                "name": "hydrosentinel_get_multi_source_telemetry",
+                "description": "Query unified real-time multi-source telemetry mesh aggregating 8 open scientific pipelines (Open-Meteo GloFAS, Severe Weather CAPE, USGS Seismicity, NASA EONET, ISRO MOSDAC, IMD Radar, CWC Gauges, LoRaWAN IoT).",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "source_filter": {
+                            "type": "string",
+                            "description": "Optional filter: 'ALL', 'OPEN_METEO_GLOFAS', 'USGS_SEISMIC', 'NASA_EONET', 'ISRO_MOSDAC', or 'STATIONS'.",
+                            "default": "ALL"
+                        }
+                    },
+                    "required": []
+                }
             }
         ]
 
@@ -317,6 +332,8 @@ class ModelContextProtocolService:
                 result = self._tool_simulate_dam_breach(arguments)
             elif tool_name == "hydrosentinel_get_satellite_swaths":
                 result = self._tool_get_satellite_swaths(arguments)
+            elif tool_name == "hydrosentinel_get_multi_source_telemetry":
+                result = self._tool_get_multi_source_telemetry(arguments)
             else:
                 return {
                     "isError": True,
@@ -654,6 +671,19 @@ class ModelContextProtocolService:
             "timestamp": datetime.now(timezone.utc).isoformat()
         }
 
+    def _tool_get_multi_source_telemetry(self, args: Dict[str, Any]) -> Dict[str, Any]:
+        from src.pipeline.multi_source_ingestion_service import ingestion_service
+        payload = ingestion_service.get_multi_source_realtime_payload()
+        source_filter = args.get("source_filter", "ALL").upper()
+        if source_filter == "STATIONS":
+            return {"stations": payload.get("stations", []), "count": len(payload.get("stations", []))}
+        elif source_filter in payload.get("sources", {}):
+            return {
+                "source": payload["sources"][source_filter],
+                "active_pipelines": payload.get("active_pipelines_count", 8)
+            }
+        return payload
+
     # =========================================================================
     # 4. MCP Resources & Prompts
     # =========================================================================
@@ -676,6 +706,12 @@ class ModelContextProtocolService:
                 "uri": "hydrosentinel://alerts/active",
                 "name": "Active Disaster Alerts & OASIS CAP Feeds",
                 "description": "Currently broadcasted emergency alerts and civil defense orders.",
+                "mimeType": "application/json"
+            },
+            {
+                "uri": "hydrosentinel://telemetry/multi-source",
+                "name": "Unified Multi-Source Real-Time Telemetry Mesh",
+                "description": "Aggregated real-time feed of 8 open scientific pipelines (GloFAS, Open-Meteo, USGS, NASA, ISRO, IMD, CWC).",
                 "mimeType": "application/json"
             }
         ]
@@ -701,6 +737,14 @@ class ModelContextProtocolService:
                 "uri": uri,
                 "mimeType": "application/json",
                 "contents": json.dumps(alerts, indent=2)
+            }
+        elif uri == "hydrosentinel://telemetry/multi-source":
+            from src.pipeline.multi_source_ingestion_service import ingestion_service
+            data = ingestion_service.get_multi_source_realtime_payload()
+            return {
+                "uri": uri,
+                "mimeType": "application/json",
+                "contents": json.dumps(data, indent=2)
             }
         else:
             raise ValueError(f"Resource with URI '{uri}' not found.")

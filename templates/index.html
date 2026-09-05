@@ -43,32 +43,76 @@
     <div class="spatial-showcase-grid">
         <div class="spatial-interactive-viewer-card">
             <div class="card-glass-header">
-                <div class="live-status-pill">
-                    <span class="dot-green"></span> 3D Geospatial Basin Mesh
+                <div class="d-flex align-items-center gap-3 flex-wrap">
+                    <div class="live-status-pill">
+                        <span class="dot-green"></span> 3D Geospatial Earth & Multi-Source Mesh
+                    </div>
+                    <!-- Layer Filter Chips -->
+                    <div class="hero-filter-group d-flex align-items-center gap-1">
+                        <button type="button" class="hero-filter-chip active" data-filter="ALL" aria-label="Show all layers"><i class="fas fa-globe"></i> All Layers</button>
+                        <button type="button" class="hero-filter-chip" data-filter="SATELLITES" aria-label="Show 4 orbiting satellites"><i class="fas fa-satellite"></i> 4 Satellites</button>
+                        <button type="button" class="hero-filter-chip" data-filter="STATIONS" aria-label="Show 6 monitoring stations"><i class="fas fa-tower-broadcast"></i> 6 Gauges</button>
+                        <button type="button" class="hero-filter-chip" data-filter="HAZARDS" aria-label="Show active global hazards"><i class="fas fa-triangle-exclamation"></i> Live Hazards</button>
+                    </div>
                 </div>
                 
-                <div class="tag-meta d-flex align-items-center gap-2">
-                    <span style="color: #38bdf8; font-weight: 700;">🛰️ NASA &bull; 🇮🇳 ISRO &bull; 🌊 GloFAS &bull; ⛰️ USGS &bull; IMD</span>
-                    <span>60 FPS WEBGL</span>
+                <div class="d-flex align-items-center gap-2 flex-wrap">
+                    <!-- Quick Camera Action Buttons -->
+                    <div class="hero-cam-group d-flex align-items-center gap-1">
+                        <button type="button" id="btnFocusHimalayas" class="hero-cam-btn" title="Focus Central Himalayas" aria-label="Focus Central Himalayas"><i class="fas fa-mountain"></i> Himalayas</button>
+                        <button type="button" id="btnTrackSat" class="hero-cam-btn" title="Track NASA GPM Satellite" aria-label="Track GPM Satellite"><i class="fas fa-satellite-dish"></i> Track Sat</button>
+                        <button type="button" id="btnResetOrbit" class="hero-cam-btn" title="Reset Camera Orbit" aria-label="Reset Camera Orbit"><i class="fas fa-rotate"></i> Reset</button>
+                    </div>
+                    <span class="badge bg-dark border border-info text-cyan px-2 py-1" style="font-family: var(--font-mono); font-size: 0.72rem;">60/120 FPS WEBGL</span>
                 </div>
             </div>
-            <div id="hero3DViewer" class="spatial-webgl-canvas-box"></div>
+
+            <!-- 3D Canvas Box with Floating Controls Notice -->
+            <div style="position: relative;">
+                <div id="hero3DViewer" class="spatial-webgl-canvas-box"></div>
+                <div class="hero-3d-hint-badge">
+                    <i class="fas fa-hand-pointer text-cyan"></i> Click/hover beacons or satellites for live telemetry HUD &bull; Drag to rotate
+                </div>
+            </div>
+
+            <!-- Real-Time Ingestion Metric Ribbon -->
             <div class="spatial-metrics-ribbon">
                 <div class="metric-pill">
-                    <span class="m-lbl">ENSEMBLE R²</span>
-                    <span class="m-val val-cyan">0.9858</span>
+                    <span class="m-lbl">TOTAL PACKETS INGESTED</span>
+                    <span class="m-val val-cyan">842,100</span>
                 </div>
                 <div class="metric-pill">
-                    <span class="m-lbl">INFERENCE LATENCY</span>
-                    <span class="m-val val-purple">12ms</span>
+                    <span class="m-lbl">MESH SYNC LATENCY</span>
+                    <span class="m-val val-purple">3.8ms</span>
                 </div>
                 <div class="metric-pill">
-                    <span class="m-lbl">DEFENSE LEAD TIME</span>
-                    <span class="m-val val-amber">3.8 Hours</span>
+                    <span class="m-lbl">EARTH OBSERVATION SYNC</span>
+                    <span class="m-val val-green">8/8 PIPELINES LIVE</span>
                 </div>
                 <div class="metric-pill">
-                    <span class="m-lbl">SATELLITE SYNC</span>
-                    <span class="m-val val-green">ACTIVE (GPM-1)</span>
+                    <span class="m-lbl">ACTIVE GEOHAZARDS</span>
+                    <span class="m-val val-amber">TRACKING (EONET/USGS)</span>
+                </div>
+            </div>
+
+            <!-- Multi-Source Data Stream Live Sources Bar -->
+            <div class="multi-source-ticker-bar mt-3">
+                <div class="ticker-header d-flex justify-content-between align-items-center mb-2">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="pulse-beacon" style="background:#10b981; width:7px; height:7px;"></span>
+                        <strong style="font-size:0.75rem; color:#ffffff; font-family:var(--font-mono); letter-spacing:0.06em;">LIVE CONCURRENT DATA SOURCES (8/8 SYNCED)</strong>
+                    </div>
+                    <span style="font-size:0.7rem; color:#94a3b8; font-family:var(--font-mono);">ZERO-KEY OPEN SCIENTIFIC DATA</span>
+                </div>
+                <div class="source-pills-wrap">
+                    <div class="source-pill"><span class="source-dot"></span> <strong>NASA GPM</strong> <small>Dual Ku/Ka Radar</small></div>
+                    <div class="source-pill"><span class="source-dot"></span> <strong>Copernicus Sentinel-1</strong> <small>C-SAR Radar</small></div>
+                    <div class="source-pill"><span class="source-dot"></span> <strong>ISRO INSAT-3DR</strong> <small>Imager/Sounder</small></div>
+                    <div class="source-pill"><span class="source-dot"></span> <strong>Open-Meteo GloFAS</strong> <small>River Flow m³/s</small></div>
+                    <div class="source-pill"><span class="source-dot"></span> <strong>Open-Meteo CAPE</strong> <small>Convective Instability</small></div>
+                    <div class="source-pill"><span class="source-dot"></span> <strong>USGS Earthquakes</strong> <small>M2.5+ Real-time</small></div>
+                    <div class="source-pill"><span class="source-dot"></span> <strong>IMD Doppler Radar</strong> <small>Reflectivity dBZ</small></div>
+                    <div class="source-pill"><span class="source-dot"></span> <strong>CWC River Gauges</strong> <small>Acoustic Stages</small></div>
                 </div>
             </div>
         </div>
@@ -576,9 +620,92 @@ function openHomeDirectMailApp() {
     color: rgba(255, 255, 255, 0.4);
     letter-spacing: 0.05em;
 }
+.hero-filter-chip {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: #cbd5e1;
+    font-size: 0.72rem;
+    font-family: var(--font-mono);
+    padding: 4px 10px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.hero-filter-chip:hover {
+    background: rgba(56, 189, 248, 0.15);
+    border-color: rgba(56, 189, 248, 0.4);
+    color: #ffffff;
+}
+.hero-filter-chip.active {
+    background: rgba(56, 189, 248, 0.25);
+    border-color: #38bdf8;
+    color: #38bdf8;
+    font-weight: 700;
+    box-shadow: 0 0 10px rgba(56, 189, 248, 0.25);
+}
+.hero-cam-btn {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: #cbd5e1;
+    font-size: 0.7rem;
+    font-family: var(--font-mono);
+    padding: 4px 8px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.hero-cam-btn:hover {
+    background: rgba(255, 255, 255, 0.12);
+    color: #38bdf8;
+    border-color: rgba(56, 189, 248, 0.4);
+}
+.hero-3d-hint-badge {
+    position: absolute;
+    bottom: 12px;
+    left: 16px;
+    background: rgba(3, 7, 18, 0.75);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 999px;
+    padding: 4px 12px;
+    font-size: 0.68rem;
+    color: #94a3b8;
+    pointer-events: none;
+}
+.multi-source-ticker-bar {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 14px;
+    padding: 10px 14px;
+}
+.source-pills-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+.source-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 999px;
+    padding: 3px 10px;
+    font-size: 0.7rem;
+    color: #cbd5e1;
+}
+.source-pill strong { color: #ffffff; }
+.source-pill small { color: #38bdf8; font-family: var(--font-mono); }
+.source-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #10b981;
+    box-shadow: 0 0 6px #10b981;
+}
 .spatial-webgl-canvas-box {
     width: 100%;
-    height: 380px;
+    height: 440px;
     border-radius: 20px;
     overflow: hidden;
     background: radial-gradient(circle at center, rgba(14, 165, 233, 0.08) 0%, rgba(0, 0, 0, 0.4) 100%);
