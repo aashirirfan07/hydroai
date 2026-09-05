@@ -21,8 +21,12 @@ from src.pipeline.predict_pipeline import PredictPipeline, CustomData
 from src.pipeline.live_stream_service import LiveStreamService
 from src.pipeline.train_pipeline import TrainPipeline
 from src.logger import logging
+from src.render_keepalive_service import render_keepalive_service
 
 app = Flask(__name__)
+
+# Start autonomous 24/7 keep-alive daemon for Render.com free tier
+render_keepalive_service.start_worker()
 
 @app.context_processor
 def override_url_for():
@@ -1693,9 +1697,11 @@ def api_inundation_contour():
 @app.route('/api/health-matrix', methods=['GET'])
 def api_health_matrix():
     '''Prometheus-compatible real-time platform telemetry, P95 latency, and mass-balance health matrix.'''
+    keep_alive_info = render_keepalive_service.get_status()
     return jsonify({
         "status": "HEALTHY",
-        "uptime_seconds": 86420,
+        "service": "HydroSentinel AI™",
+        "uptime_seconds": keep_alive_info["uptime_seconds"],
         "p95_inference_latency_ms": 12.4,
         "p99_inference_latency_ms": 17.8,
         "packet_ingest_rate_hz": 1240,
@@ -1704,6 +1710,13 @@ def api_health_matrix():
         "hydrological_mass_balance_drift_pct": 0.0018,
         "memory_rss_mb": 42.6,
         "system_version": "v2.9-Enterprise-Production",
+        "keep_alive_daemon": {
+            "active": keep_alive_info["is_alive"],
+            "target": keep_alive_info["target_url"],
+            "total_pings": keep_alive_info["total_pings"],
+            "successful_pings": keep_alive_info["successful_pings"],
+            "last_ping": keep_alive_info["last_ping_time"]
+        },
         "timestamp": datetime.now(timezone.utc).isoformat()
     }), 200
 
@@ -2149,6 +2162,32 @@ def api_drone_dispatch_swarm():
         "telemetry_link": "ACTIVE_STREAMING",
         "eta_first_waypoint_sec": 45,
         "message": f"Autonomous Swarm of {swarm_size} drones launched successfully towards {station_id}"
+    }), 200
+
+
+# ==============================================================================
+# 🩺 RENDER.COM 24/7 ANTI-SLEEP KEEP-ALIVE DIAGNOSTICS & TELEMETRY API
+# ==============================================================================
+
+
+@app.route('/api/keep-alive/status', methods=['GET'])
+def api_keep_alive_status():
+    '''Returns full diagnostics and telemetry of the Render keep-alive system.'''
+    return jsonify({
+        "status": "SUCCESS",
+        "diagnostics": render_keepalive_service.get_status(),
+        "timestamp": datetime.now(timezone.utc).isoformat()
+    }), 200
+
+
+@app.route('/api/keep-alive/ping-now', methods=['POST', 'GET'])
+def api_keep_alive_ping_now():
+    '''Forces an immediate keep-alive ping to the external public endpoint.'''
+    result = render_keepalive_service.ping_now()
+    return jsonify({
+        "status": "SUCCESS",
+        "ping_result": result,
+        "diagnostics": render_keepalive_service.get_status()
     }), 200
 
 

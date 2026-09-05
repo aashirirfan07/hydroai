@@ -657,3 +657,45 @@ def test_realtime_stream_api(client):
     assert 'text/event-stream' in res.content_type
     first_chunk = next(res.response)
     assert b'data: {"status": "SUCCESS"' in first_chunk
+
+
+def test_healthz_endpoint(client):
+    """Tests the /healthz endpoint for Render edge proxy keep-alive."""
+    res = client.get('/healthz')
+    assert res.status_code == 200
+    data = res.get_json()
+    assert data['status'] == 'HEALTHY'
+    assert 'HydroSentinel' in data['service']
+    assert 'uptime_seconds' in data
+    assert 'keep_alive_daemon' in data
+
+
+def test_api_health_endpoint(client):
+    """Tests the /api/health endpoint."""
+    res = client.get('/api/health')
+    assert res.status_code == 200
+    data = res.get_json()
+    assert data['status'] == 'HEALTHY'
+    assert 'HydroSentinel' in data['service']
+
+
+def test_api_keep_alive_status(client):
+    """Tests /api/keep-alive/status diagnostic endpoint."""
+    res = client.get('/api/keep-alive/status')
+    assert res.status_code == 200
+    data = res.get_json()
+    assert data['status'] == 'SUCCESS'
+    assert 'diagnostics' in data
+    assert 'target_url' in data['diagnostics']
+    assert data['diagnostics']['interval_seconds'] > 0
+
+
+def test_api_keep_alive_ping_now(client):
+    """Tests manual trigger of keep-alive pulse via /api/keep-alive/ping-now."""
+    res = client.post('/api/keep-alive/ping-now')
+    assert res.status_code == 200
+    data = res.get_json()
+    assert data['status'] == 'SUCCESS'
+    assert 'ping_result' in data
+    assert 'diagnostics' in data
+

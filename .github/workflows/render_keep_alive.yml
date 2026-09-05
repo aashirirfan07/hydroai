@@ -1,0 +1,32 @@
+name: Render 24/7 Keep-Alive Heartbeat
+
+on:
+  schedule:
+    # Trigger every 12 minutes (Render free tier sleeps after 15 minutes of inactivity)
+    - cron: '*/12 * * * *'
+  workflow_dispatch: # Allows manual trigger from GitHub Actions tab
+
+jobs:
+  keep-alive-pulse:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Send Keep-Alive Pulse to Render Edge Proxy
+        run: |
+          TARGET_URL="https://hydrosentinel.onrender.com/healthz"
+          echo "======================================================="
+          echo "🚀 HydroSentinel AI — 24/7 Render Keep-Alive Pulse"
+          echo "Timestamp: $(date -u)"
+          echo "Target URL: $TARGET_URL"
+          echo "======================================================="
+          
+          # Perform HTTP GET request with 35s timeout to handle potential spin-up
+          HTTP_CODE=$(curl -s -L -o /dev/null -w "%{http_code}" --max-time 35 "$TARGET_URL" || echo "FAILED")
+          
+          echo "HTTP Response Status Code: $HTTP_CODE"
+          if [ "$HTTP_CODE" -eq 200 ] || [ "$HTTP_CODE" -eq 301 ] || [ "$HTTP_CODE" -eq 302 ]; then
+            echo "✅ Render instance is AWAKE and operational (Countdown Reset)!"
+          else
+            echo "⚠️ Render received inbound traffic (Code: $HTTP_CODE). Cold start triggered if sleeping."
+          fi

@@ -1579,6 +1579,13 @@ async function sendGlobalZeroKeySms(e) {
             closeAllNavDropdowns();
         }
     });
+
+    // 🩺 Ambient Keep-Alive Heartbeat for Render.com (runs while tab is open)
+    (function() {
+        setInterval(() => {
+            fetch('/healthz', { cache: 'no-store' }).catch(() => {});
+        }, 10 * 60 * 1000);
+    })();
     </script>
 
     <!-- Lovable 3D Spatial Depth & Perspective Tilt Engine -->

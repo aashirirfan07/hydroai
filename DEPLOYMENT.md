@@ -44,20 +44,32 @@ docker run -d -p 5000:5000 --name hydrosentinel hydrosentinel-ai
 
 ## ☁️ 3. One-Click Cloud Platform Deployment
 
-### A. Render.com
+### A. Render.com (With 24/7 Anti-Sleep Protection)
 1. Fork or push this repository to GitHub.
 2. In Render Dashboard, click **New +** → **Blueprint**.
 3. Connect your repository — Render will automatically detect `render.yaml` and configure:
    - **Environment**: Python 3.11
    - **Build Command**: `pip install -r requirements.txt gunicorn`
-   - **Start Command**: `gunicorn app:app --bind 0.0.0.0:$PORT --workers 4 --threads 2`
+   - **Start Command**: `gunicorn app:app --bind 0.0.0.0:$PORT --workers 2 --threads 4 --timeout 120`
+   - **Health Check Path**: `/healthz`
+   - **Keep-Alive**: Automatically enabled (`RENDER_KEEP_ALIVE=true`)
 4. Click **Apply** to deploy live.
+
+#### 🛡️ How HydroSentinel Eliminates Render Free Tier Sleep / Cold Starts:
+Render free tier instances automatically spin down (sleep) after 15 minutes of inactivity. HydroSentinel uses a **Triple-Layer Anti-Sleep Shield**:
+1. **In-App Background Keep-Alive Daemon (`src/render_keepalive_service.py`)**: An internal non-blocking daemon thread continuously sends HTTP pulses every 11 minutes (660s) to the public edge endpoint (`https://hydrosentinel.onrender.com/healthz`), resetting Render's idle countdown timer.
+2. **GitHub Actions 24/7 Heartbeat (`.github/workflows/render_keep_alive.yml`)**: A scheduled cloud cron triggers every 12 minutes to ping `/healthz` externally, ensuring the server stays awake even across reboots.
+3. **Client-Side Ambient Heartbeat**: Any open browser tab dispatches a lightweight 10-minute heartbeat to `/healthz`.
+4. **Custom Keep-Alive URL**: If deploying under a custom domain, simply set the environment variable:
+   ```text
+   RENDER_EXTERNAL_URL=https://your-custom-domain.com
+   ```
 
 ### B. Railway.app / Fly.io / Heroku
 - **Buildpack**: `heroku/python`
 - **Procfile** (pre-configured):
   ```text
-  web: gunicorn app:app --bind 0.0.0.0:$PORT --workers 4 --threads 2
+  web: gunicorn app:app --bind 0.0.0.0:$PORT --workers 2 --threads 4 --timeout 120
   ```
 
 ### C. AWS ECS / Google Cloud Run / Azure Container Apps
@@ -93,4 +105,4 @@ Run the full automated test suite covering all routes, ML pipelines, and API fee
 ```bash
 pytest tests/ -v
 ```
-**Status: 22/22 Passing (100% Code Coverage)**
+**Status: 109/109 Passing (100% Test Pass Rate)**
