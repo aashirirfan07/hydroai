@@ -304,6 +304,42 @@ class ModelContextProtocolService:
                     },
                     "required": []
                 }
+            },
+            {
+                "name": "hydrosentinel_plan_drone_mission",
+                "description": "Plan autonomous multi-drone Search & Rescue (SAR) mission with terrain clearance, airdrop logistics, and flight telemetry (Lawnmower, Spiral, River Corridor, Contour).",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "station_id": {
+                            "type": "string",
+                            "description": "Target basin ID (e.g., 'STN-KD-05', 'STN-CH-06', 'STN-KL-01').",
+                            "default": "STN-KD-05"
+                        },
+                        "pattern_type": {
+                            "type": "string",
+                            "enum": ["LAWNMOWER", "SPIRAL", "RIVER", "CONTOUR"],
+                            "description": "Search pattern algorithm.",
+                            "default": "LAWNMOWER"
+                        },
+                        "swarm_size": {
+                            "type": "integer",
+                            "description": "Number of coordinated drones (1 to 4).",
+                            "default": 2
+                        },
+                        "altitude_agl_m": {
+                            "type": "number",
+                            "description": "Flight altitude Above Ground Level in meters (30 to 150m).",
+                            "default": 60.0
+                        },
+                        "payloads": {
+                            "type": "array",
+                            "items": {"type": "string"},
+                            "description": "List of emergency airdrop packages: 'MED_KIT_HIGH_ALTITUDE', 'INFLATABLE_SURVIVAL_RAFT', 'EMERGENCY_COMMS_BEACON', 'FOOD_RATION_SURVIVAL_PACK'."
+                        }
+                    },
+                    "required": ["station_id"]
+                }
             }
         ]
 
@@ -334,6 +370,8 @@ class ModelContextProtocolService:
                 result = self._tool_get_satellite_swaths(arguments)
             elif tool_name == "hydrosentinel_get_multi_source_telemetry":
                 result = self._tool_get_multi_source_telemetry(arguments)
+            elif tool_name == "hydrosentinel_plan_drone_mission":
+                result = self._tool_plan_drone_mission(arguments)
             else:
                 return {
                     "isError": True,
@@ -684,6 +722,21 @@ class ModelContextProtocolService:
             }
         return payload
 
+    def _tool_plan_drone_mission(self, args: Dict[str, Any]) -> Dict[str, Any]:
+        from src.drone_mission_service import drone_mission_service
+        stn = args.get("station_id", "STN-KD-05")
+        pattern = args.get("pattern_type", "LAWNMOWER")
+        swarm_size = int(args.get("swarm_size", 2))
+        alt = float(args.get("altitude_agl_m", 60.0))
+        payloads = args.get("payloads", ["MED_KIT_HIGH_ALTITUDE", "INFLATABLE_SURVIVAL_RAFT"])
+        return drone_mission_service.plan_swarm_mission(
+            station_id=stn,
+            pattern_type=pattern,
+            swarm_size=swarm_size,
+            altitude_agl=alt,
+            selected_payloads=payloads
+        )
+
     # =========================================================================
     # 4. MCP Resources & Prompts
     # =========================================================================
@@ -712,6 +765,12 @@ class ModelContextProtocolService:
                 "uri": "hydrosentinel://telemetry/multi-source",
                 "name": "Unified Multi-Source Real-Time Telemetry Mesh",
                 "description": "Aggregated real-time feed of 8 open scientific pipelines (GloFAS, Open-Meteo, USGS, NASA, ISRO, IMD, CWC).",
+                "mimeType": "application/json"
+            },
+            {
+                "uri": "hydrosentinel://drones/fleet",
+                "name": "Autonomous SAR Drone Swarm Fleet",
+                "description": "Operational readiness, battery state-of-charge, and specs for hexacopter and VTOL drone swarm.",
                 "mimeType": "application/json"
             }
         ]
@@ -745,6 +804,13 @@ class ModelContextProtocolService:
                 "uri": uri,
                 "mimeType": "application/json",
                 "contents": json.dumps(data, indent=2)
+            }
+        elif uri == "hydrosentinel://drones/fleet":
+            from src.drone_mission_service import drone_mission_service
+            return {
+                "uri": uri,
+                "mimeType": "application/json",
+                "contents": json.dumps(drone_mission_service.fleet, indent=2)
             }
         else:
             raise ValueError(f"Resource with URI '{uri}' not found.")

@@ -2012,6 +2012,146 @@ def api_mcp_config():
     return jsonify(config), 200
 
 
+
+# ==============================================================================
+# 🛸 AUTONOMOUS DRONE SWARM SEARCH & RESCUE (SAR) MISSION PLANNER
+# ==============================================================================
+@app.route('/drone-mission-planner', endpoint='drone_mission_planner_page')
+@app.route('/drone-missions', endpoint='drone_missions_alias')
+def drone_mission_planner_page():
+    '''Interactive Autonomous Drone Swarm Search & Rescue Mission Planning Console.'''
+    from src.drone_mission_service import drone_mission_service
+    station_id = request.args.get('station', 'STN-KD-05')
+    stations = drone_mission_service.station_locations
+    fleet = drone_mission_service.fleet
+    payloads = drone_mission_service.payload_catalog
+    initial_mission = drone_mission_service.plan_swarm_mission(
+        station_id=station_id,
+        pattern_type="LAWNMOWER",
+        swarm_size=2
+    )
+    return render_template(
+        'drone_mission_planner.html',
+        current_station=station_id,
+        stations=stations,
+        fleet=fleet,
+        payloads=payloads,
+        initial_mission=initial_mission
+    )
+
+
+@app.route('/api/drone/generate-mission', methods=['POST'])
+def api_drone_generate_mission():
+    '''Generates an optimized multi-drone SAR flight plan across a catchment zone.'''
+    from src.drone_mission_service import drone_mission_service
+    data = request.get_json() or {}
+    station_id = data.get('station_id', 'STN-KD-05')
+    pattern_type = data.get('pattern_type', 'LAWNMOWER')
+    swarm_size = int(data.get('swarm_size', 2))
+    altitude_agl = float(data.get('altitude_agl', data.get('altitude_agl_m', 60.0)))
+    speed_mps = float(data.get('speed_mps', 15.0))
+    selected_payloads = data.get('payloads', ['MED_KIT_HIGH_ALTITUDE', 'INFLATABLE_SURVIVAL_RAFT'])
+
+    try:
+        mission = drone_mission_service.plan_swarm_mission(
+            station_id=station_id,
+            pattern_type=pattern_type,
+            swarm_size=swarm_size,
+            altitude_agl=altitude_agl,
+            speed_mps=speed_mps,
+            selected_payloads=selected_payloads
+        )
+        return jsonify(mission), 200
+    except Exception as e:
+        logger.error(f"Drone mission generation error: {e}")
+        return jsonify({"status": "ERROR", "message": str(e)}), 500
+
+
+@app.route('/api/drone/export', methods=['GET', 'POST'])
+def api_drone_export():
+    '''Exports flight plan in standard aviation formats: QGroundControl, MAVLink, Google Earth KML, or GeoJSON.'''
+    from src.drone_mission_service import drone_mission_service
+    if request.method == 'POST':
+        data = request.get_json() or {}
+        station_id = data.get('station_id', 'STN-KD-05')
+        pattern_type = data.get('pattern_type', 'LAWNMOWER')
+        swarm_size = int(data.get('swarm_size', 2))
+        fmt = data.get('format', 'qgc_plan').lower()
+        payloads = data.get('payloads', ['MED_KIT_HIGH_ALTITUDE'])
+    else:
+        station_id = request.args.get('station_id', 'STN-KD-05')
+        pattern_type = request.args.get('pattern', 'LAWNMOWER')
+        swarm_size = int(request.args.get('swarm_size', 2))
+        fmt = request.args.get('format', 'plan').lower()
+        payloads = ['MED_KIT_HIGH_ALTITUDE']
+
+    mission = drone_mission_service.plan_swarm_mission(
+        station_id=station_id,
+        pattern_type=pattern_type,
+        swarm_size=swarm_size,
+        selected_payloads=payloads
+    )
+
+    if fmt in ['waypoints', 'mavlink_waypoints', 'mavlink']:
+        content = drone_mission_service.export_mavlink_waypoints(mission)
+        mimetype = 'text/plain'
+        filename = f"{mission['mission_id']}.waypoints"
+    elif fmt in ['kml', 'kml_3d', 'google_earth']:
+        content = drone_mission_service.export_google_earth_kml(mission)
+        mimetype = 'application/vnd.google-earth.kml+xml'
+        filename = f"{mission['mission_id']}.kml"
+    elif fmt in ['geojson', 'geo_json']:
+        content = json.dumps(drone_mission_service.export_geojson(mission), indent=2)
+        mimetype = 'application/geo+json'
+        filename = f"{mission['mission_id']}.geojson"
+    else:
+        content = drone_mission_service.export_qgroundcontrol_plan(mission)
+        mimetype = 'application/json'
+        filename = f"{mission['mission_id']}.plan"
+
+    return Response(
+        content,
+        mimetype=mimetype,
+        headers={'Content-Disposition': f'attachment; filename="{filename}"'}
+    )
+
+
+@app.route('/api/drone/fleet-status', methods=['GET'])
+def api_drone_fleet_status():
+    '''Returns operational readiness and battery SoC of all autonomous SAR drones.'''
+    from src.drone_mission_service import drone_mission_service
+    fleet_list = drone_mission_service.get_fleet_status()
+    return jsonify({
+        "status": "SUCCESS",
+        "total_drones": len(fleet_list),
+        "fleet": fleet_list,
+        "fleet_dict": drone_mission_service.fleet,
+        "active_comms_link": "Encrypted 868MHz LoRa / MAVLink v2.0",
+        "timestamp": datetime.now(timezone.utc).isoformat()
+    }), 200
+
+
+@app.route('/api/drone/dispatch-swarm', methods=['POST'])
+def api_drone_dispatch_swarm():
+    '''Simulates autonomous launch of SAR drone swarm.'''
+    data = request.get_json() or {}
+    station_id = data.get('station_id', 'STN-KD-05')
+    mission_id = data.get('mission_id', f"SAR-MSN-{int(time.time())}")
+    swarm_size = int(data.get('swarm_size', 2))
+
+    return jsonify({
+        "status": "SUCCESS",
+        "dispatch_status": "DISPATCHED",
+        "mission_id": mission_id,
+        "station_id": station_id,
+        "swarm_size": swarm_size,
+        "launch_timestamp": datetime.now(timezone.utc).isoformat(),
+        "telemetry_link": "ACTIVE_STREAMING",
+        "eta_first_waypoint_sec": 45,
+        "message": f"Autonomous Swarm of {swarm_size} drones launched successfully towards {station_id}"
+    }), 200
+
+
 if __name__ == '__main__':
     if not os.path.exists(os.path.join('artifacts', 'model.pkl')):
         train_pipeline = TrainPipeline()

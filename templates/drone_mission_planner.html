@@ -1,0 +1,599 @@
+{% extends "layout.html" %}
+
+{% block title %}Autonomous Drone Swarm SAR Mission Planner • HydroSentinel AI{% endblock %}
+
+{% block content %}
+<div class="content-container" style="max-width: 1600px; padding: 1rem 1.5rem;">
+    <!-- Top Tactical Command Bar -->
+    <div class="card p-3 mb-4 liquid-glass" style="border: 1px solid rgba(56, 189, 248, 0.4); background: rgba(3, 7, 18, 0.95); border-radius: 16px;">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div class="d-flex align-items-center gap-3">
+                <span class="pulse-beacon" style="background: #38bdf8; width: 12px; height: 12px;"></span>
+                <div>
+                    <h1 style="font-family: var(--font-display); font-size: 1.45rem; color: #ffffff; margin: 0; display: flex; align-items: center; gap: 0.6rem;">
+                        🛸 Autonomous Drone Swarm SAR Mission Planner
+                    </h1>
+                    <small style="color: rgba(255, 255, 255, 0.65); font-size: 0.8rem;">
+                        Space-Air-Ground Integrated Network (SAGIN) &bull; Terrain-Following Waypoints &bull; Airdrop Logistics &bull; QGC / MAVLink Exporter
+                    </small>
+                </div>
+            </div>
+
+            <!-- Fleet Readiness Status Badges -->
+            <div class="d-flex align-items-center gap-2 flex-wrap">
+                <span class="badge bg-dark border border-success text-emerald px-3 py-2" style="font-family: var(--font-mono); font-size: 0.78rem;">
+                    🟢 FLEET: 4/4 READY (97% AVG SOC)
+                </span>
+                <span class="badge bg-dark border border-info text-cyan px-3 py-2" style="font-family: var(--font-mono); font-size: 0.78rem;">
+                    📡 COMMS: 868MHz MAVLink v2.0
+                </span>
+                <a href="{{ url_for('uav_feed') }}" class="spatial-btn-glass" style="padding: 0.4rem 0.85rem; font-size: 0.78rem; text-decoration: none;">
+                    📹 Live Video HUD
+                </a>
+            </div>
+        </div>
+
+        <!-- Fleet Overview Chips -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0.75rem; margin-top: 1rem; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 0.85rem;">
+            {% for d_id, d in fleet.items() %}
+            <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); padding: 0.5rem 0.75rem; border-radius: 8px;">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                    <strong style="color: #38bdf8; font-size: 0.82rem;">{{ d.callsign }}</strong>
+                    <span style="color: #10b981; font-size: 0.72rem; font-family: var(--font-mono);">⚡ {{ d.battery_soc_pct }}%</span>
+                </div>
+                <div style="font-size: 0.72rem; color: #cbd5e1;">{{ d.model }}</div>
+                <div style="font-size: 0.68rem; color: #94a3b8; font-family: var(--font-mono); margin-top: 2px;">
+                    Payload: {{ d.max_payload_kg }}kg &bull; {{ d.max_flight_time_mins }}m Endur
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Main Two-Column Mission Control Grid -->
+    <div class="row g-4">
+        <!-- LEFT COLUMN: Mission Configurator & Telemetry Controls -->
+        <div class="col-lg-5">
+            <div class="card p-4 liquid-glass" style="border: 1px solid rgba(255, 255, 255, 0.12); background: rgba(7, 11, 22, 0.9); border-radius: 18px;">
+                <h3 style="font-family: var(--font-display); font-size: 1.15rem; color: #ffffff; margin-bottom: 1.25rem; display: flex; align-items: center; gap: 0.5rem;">
+                    ⚙️ Mission Parameters & Target Zone
+                </h3>
+
+                <!-- Basin Target Selector -->
+                <div class="mb-3">
+                    <label class="form-label text-cyan font-mono" style="font-size: 0.78rem;">TARGET DISASTER BASIN</label>
+                    <select id="selStation" class="form-select spatial-input" onchange="generateMissionPlan()">
+                        {% for s_id, s in stations.items() %}
+                        <option value="{{ s_id }}" {% if s_id == current_station %}selected{% endif %}>
+                            {{ s.name }} ({{ s.elevation_m }}m AMSL)
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Search Pattern Algorithm Cards -->
+                <div class="mb-3">
+                    <label class="form-label text-cyan font-mono" style="font-size: 0.78rem;">SAR SEARCH PATTERN ALGORITHM</label>
+                    <div class="pattern-cards-grid">
+                        <div class="pattern-card active" data-pattern="LAWNMOWER" onclick="selectPattern('LAWNMOWER')">
+                            <div class="p-icon">🚜</div>
+                            <div class="p-name">Parallel Lawnmower</div>
+                            <small class="p-desc">Broad floodplain transect sweep</small>
+                        </div>
+                        <div class="pattern-card" data-pattern="SPIRAL" onclick="selectPattern('SPIRAL')">
+                            <div class="p-icon">🌀</div>
+                            <div class="p-name">Expanding Spiral</div>
+                            <small class="p-desc">Datum / Distress beacon centered</small>
+                        </div>
+                        <div class="pattern-card" data-pattern="RIVER" onclick="selectPattern('RIVER')">
+                            <div class="p-icon">🌊</div>
+                            <div class="p-name">River Corridor</div>
+                            <small class="p-desc">Curvilinear downstream flood bank</small>
+                        </div>
+                        <div class="pattern-card" data-pattern="CONTOUR" onclick="selectPattern('CONTOUR')">
+                            <div class="p-icon">⛰️</div>
+                            <div class="p-name">Mountain Contour</div>
+                            <small class="p-desc">Tiered slope landslide scan</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Swarm Sliders -->
+                <div class="row g-3 mb-3">
+                    <div class="col-6">
+                        <label class="form-label text-cyan font-mono" style="font-size: 0.75rem;">SWARM SIZE: <span id="lblSwarmSize" class="text-white">2 Drones</span></label>
+                        <input type="range" class="form-range" id="rngSwarm" min="1" max="4" value="2" oninput="updateSliders(); generateMissionPlan();">
+                    </div>
+                    <div class="col-6">
+                        <label class="form-label text-cyan font-mono" style="font-size: 0.75rem;">CRUISE ALTITUDE: <span id="lblAlt" class="text-white">60m AGL</span></label>
+                        <input type="range" class="form-range" id="rngAlt" min="30" max="150" step="5" value="60" oninput="updateSliders(); generateMissionPlan();">
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label text-cyan font-mono" style="font-size: 0.75rem;">CRUISE SPEED: <span id="lblSpeed" class="text-white">12 m/s (43 km/h)</span></label>
+                    <input type="range" class="form-range" id="rngSpeed" min="8" max="22" step="1" value="12" oninput="updateSliders(); generateMissionPlan();">
+                </div>
+
+                <!-- Emergency Airdrop Logistics -->
+                <div class="mb-3">
+                    <label class="form-label text-cyan font-mono" style="font-size: 0.78rem;">EMERGENCY AIRDROP PACKAGES ALLOCATED</label>
+                    <div class="payload-checklist">
+                        {% for p_id, p in payloads.items() %}
+                        <label class="payload-item">
+                            <input type="checkbox" name="payload_chk" value="{{ p_id }}" checked onchange="generateMissionPlan()">
+                            <span>{{ p.icon }} <strong>{{ p.name }}</strong> ({{ p.weight_kg }}kg)</span>
+                        </label>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Action Launch / Simulate Buttons -->
+                <div class="d-grid gap-2 mb-3">
+                    <button type="button" class="spatial-btn-primary py-2" onclick="generateMissionPlan()">
+                        <i class="fas fa-sync-alt"></i> Recompute Mission Path
+                    </button>
+                    <button type="button" id="btnDispatchSwarm" class="btn-pilot-drone-glow py-2 text-center" onclick="dispatchSwarmAutonomous()">
+                        🚀 Dispatch Autonomous Swarm (Live Execution)
+                    </button>
+                </div>
+
+                <!-- One-Click Export Aviation Suite -->
+                <div style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem;">
+                    <label class="form-label text-cyan font-mono mb-2" style="font-size: 0.75rem;">EXPORT FLIGHT PLAN FORMATS</label>
+                    <div class="d-flex flex-wrap gap-2">
+                        <button type="button" class="export-btn" onclick="downloadFlightFile('plan')">
+                            📄 QGroundControl (.plan)
+                        </button>
+                        <button type="button" class="export-btn" onclick="downloadFlightFile('waypoints')">
+                            🧭 MAVLink (.waypoints)
+                        </button>
+                        <button type="button" class="export-btn" onclick="downloadFlightFile('kml')">
+                            🌐 Google Earth (.kml)
+                        </button>
+                        <button type="button" class="export-btn" onclick="downloadFlightFile('geojson')">
+                            🗺️ GeoJSON
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT COLUMN: Interactive 2D/3D Flight Path Map & Simulator HUD -->
+        <div class="col-lg-7">
+            <!-- Telemetry Metrics Banner -->
+            <div class="card p-3 mb-3 liquid-glass" style="border: 1px solid rgba(56, 189, 248, 0.3); background: rgba(5, 9, 20, 0.9); border-radius: 16px;">
+                <div class="row g-2 text-center" id="missionStatsRibbon">
+                    <div class="col-6 col-md-3">
+                        <span class="m-stat-lbl">TOTAL DISTANCE</span>
+                        <div id="statDist" class="m-stat-val text-cyan">12.08 km</div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <span class="m-stat-lbl">EST. FLIGHT TIME</span>
+                        <div id="statDuration" class="m-stat-val text-amber">18.4 mins</div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <span class="m-stat-lbl">BATTERY BURN</span>
+                        <div id="statBattery" class="m-stat-val text-emerald">38.2% (60% Margin)</div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <span class="m-stat-lbl">WAYPOINTS</span>
+                        <div id="statWaypoints" class="m-stat-val text-purple">16 Points</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Flight Path Map Canvas -->
+            <div class="card p-0 liquid-glass overflow-hidden position-relative" style="border: 1px solid rgba(56, 189, 248, 0.4); border-radius: 18px; min-height: 480px;">
+                <div id="droneMissionMap" style="width: 100%; height: 500px; background: #030712;"></div>
+
+                <!-- On-Map Floating Flight Simulator HUD -->
+                <div id="floatingSimHUD" class="sim-floating-hud">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="pulse-beacon" style="background:#ef4444; width:8px; height:8px;"></span>
+                            <strong style="font-size:0.75rem; color:#ffffff; font-family:var(--font-mono);">GARUDA-01 THERMAL HUD</strong>
+                        </div>
+                        <button type="button" class="btn btn-sm btn-outline-info py-0 px-2" style="font-size:0.7rem;" onclick="toggleSimPlayback()">
+                            <span id="btnSimPlayIcon">▶ PLAY SIM</span>
+                        </button>
+                    </div>
+                    <div class="sim-hud-grid">
+                        <div>ALT: <strong id="simAlt" class="text-cyan font-mono">60m AGL</strong></div>
+                        <div>SPD: <strong id="simSpd" class="text-white font-mono">12.0 m/s</strong></div>
+                        <div>HDG: <strong id="simHdg" class="text-amber font-mono">225° SW</strong></div>
+                        <div>WP: <strong id="simWp" class="text-emerald font-mono">WP #1 / 16</strong></div>
+                    </div>
+                    <div class="progress mt-2" style="height: 4px; background: rgba(255,255,255,0.1);">
+                        <div id="simProgressBar" class="progress-bar bg-cyan" style="width: 0%;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Waypoint Details Collapsible Roster -->
+            <div class="card p-3 mt-3 liquid-glass" style="border: 1px solid rgba(255, 255, 255, 0.1); background: rgba(7, 11, 22, 0.85); border-radius: 16px;">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h4 style="font-size: 0.92rem; color: #ffffff; margin: 0; font-family: var(--font-display);">
+                        📋 Waypoint Sequence Telemetry Roster
+                    </h4>
+                    <span id="wpBadgeCount" class="badge bg-secondary" style="font-size: 0.7rem;">16 Waypoints</span>
+                </div>
+                <div class="table-responsive" style="max-height: 220px; overflow-y: auto;">
+                    <table class="table table-dark table-sm table-hover mb-0" style="font-size: 0.74rem; font-family: var(--font-mono);">
+                        <thead>
+                            <tr class="text-muted">
+                                <th>#</th>
+                                <th>TYPE</th>
+                                <th>LAT / LON</th>
+                                <th>AGL</th>
+                                <th>MSL</th>
+                                <th>ACTION</th>
+                                <th>AIRDROP</th>
+                            </tr>
+                        </thead>
+                        <tbody id="waypointsTableBody">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<style>
+.pattern-cards-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+.pattern-card {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 10px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.pattern-card:hover {
+    background: rgba(56, 189, 248, 0.12);
+    border-color: rgba(56, 189, 248, 0.4);
+}
+.pattern-card.active {
+    background: rgba(56, 189, 248, 0.22);
+    border-color: #38bdf8;
+    box-shadow: 0 0 12px rgba(56, 189, 248, 0.25);
+}
+.p-icon { font-size: 1.25rem; margin-bottom: 2px; }
+.p-name { font-size: 0.8rem; font-weight: 700; color: #ffffff; }
+.p-desc { font-size: 0.68rem; color: #94a3b8; display: block; line-height: 1.2; }
+
+.payload-checklist {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    padding: 10px;
+}
+.payload-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.74rem;
+    color: #cbd5e1;
+    cursor: pointer;
+    margin: 0;
+}
+.payload-item input { accent-color: #38bdf8; }
+
+.export-btn {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: #cbd5e1;
+    font-size: 0.72rem;
+    font-family: var(--font-mono);
+    padding: 5px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.export-btn:hover {
+    background: rgba(56, 189, 248, 0.18);
+    border-color: #38bdf8;
+    color: #ffffff;
+}
+
+.m-stat-lbl {
+    font-size: 0.65rem;
+    font-family: var(--font-mono);
+    color: #94a3b8;
+    display: block;
+    letter-spacing: 0.06em;
+}
+.m-stat-val {
+    font-size: 1.1rem;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+}
+
+.sim-floating-hud {
+    position: absolute;
+    bottom: 16px;
+    left: 16px;
+    background: rgba(3, 7, 18, 0.88);
+    border: 1px solid rgba(56, 189, 248, 0.4);
+    backdrop-filter: blur(14px);
+    border-radius: 12px;
+    padding: 10px 14px;
+    min-width: 240px;
+    z-index: 1000;
+}
+.sim-hud-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px;
+    font-size: 0.72rem;
+    color: #cbd5e1;
+}
+</style>
+
+<script>
+let currentPattern = 'LAWNMOWER';
+let missionData = {{ initial_mission | tojson }};
+let map = null;
+let flightPolyline = null;
+let waypointMarkers = [];
+let droneSimMarker = null;
+let isSimPlaying = false;
+let simInterval = null;
+let simStepIndex = 0;
+
+document.addEventListener('DOMContentLoaded', () => {
+    initLeafletMap();
+    if (missionData) {
+        renderMissionOnMap(missionData);
+        populateWaypointTable(missionData);
+    }
+});
+
+function initLeafletMap() {
+    const defaultLat = missionData && missionData.waypoints && missionData.waypoints[0] ? missionData.waypoints[0].lat : 30.7346;
+    const defaultLon = missionData && missionData.waypoints && missionData.waypoints[0] ? missionData.waypoints[0].lon : 79.0669;
+
+    map = L.map('droneMissionMap', {
+        zoomControl: true
+    }).setView([defaultLat, defaultLon], 14);
+
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; CartoDB &bull; HydroSentinel AI',
+        maxZoom: 19
+    }).addTo(map);
+}
+
+function selectPattern(pat) {
+    currentPattern = pat;
+    document.querySelectorAll('.pattern-card').forEach(c => {
+        c.classList.toggle('active', c.getAttribute('data-pattern') === pat);
+    });
+    generateMissionPlan();
+}
+
+function updateSliders() {
+    const sw = document.getElementById('rngSwarm').value;
+    const alt = document.getElementById('rngAlt').value;
+    const spd = document.getElementById('rngSpeed').value;
+
+    document.getElementById('lblSwarmSize').textContent = `${sw} Drone${sw > 1 ? 's' : ''}`;
+    document.getElementById('lblAlt').textContent = `${alt}m AGL`;
+    document.getElementById('lblSpeed').textContent = `${spd} m/s (${Math.round(spd * 3.6)} km/h)`;
+}
+
+function getSelectedPayloads() {
+    const checked = [];
+    document.querySelectorAll('input[name="payload_chk"]:checked').forEach(c => checked.push(c.value));
+    return checked;
+}
+
+async function generateMissionPlan() {
+    const stn = document.getElementById('selStation').value;
+    const sw = parseInt(document.getElementById('rngSwarm').value);
+    const alt = parseFloat(document.getElementById('rngAlt').value);
+    const spd = parseFloat(document.getElementById('rngSpeed').value);
+    const payloads = getSelectedPayloads();
+
+    try {
+        const res = await fetch('/api/drone/generate-mission', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                station_id: stn,
+                pattern_type: currentPattern,
+                swarm_size: sw,
+                altitude_agl_m: alt,
+                speed_mps: spd,
+                payloads: payloads
+            })
+        });
+        const data = await res.json();
+        if (data && data.status === 'SUCCESS') {
+            missionData = data;
+            renderMissionOnMap(data);
+            populateWaypointTable(data);
+            updateStatsRibbon(data);
+        }
+    } catch (e) {
+        console.error('Mission generation error:', e);
+    }
+}
+
+function updateStatsRibbon(d) {
+    document.getElementById('statDist').textContent = `${d.total_distance_km} km`;
+    document.getElementById('statDuration').textContent = `${d.estimated_duration_mins} mins`;
+    if (d.assigned_swarm && d.assigned_swarm[0]) {
+        const sw = d.assigned_swarm[0];
+        document.getElementById('statBattery').textContent = `${sw.battery_burn_pct}% (${sw.battery_margin_pct}% Margin)`;
+    }
+    document.getElementById('statWaypoints').textContent = `${d.total_waypoints} Points`;
+    document.getElementById('wpBadgeCount').textContent = `${d.total_waypoints} Waypoints`;
+}
+
+function renderMissionOnMap(d) {
+    if (!map || !d.waypoints) return;
+
+    // Clear old layers
+    if (flightPolyline) map.removeLayer(flightPolyline);
+    waypointMarkers.forEach(m => map.removeLayer(m));
+    waypointMarkers = [];
+    if (droneSimMarker) map.removeLayer(droneSimMarker);
+
+    const latlngs = d.waypoints.map(w => [w.lat, w.lon]);
+
+    // Polyline
+    flightPolyline = L.polyline(latlngs, {
+        color: '#38bdf8',
+        weight: 3.5,
+        opacity: 0.85,
+        dashArray: '8, 6'
+    }).addTo(map);
+
+    // Markers
+    d.waypoints.forEach((w, idx) => {
+        const isDrop = w.payload_drop != null;
+        const isHome = idx === 0 || idx === d.waypoints.length - 1;
+
+        let iconHtml = `<div style="background:#38bdf8; color:#000; width:22px; height:22px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:bold; border:2px solid #fff; box-shadow:0 0 8px #38bdf8;">${w.seq}</div>`;
+        if (isDrop) {
+            iconHtml = `<div style="background:#ef4444; color:#fff; width:26px; height:26px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; border:2px solid #fff; box-shadow:0 0 12px #ef4444;">🚨</div>`;
+        } else if (isHome) {
+            iconHtml = `<div style="background:#10b981; color:#000; width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:bold; border:2px solid #fff;">H</div>`;
+        }
+
+        const customIcon = L.divIcon({
+            html: iconHtml,
+            className: 'custom-wp-icon',
+            iconSize: [24, 24],
+            iconAnchor: [12, 12]
+        });
+
+        const m = L.marker([w.lat, w.lon], { icon: customIcon }).addTo(map);
+        m.bindPopup(`
+            <strong>WP #${w.seq}: ${w.type}</strong><br>
+            Alt: ${w.alt_m_agl}m AGL (${w.alt_m_msl}m MSL)<br>
+            Action: <code>${w.action}</code><br>
+            ${w.payload_drop ? `<span style="color:#ef4444; font-weight:bold;">📦 Drop: ${w.payload_drop.name}</span>` : ''}
+        `);
+        waypointMarkers.push(m);
+    });
+
+    if (latlngs.length > 0) {
+        map.fitBounds(flightPolyline.getBounds(), { padding: [40, 40] });
+    }
+
+    // Drone Simulator Marker
+    const droneIcon = L.divIcon({
+        html: `<div style="font-size: 24px; transform: rotate(45deg); filter: drop-shadow(0 0 8px #00f0ff);">🛸</div>`,
+        className: 'drone-sim-icon',
+        iconSize: [30, 30],
+        iconAnchor: [15, 15]
+    });
+    droneSimMarker = L.marker(latlngs[0], { icon: droneIcon }).addTo(map);
+    simStepIndex = 0;
+}
+
+function populateWaypointTable(d) {
+    const tbody = document.getElementById('waypointsTableBody');
+    if (!tbody || !d.waypoints) return;
+    tbody.innerHTML = '';
+
+    d.waypoints.forEach(w => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td><span class="badge bg-secondary">#${w.seq}</span></td>
+            <td style="color:#38bdf8;">${w.type}</td>
+            <td>${w.lat.toFixed(4)}, ${w.lon.toFixed(4)}</td>
+            <td>${w.alt_m_agl}m</td>
+            <td style="color:#94a3b8;">${w.alt_m_msl}m</td>
+            <td><code>${w.action}</code></td>
+            <td>${w.payload_drop ? `<span style="color:#ef4444;">${w.payload_drop.icon} ${w.payload_drop.name}</span>` : '<span class="text-muted">-</span>'}</td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+
+function toggleSimPlayback() {
+    isSimPlaying = !isSimPlaying;
+    const btn = document.getElementById('btnSimPlayIcon');
+    if (isSimPlaying) {
+        btn.textContent = '⏸ PAUSE';
+        startSimAnimation();
+    } else {
+        btn.textContent = '▶ PLAY SIM';
+        clearInterval(simInterval);
+    }
+}
+
+function startSimAnimation() {
+    if (!missionData || !missionData.waypoints || missionData.waypoints.length === 0) return;
+    clearInterval(simInterval);
+
+    simInterval = setInterval(() => {
+        if (simStepIndex >= missionData.waypoints.length) {
+            simStepIndex = 0; // Loop
+        }
+
+        const wp = missionData.waypoints[simStepIndex];
+        if (droneSimMarker) {
+            droneSimMarker.setLatLng([wp.lat, wp.lon]);
+        }
+
+        document.getElementById('simAlt').textContent = `${wp.alt_m_agl}m AGL`;
+        document.getElementById('simSpd').textContent = `${wp.speed_mps} m/s`;
+        document.getElementById('simWp').textContent = `WP #${wp.seq} / ${missionData.waypoints.length}`;
+
+        const progressPct = ((simStepIndex + 1) / missionData.waypoints.length) * 100;
+        document.getElementById('simProgressBar').style.width = `${progressPct}%`;
+
+        simStepIndex++;
+    }, 1200);
+}
+
+function downloadFlightFile(fmt) {
+    const stn = document.getElementById('selStation').value;
+    window.location.href = `/api/drone/export?station_id=${stn}&pattern=${currentPattern}&format=${fmt}`;
+}
+
+async function dispatchSwarmAutonomous() {
+    const btn = document.getElementById('btnDispatchSwarm');
+    btn.disabled = true;
+    btn.innerHTML = '⏳ TRANSMITTING MAVLINK MISSION TO SWARM...';
+
+    try {
+        const res = await fetch('/api/drone/dispatch-swarm', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                station_id: document.getElementById('selStation').value,
+                mission_id: missionData.mission_id,
+                swarm_size: parseInt(document.getElementById('rngSwarm').value)
+            })
+        });
+        const data = await res.json();
+        if (data && data.status === 'DISPATCHED') {
+            btn.innerHTML = '🟢 SWARM AIRBORNE • MISSION EXECUTING';
+            btn.style.borderColor = '#10b981';
+            btn.style.color = '#34d399';
+            if (!isSimPlaying) toggleSimPlayback();
+        }
+    } catch (e) {
+        btn.disabled = false;
+        btn.innerHTML = '❌ TRANSMISSION FAILED';
+    }
+}
+</script>
+{% endblock %}

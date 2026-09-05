@@ -21,7 +21,7 @@ def client():
 
 def test_mcp_list_tools():
     tools = mcp_service.list_tools()
-    assert len(tools) == 9
+    assert len(tools) == 10
     names = [t['name'] for t in tools]
     assert "hydrosentinel_get_stations" in names
     assert "hydrosentinel_get_telemetry" in names
@@ -32,6 +32,7 @@ def test_mcp_list_tools():
     assert "hydrosentinel_simulate_dam_breach" in names
     assert "hydrosentinel_get_satellite_swaths" in names
     assert "hydrosentinel_get_multi_source_telemetry" in names
+    assert "hydrosentinel_plan_drone_mission" in names
 
 
 def test_mcp_tool_get_stations():
@@ -122,17 +123,38 @@ def test_mcp_tool_get_multi_source_telemetry():
     assert len(data["satellites"]) == 4
 
 
+def test_mcp_tool_plan_drone_mission():
+    res = mcp_service.call_tool("hydrosentinel_plan_drone_mission", {
+        "station_id": "STN-KD-05",
+        "pattern_type": "LAWNMOWER",
+        "swarm_size": 2,
+        "altitude_agl_m": 60.0,
+        "payloads": ["MED_KIT_HIGH_ALTITUDE", "INFLATABLE_SURVIVAL_RAFT"]
+    })
+    assert res["isError"] is False
+    data = res["_raw"]
+    assert data["status"] == "SUCCESS"
+    assert "mission_summary" in data
+    assert len(data["drone_tracks"]) == 2
+    assert "airdrop_zones" in data
+
+
 def test_mcp_resources():
     resources = mcp_service.list_resources()
-    assert len(resources) >= 3
+    assert len(resources) >= 4
     uris = [r['uri'] for r in resources]
     assert "hydrosentinel://stations" in uris
     assert "hydrosentinel://telemetry/live" in uris
     assert "hydrosentinel://alerts/active" in uris
     assert "hydrosentinel://telemetry/multi-source" in uris
+    assert "hydrosentinel://drones/fleet" in uris
 
     res_multi = mcp_service.read_resource("hydrosentinel://telemetry/multi-source")
     assert "v4.5-REALTIME-MULTI-SOURCE" in res_multi["contents"]
+
+    # Read drone fleet resource
+    res_fleet = mcp_service.read_resource("hydrosentinel://drones/fleet")
+    assert "DRONE-ALPHA" in res_fleet["contents"]
 
     # Read resource
     res = mcp_service.read_resource("hydrosentinel://stations")
@@ -159,7 +181,7 @@ def test_endpoint_api_mcp_tools(client):
     assert res.status_code == 200
     data = res.get_json()
     assert data["status"] == "SUCCESS"
-    assert data["total_tools"] == 9
+    assert data["total_tools"] == 10
 
 
 def test_endpoint_api_mcp_initialize(client):
@@ -186,7 +208,7 @@ def test_endpoint_api_mcp_tools_list(client):
     res = client.post('/api/mcp', json=payload)
     assert res.status_code == 200
     data = res.get_json()
-    assert len(data["result"]["tools"]) == 9
+    assert len(data["result"]["tools"]) == 10
 
 
 def test_endpoint_api_mcp_tools_call(client):

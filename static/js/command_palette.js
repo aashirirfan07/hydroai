@@ -9,6 +9,7 @@ const COMMANDS_DATA = [
     { id: 'act-mcp-tool', category: 'MCP Agent Tools', icon: '🤖', title: 'Execute XGBoost Flood Prediction Tool via MCP', shortcut: 'M P', action: () => window.location.href = '/mcp-hub' },
     { id: 'nav-dash', category: 'Navigation', icon: '🏔️', title: '3D Digital Twin Dashboard', shortcut: 'G D', action: () => window.location.href = '/dashboard' },
     { id: 'nav-uav', category: 'Navigation', icon: '🚁', title: 'Live UAV Drone Thermal Feed', shortcut: 'G U', action: () => window.location.href = '/uav-feed' },
+    { id: 'nav-drone-planner', category: 'Navigation', icon: '🛸', title: 'Autonomous Drone Swarm SAR Mission Planner (QGC/MAVLink)', shortcut: 'D P', action: () => window.location.href = '/drone-mission-planner' },
     { id: 'nav-analytics', category: 'Navigation', icon: '📊', title: 'Analytics & Diagnostic Charts', shortcut: 'G A', action: () => window.location.href = '/analytics' },
     { id: 'nav-damage', category: 'Navigation', icon: '🔍', title: 'Before/After Damage Assessment Slider', shortcut: 'G K', action: () => window.location.href = '/damage-assessment' },
     { id: 'nav-briefing', category: 'Navigation', icon: '📄', title: 'Official NDMA Situation Briefing (SITREP)', shortcut: 'G B', action: () => window.location.href = '/intelligence-briefing' },
