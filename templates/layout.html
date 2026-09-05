@@ -368,28 +368,13 @@
                     <div class="footer-col-title">🛰️ Spatial Intelligence</div>
                     <ul class="footer-nav-list">
                         <li><a href="{{ url_for('dashboard') }}">3D Digital Twin HUD</a></li>
-                        <li>
-                
-                
-                <a href="{{ url_for('physics_sandbox_page') }}" class="nav-link-pill {% if request.endpoint == 'physics_sandbox_page' %}active{% endif %}">
-                    <img src="/static/img/badges/emblem_simulator.svg" class="nav-micro-logo" alt="Physics">
-                    <span>Physics Lab</span>
-                </a>
-
-                <a href="{{ url_for('components_hub_page') }}" class="nav-link-pill {% if request.endpoint == 'components_hub_page' %}active{% endif %}">
-                    <img src="/static/img/badges/emblem_models.svg" class="nav-micro-logo" alt="Hub">
-                    <span>21st UI Hub</span>
-                </a>
-
-                <a href="{{ url_for('report_incident_page') }}" class="nav-link-pill {% if request.endpoint == 'report_incident_page' %}active{% endif %}">
-                    <img src="/static/img/badges/emblem_alerts.svg" class="nav-micro-logo" alt="SOS">
-                    <span>Citizen SOS</span>
-                </a>
-
-                <a href="{{ url_for('damage_assessment_page') }}">Satellite Damage Scan</a></li>
+                        <li><a href="{{ url_for('drone_mission_planner_page') }}">Drone Swarm SAR Planner</a></li>
+                        <li><a href="{{ url_for('physics_sandbox_page') }}">Physics Lab Sandbox</a></li>
+                        <li><a href="{{ url_for('components_hub_page') }}">21st UI Component Hub</a></li>
+                        <li><a href="{{ url_for('report_incident_page') }}">Citizen SOS Dispatch</a></li>
+                        <li><a href="{{ url_for('damage_assessment_page') }}">Satellite Damage Scan</a></li>
                         <li><a href="{{ url_for('uav_feed') }}">UAV Drone Thermal Feed</a></li>
-                        <li>
-                <a href="{{ url_for('satellites_page') }}">NASA GPM Constellations</a></li>
+                        <li><a href="{{ url_for('satellites_page') }}">NASA GPM Constellations</a></li>
                         <li><a href="{{ url_for('time_machine_page') }}">Disaster Time-Machine</a></li>
                     </ul>
                 </div>
@@ -461,56 +446,35 @@
     </footer>
 
     <!-- Mobile Bottom Floating Navigation Bar (Touch-Optimized) -->
-    <nav class="mobile-bottom-nav">
-        <a href="{{ url_for('index') }}" class="mob-nav-item {% if request.endpoint == 'index' %}active{% endif %}">
-            
+    <nav class="mobile-bottom-nav" aria-label="Mobile Navigation">
+        <a href="{{ url_for('index') }}" class="mob-nav-item {% if request.endpoint == 'index' %}active{% endif %}" aria-label="Home Command">
+            <i class="fa-solid fa-house"></i>
             <span>Home</span>
         </a>
-        <a href="{{ url_for('dashboard') }}" class="mob-nav-item {% if request.endpoint == 'dashboard' %}active{% endif %}">
-            
+        <a href="{{ url_for('dashboard') }}" class="mob-nav-item {% if request.endpoint == 'dashboard' %}active{% endif %}" aria-label="3D Digital Twin HUD">
+            <i class="fa-solid fa-cube"></i>
             <span>3D HUD</span>
         </a>
-        <a href="{{ url_for('analytics') }}" class="mob-nav-item {% if request.endpoint == 'analytics' %}active{% endif %}">
-            
+        <a href="{{ url_for('analytics') }}" class="mob-nav-item {% if request.endpoint == 'analytics' %}active{% endif %}" aria-label="Geospatial Analytics">
+            <i class="fa-solid fa-chart-line"></i>
             <span>Analytics</span>
         </a>
-        <a href="{{ url_for('predict_datapoint') }}" class="mob-nav-item {% if request.endpoint == 'predict_datapoint' %}active{% endif %}">
-            
+        <a href="{{ url_for('predict_datapoint') }}" class="mob-nav-item {% if request.endpoint == 'predict_datapoint' %}active{% endif %}" aria-label="Scenario Simulator">
+            <i class="fa-solid fa-sliders"></i>
             <span>Simulator</span>
         </a>
-        <button class="mob-nav-item btn-mob-menu" onclick="toggleMobile3DNav()"><span>Menu</span></button>
-        
-                
-                
-                
-                <a href="{{ url_for('physics_sandbox_page') }}" class="nav-link-pill {% if request.endpoint == 'physics_sandbox_page' %}active{% endif %}">
-                    <img src="/static/img/badges/emblem_simulator.svg" class="nav-micro-logo" alt="Physics">
-                    <span>Physics Lab</span>
-                </a>
-
-                <a href="{{ url_for('components_hub_page') }}" class="nav-link-pill {% if request.endpoint == 'components_hub_page' %}active{% endif %}">
-                    <img src="/static/img/badges/emblem_models.svg" class="nav-micro-logo" alt="Hub">
-                    <span>21st UI Hub</span>
-                </a>
-
-                <a href="{{ url_for('report_incident_page') }}" class="nav-link-pill {% if request.endpoint == 'report_incident_page' %}active{% endif %}">
-                    <img src="/static/img/badges/emblem_alerts.svg" class="nav-micro-logo" alt="SOS">
-                    <span>Citizen SOS</span>
-                </a>
-
-                <a href="{{ url_for('damage_assessment_page') }}" class="nav-link-pill {% if request.endpoint == 'damage_assessment_page' %}active{% endif %}">
-                    <img src="/static/img/badges/emblem_analytics.svg" class="nav-micro-logo" alt="Damage">
-                    <span>Damage Scan</span>
-                </a>
-
-                <a href="{{ url_for('early_warning') }}" class="mob-nav-item {% if request.endpoint == 'early_warning' %}active{% endif %}">
-            
+        <a href="{{ url_for('early_warning') }}" class="mob-nav-item {% if request.endpoint == 'early_warning' %}active{% endif %}" aria-label="Early Warning Alerts">
+            <i class="fa-solid fa-triangle-exclamation"></i>
             <span>Alerts</span>
         </a>
+        <button type="button" class="mob-nav-item btn-mob-menu" onclick="toggleMobile3DNav()" aria-label="Open 3D Navigation Menu">
+            <i class="fa-solid fa-bars"></i>
+            <span>Menu</span>
+        </button>
     </nav>
 
     
-        <!-- 3D Holographic Navigation Menu Drawer (Mobile) -->
+    <!-- 3D Holographic Navigation Menu Drawer (Mobile) -->
     <div id="mobile3DNavDrawer" class="mobile-3d-drawer">
         <div class="drawer-header">
             <div class="drawer-logo">
@@ -529,6 +493,18 @@
             <a href="{{ url_for('dashboard') }}" class="drawer-3d-card {% if request.endpoint == 'dashboard' %}active{% endif %}" onclick="toggleMobile3DNav()">
                 <div class="d3-icon"><img src="/static/img/badges/emblem_3dtwin.svg" style="width: 24px; height: 24px;"></div>
                 <div class="d3-info"><strong>3D Digital Twin</strong><span>Terrain LiDAR & Inundation</span></div>
+            </a>
+            <a href="{{ url_for('drone_mission_planner_page') }}" class="drawer-3d-card {% if request.endpoint == 'drone_mission_planner_page' %}active{% endif %}" onclick="toggleMobile3DNav()">
+                <div class="d3-icon"><i class="fa-solid fa-paper-plane" style="font-size: 20px; color: #38bdf8;"></i></div>
+                <div class="d3-info"><strong>Drone SAR Swarm</strong><span>Autonomous Mission Planner</span></div>
+            </a>
+            <a href="{{ url_for('mcp_hub_page') }}" class="drawer-3d-card {% if request.endpoint == 'mcp_hub_page' %}active{% endif %}" onclick="toggleMobile3DNav()">
+                <div class="d3-icon"><i class="fa-solid fa-network-wired" style="font-size: 20px; color: #a855f7;"></i></div>
+                <div class="d3-info"><strong>MCP Tools & Agents</strong><span>AI Context Protocol</span></div>
+            </a>
+            <a href="/world-monitor" target="_blank" class="drawer-3d-card" onclick="toggleMobile3DNav()">
+                <div class="d3-icon"><i class="fa-solid fa-earth-americas" style="font-size: 20px; color: #06b6d4;"></i></div>
+                <div class="d3-info"><strong>World Monitor</strong><span>Global Sensor Telemetry</span></div>
             </a>
             <a href="{{ url_for('early_warning') }}" class="drawer-3d-card {% if request.endpoint == 'early_warning' %}active{% endif %}" onclick="toggleMobile3DNav()">
                 <div class="d3-icon"><img src="/static/img/badges/emblem_alerts.svg" style="width: 24px; height: 24px;"></div>

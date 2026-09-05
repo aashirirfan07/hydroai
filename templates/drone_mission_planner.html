@@ -341,6 +341,21 @@
     font-size: 0.72rem;
     color: #cbd5e1;
 }
+
+@media (max-width: 576px) {
+    .pattern-cards-grid {
+        grid-template-columns: 1fr;
+    }
+    #droneMissionMap {
+        height: 380px !important;
+    }
+    .sim-floating-hud {
+        left: 8px;
+        right: 8px;
+        bottom: 8px;
+        min-width: unset;
+    }
+}
 </style>
 
 <script>

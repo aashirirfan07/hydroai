@@ -5,7 +5,7 @@
 {% block content %}
 <div class="dashboard-topbar">
     <div class="station-selector-wrapper">
-        <label for="stationSelect"> Active Catchment Station:</label>
+        <label for="stationSelect">Active Catchment Station:</label>
         <select class="form-select-dark" id="stationSelect" onchange="switchStation(this.value)">
             <option value="STN-KL-01" {% if current_station == 'STN-KL-01' %}selected{% endif %}>STN-KL-01: Kullu Catchment (HP)</option>
             <option value="STN-AL-02" {% if current_station == 'STN-AL-02' %}selected{% endif %}>STN-AL-02: Alaknanda Gorge (Garhwal)</option>
@@ -19,13 +19,13 @@
     </div>
 
     <div class="stream-mode-toggle-group">
-        <label> Ingestion Mode:</label>
+        <label>Ingestion Mode:</label>
         <div class="mode-pill-toggle">
             <button class="pill-toggle-btn {% if current_mode == 'stream' %}active{% endif %}" onclick="switchMode('stream')">
                 <span class="live-dot-pulse"></span> Dynamic Stream (3.5s)
             </button>
             <button class="pill-toggle-btn {% if current_mode == 'api' %}active{% endif %}" onclick="switchMode('api')">
-                 Live Open-Meteo API
+                <span class="live-dot-pulse" style="background: #38bdf8;"></span> Live Open-Meteo API
             </button>
         </div>
     </div>
@@ -33,9 +33,9 @@
 
 <!-- Tabs Navigation -->
 <div class="dashboard-tab-bar">
-    <button class="tab-btn active" onclick="switchDashboardTab('twin')"> 3D Digital Twin</button>
-    <button class="tab-btn" onclick="switchDashboardTab('alert_sender')"> Phone & Email Alert Sender</button>
-    <button class="tab-btn" onclick="switchDashboardTab('xai')"> XAI Attribution Radar</button>
+    <button class="tab-btn active" onclick="switchDashboardTab('twin')">🧊 3D Digital Twin</button>
+    <button class="tab-btn" onclick="switchDashboardTab('alert_sender')">📲 Phone & Email Alert Sender</button>
+    <button class="tab-btn" onclick="switchDashboardTab('xai')">⚡ XAI Attribution Radar</button>
     <button class="tab-btn" onclick="switchDashboardTab('safe_zones')">🧭 AI Evacuation & Rescue Hub</button>
     <button class="tab-btn" onclick="switchDashboardTab('space_telemetry')">🛰️ NASA, ISRO & Open Data Mesh</button>
 </div>
@@ -46,14 +46,14 @@
         <!-- Left Panel: Real-Time Hydrometric Stream -->
         <div class="panel left-panel">
             <div class="panel-header">
-                <h3> Live Telemetry Stream</h3>
+                <h3><i class="fa-solid fa-satellite-dish" style="color: #38bdf8; margin-right: 6px;"></i>Live Telemetry Stream</h3>
                 <span class="live-indicator"><span class="blink-dot"></span> LIVE</span>
             </div>
 
             <!-- Widget 1: Rainfall -->
             <div class="telemetry-widget">
                 <div class="widget-header">
-                    <span class="widget-title"> Precip Intensity</span>
+                    <span class="widget-title">🌧️ Precip Intensity</span>
                     <span class="widget-value text-amber" id="w_rainfall">{{ data.telemetry.rainfall_intensity_mm_hr }} mm/h</span>
                 </div>
                 <div class="chart-container-sm">
@@ -64,7 +64,7 @@
             <!-- Widget 2: River Stage -->
             <div class="telemetry-widget">
                 <div class="widget-header">
-                    <span class="widget-title"> River Water Stage</span>
+                    <span class="widget-title">🌊 River Water Stage</span>
                     <span class="widget-value text-cyan" id="w_river_stage">{{ data.telemetry.river_water_level_m }} m</span>
                 </div>
                 <div class="chart-container-sm">
@@ -75,7 +75,7 @@
             <!-- Widget 3: Soil Saturation -->
             <div class="telemetry-widget">
                 <div class="widget-header">
-                    <span class="widget-title"> Soil Saturation</span>
+                    <span class="widget-title">🌱 Soil Saturation</span>
                     <span class="widget-value text-neon-green" id="w_soil_moisture">{{ data.telemetry.soil_moisture_percentage }}%</span>
                 </div>
                 <div class="chart-container-sm">
@@ -86,7 +86,7 @@
             <!-- Widget 4: Flow Velocity -->
             <div class="telemetry-widget">
                 <div class="widget-header">
-                    <span class="widget-title"> Kinetic Velocity</span>
+                    <span class="widget-title">⚡ Kinetic Velocity</span>
                     <span class="widget-value text-amber" id="w_flow_velocity">{{ data.telemetry.river_flow_velocity_mps }} m/s</span>
                 </div>
                 <div class="chart-container-sm">
@@ -99,7 +99,7 @@
         <div class="panel center-panel">
             <div class="three-d-sub-toolbar">
                 <div class="mode-btn-group">
-                    <span class="toolbar-label"> Render:</span>
+                    <span class="toolbar-label">Render:</span>
                     <button class="btn-3d-mode active" onclick="set3DRenderMode('realistic')">Realistic</button>
                     <button class="btn-3d-mode" onclick="set3DRenderMode('lidar')">LiDAR</button>
                     <button class="btn-3d-mode" onclick="set3DRenderMode('thermal')">Thermal</button>
@@ -107,14 +107,14 @@
                 </div>
 
                 <div class="atmo-btn-group">
-                    <span class="toolbar-label"> FX:</span>
+                    <span class="toolbar-label">FX:</span>
                     <button class="btn-3d-atmo active" onclick="set3DAtmosphere('cloudburst')">Rain</button>
                     <button class="btn-3d-atmo" onclick="set3DAtmosphere('overcast')">Fog</button>
                     <button class="btn-3d-atmo" onclick="set3DAtmosphere('clear')">Clear</button>
                 </div>
 
                 <div class="cam-preset-btn-group">
-                    <span class="toolbar-label"> 3D Cam:</span>
+                    <span class="toolbar-label">3D Cam:</span>
                     <button class="btn-cam-preset active" data-preset="orbit" onclick="setLovable3DCameraPreset('orbit')">Orbit</button>
                     <button class="btn-cam-preset" data-preset="satellite" onclick="setLovable3DCameraPreset('satellite')">🛰️ Nadir</button>
                     <button class="btn-cam-preset" data-preset="isometric" onclick="setLovable3DCameraPreset('isometric')">Iso</button>
