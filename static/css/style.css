@@ -157,16 +157,7 @@ body {
   opacity: 0.7;
 }
 
-.cyber-grid-backdrop {
-  position: fixed;
-  inset: 0;
-  background-image: 
-    linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
-  background-size: 50px 50px;
-  pointer-events: none;
-  z-index: 0;
-}
+/* Cyber Grid Backdrop is defined authoritatively in the Blueprint Grid section below */
 
 .scanline-overlay {
   position: fixed;
@@ -1075,19 +1066,7 @@ body {
 .physics-cards-grid .physics-card:nth-child(2) { transition-delay: 0.16s; }
 .physics-cards-grid .physics-card:nth-child(3) { transition-delay: 0.24s; }
 
-/* Dynamic Interactive Perspective Grid */
-.cyber-grid-backdrop {
-  background-image: 
-    linear-gradient(rgba(0, 240, 255, 0.035) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0, 240, 255, 0.035) 1px, transparent 1px);
-  background-size: 55px 55px;
-  animation: cyberGridFlow 30s linear infinite;
-}
 
-@keyframes cyberGridFlow {
-  0% { background-position: 0 0; }
-  100% { background-position: 55px 55px; }
-}
 
 
 /* ===== SAPFORCE AI SAAS LUXURY GLOW & BENTO GRID SYSTEM ===== */
@@ -2136,17 +2115,17 @@ body, p, .lead-text {
   --spotlight-y: 35vh;
   position: fixed;
   inset: 0;
-  background-color: #030712;
+  background-color: transparent;
   background-image: 
     /* Cursor / Ambient Radial Spotlight */
-    radial-gradient(circle at var(--spotlight-x) var(--spotlight-y), rgba(56, 189, 248, 0.18) 0%, transparent 550px),
-    /* Major Tactical Grid Lines (144px) */
-    linear-gradient(to right, rgba(56, 189, 248, 0.14) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(56, 189, 248, 0.14) 1px, transparent 1px),
-    /* Minor Precision Grid Lines (36px) */
+    radial-gradient(circle at var(--spotlight-x) var(--spotlight-y), rgba(56, 189, 248, 0.16) 0%, transparent 500px),
+    /* Major Tactical Grid Lines (60px - refined, not oversized) */
+    linear-gradient(to right, rgba(56, 189, 248, 0.16) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(56, 189, 248, 0.16) 1px, transparent 1px),
+    /* Minor Precision Grid Lines (20px - compact technical mesh) */
     linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
-  background-size: 100% 100%, 144px 144px, 144px 144px, 36px 36px, 36px 36px;
+  background-size: 100% 100%, 60px 60px, 60px 60px, 20px 20px, 20px 20px;
   pointer-events: none;
   z-index: 0;
   opacity: 0.95;
@@ -2156,16 +2135,16 @@ body, p, .lead-text {
 /* User-Selectable Grid Intensity Modes */
 body.grid-mode-tactical .cyber-grid-backdrop {
   opacity: 1 !important;
-  background-size: 100% 100%, 120px 120px, 120px 120px, 30px 30px, 30px 30px;
+  background-size: 100% 100%, 60px 60px, 60px 60px, 20px 20px, 20px 20px !important;
 }
 
 body.grid-mode-minimal .cyber-grid-backdrop {
-  opacity: 0.55 !important;
+  opacity: 0.65 !important;
   background-image: 
     radial-gradient(circle at var(--spotlight-x) var(--spotlight-y), rgba(56, 189, 248, 0.12) 0%, transparent 450px),
-    linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-  background-size: 100% 100%, 40px 40px, 40px 40px;
+    linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px) !important;
+  background-size: 100% 100%, 20px 20px, 20px 20px !important;
 }
 
 body.grid-mode-off .cyber-grid-backdrop {
@@ -2751,8 +2730,8 @@ body {
   }
   .cyber-grid-backdrop {
     display: block !important;
-    opacity: 0.8 !important;
-    background-size: 100% 100%, 120px 120px, 120px 120px, 30px 30px, 30px 30px;
+    opacity: 0.85 !important;
+    background-size: 100% 100%, 40px 40px, 40px 40px, 20px 20px, 20px 20px !important;
   }
 
   body {
