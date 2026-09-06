@@ -2,50 +2,76 @@
 {% block title %}HydroSentinel AI™ - Autonomous Geospatial Intelligence{% endblock %}
 
 {% block content %}
-<div class="visionos-hero-container">
-    <!-- Hero Capsule Tag -->
-    <div class="hero-capsule-badge">
-        <span class="pulse-beacon"></span>
-        <span class="badge-text">AUTONOMOUS GEOSPATIAL INTELLIGENCE &bull; v4.2 SPATIAL</span>
-        <span class="badge-pill">98.58% R² PRECISION</span>
+<div class="red-noir-landing-experience selection-red" id="redNoirLanding">
+    <!-- Red Noir Atmospheric Canvas & Parallax Stars -->
+    <div class="red-noir-bg-canvas" aria-hidden="true">
+        <div class="red-noir-gradient-ambient"></div>
+        <div class="red-noir-stars-1"></div>
+        <div class="red-noir-stars-2"></div>
+        <div class="red-noir-radial-glow"></div>
+        <div class="red-noir-grid-overlay"></div>
     </div>
 
-    <!-- Main Dynamic Title -->
-    <h1 class="hero-headline-spatial">
-        Autonomous Flash Flood <br>
-        <span class="gradient-shimmer-text">Defense & Early Warning</span>
-    </h1>
+    <!-- Top Blur Vignette Mask -->
+    <div class="red-noir-top-blur" aria-hidden="true"></div>
 
-    <!-- Subtitle -->
-    <p class="hero-subtext-spatial">
-        Synthesizing real-time Doppler radar precipitation, IoT soil saturation arrays, and hydrodynamic acoustic gauges into an active physics-informed AI defense network.
-    </p>
+    <!-- Hero Section -->
+    <div class="hero-noir-container">
+        <!-- Hero Capsule Tag -->
+        <div class="hero-noir-badge animate-fade-up">
+            <div class="beacon-red-radar">
+                <span class="beacon-ping"></span>
+                <span class="beacon-dot"></span>
+            </div>
+            <span class="badge-text-noir">AUTONOMOUS GEOSPATIAL INTELLIGENCE &bull; v4.2 RED NOIR</span>
+            <span class="badge-pill-crimson">98.58% R&sup2; PRECISION</span>
+        </div>
 
-    
-    <!-- Quick Action Launchpad -->
-    <div class="hero-action-pills">
-        <a href="{{ url_for('dashboard') }}" class="spatial-btn-primary">
-            <span>Launch 3D Digital Twin</span>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-        </a>
-        <a href="{{ url_for('uav_feed') }}" class="spatial-btn-glass">
-            <span>Live UAV Thermal Feed</span>
-        </a>
-        <a href="{{ url_for('predict_datapoint') }}" class="spatial-btn-glass">
-            <span>Scenario Simulator</span>
-        </a>
-        <a href="/api/export-cap-alert" target="_blank" class="spatial-btn-subtle">
-            <span>CAP v1.2 Feed</span>
-        </a>
-    </div>
+        <!-- Main Dynamic Title with White-to-Translucent Gradient & Red Accent Underline -->
+        <h1 class="hero-headline-noir animate-fade-up" style="animation-delay: 0.1s;">
+            <span class="text-gradient-white">Autonomous Flash Flood</span>
+            <span class="text-gradient-white">
+                Defense &amp; <span class="hero-accent-red-word">Early Warning
+                    <svg class="hero-svg-underline" viewBox="0 0 100 10" preserveAspectRatio="none">
+                        <path d="M0 5 Q 50 10 100 5" stroke="currentColor" stroke-width="2.5" fill="none" />
+                    </svg>
+                </span>
+            </span>
+        </h1>
 
-    <!-- Spatial 3D Interactive Card Showcase -->
-    <div class="spatial-showcase-grid">
-        <div class="spatial-interactive-viewer-card">
+        <!-- Subtitle -->
+        <p class="hero-subtext-noir animate-fade-up" style="animation-delay: 0.2s;">
+            Synthesizing real-time Doppler radar precipitation, IoT soil saturation arrays, and hydrodynamic acoustic gauges into an active physics-informed AI defense network.
+        </p>
+
+        <!-- Quick Action Launchpad with Conic-Gradient Rotating Shiny CTA -->
+        <div class="hero-action-pills-noir animate-fade-up" style="animation-delay: 0.3s;">
+            <a href="{{ url_for('dashboard') }}" class="shiny-cta group" id="heroCtaLaunchTwin">
+                <span class="relative z-10 flex items-center gap-2 text-white font-medium">
+                    <span>Launch 3D Digital Twin</span>
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="transition-transform group-hover:translate-x-1"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </span>
+            </a>
+            <a href="{{ url_for('uav_feed') }}" class="noir-btn-glass">
+                <i class="fa-solid fa-drone text-red"></i>
+                <span>Live UAV Thermal Feed</span>
+            </a>
+            <a href="{{ url_for('predict_datapoint') }}" class="noir-btn-glass">
+                <i class="fa-solid fa-sliders text-cyan"></i>
+                <span>Scenario Simulator</span>
+            </a>
+            <a href="/api/export-cap-alert" target="_blank" class="noir-btn-subtle">
+                <i class="fa-solid fa-rss text-orange"></i>
+                <span>CAP v1.2 Feed</span>
+            </a>
+        </div>
+
+        <!-- 3D Interactive Card Showcase: Red Noir Bento Glass -->
+        <div class="spatial-interactive-viewer-card noir-bento-card animate-fade-up" style="animation-delay: 0.4s;">
             <div class="card-glass-header">
                 <div class="d-flex align-items-center gap-3 flex-wrap">
                     <div class="live-status-pill">
-                        <span class="dot-green"></span> 3D Geospatial Earth & Multi-Source Mesh
+                        <span class="dot-green"></span> 3D Geospatial Earth &amp; Multi-Source Mesh
                     </div>
                     <!-- Layer Filter Chips -->
                     <div class="hero-filter-group d-flex align-items-center gap-1">
@@ -63,7 +89,7 @@
                         <button type="button" id="btnTrackSat" class="hero-cam-btn" title="Track NASA GPM Satellite" aria-label="Track GPM Satellite"><i class="fas fa-satellite-dish"></i> Track Sat</button>
                         <button type="button" id="btnResetOrbit" class="hero-cam-btn" title="Reset Camera Orbit" aria-label="Reset Camera Orbit"><i class="fas fa-rotate"></i> Reset</button>
                     </div>
-                    <span class="badge bg-dark border border-info text-cyan px-2 py-1" style="font-family: var(--font-mono); font-size: 0.72rem;">60/120 FPS WEBGL</span>
+                    <span class="badge bg-black border border-danger text-crimson px-2 py-1" style="font-family: var(--font-mono, monospace); font-size: 0.72rem; color: #ff758f;">60/120 FPS WEBGL</span>
                 </div>
             </div>
 
@@ -71,19 +97,19 @@
             <div style="position: relative;">
                 <div id="hero3DViewer" class="spatial-webgl-canvas-box"></div>
                 <div class="hero-3d-hint-badge">
-                    <i class="fas fa-hand-pointer text-cyan"></i> Click/hover beacons or satellites for live telemetry HUD &bull; Drag to rotate
+                    <i class="fas fa-hand-pointer text-red"></i> Click/hover beacons or satellites for live telemetry HUD &bull; Drag to rotate
                 </div>
             </div>
 
-            <!-- Real-Time Ingestion Metric Ribbon -->
+            <!-- Real-Time Ingestion Metric Ribbon (Red Noir Bento Cells) -->
             <div class="spatial-metrics-ribbon">
                 <div class="metric-pill">
                     <span class="m-lbl">TOTAL PACKETS INGESTED</span>
-                    <span class="m-val val-cyan">842,100</span>
+                    <span class="m-val val-red">842,100</span>
                 </div>
                 <div class="metric-pill">
                     <span class="m-lbl">MESH SYNC LATENCY</span>
-                    <span class="m-val val-purple">3.8ms</span>
+                    <span class="m-val val-crimson">3.8ms</span>
                 </div>
                 <div class="metric-pill">
                     <span class="m-lbl">EARTH OBSERVATION SYNC</span>
@@ -99,16 +125,16 @@
             <div class="multi-source-ticker-bar mt-3">
                 <div class="ticker-header d-flex justify-content-between align-items-center mb-2">
                     <div class="d-flex align-items-center gap-2">
-                        <span class="pulse-beacon" style="background:#10b981; width:7px; height:7px;"></span>
-                        <strong style="font-size:0.75rem; color:#ffffff; font-family:var(--font-mono); letter-spacing:0.06em;">LIVE CONCURRENT DATA SOURCES (8/8 SYNCED)</strong>
+                        <span class="pulse-beacon" style="background:#ef233c; width:7px; height:7px; box-shadow: 0 0 8px #ef233c;"></span>
+                        <strong style="font-size:0.75rem; color:#ffffff; font-family:var(--font-mono, monospace); letter-spacing:0.06em;">LIVE CONCURRENT DATA SOURCES (8/8 SYNCED)</strong>
                     </div>
-                    <span style="font-size:0.7rem; color:#94a3b8; font-family:var(--font-mono);">ZERO-KEY OPEN SCIENTIFIC DATA</span>
+                    <span style="font-size:0.7rem; color:#94a3b8; font-family:var(--font-mono, monospace);">ZERO-KEY OPEN SCIENTIFIC DATA</span>
                 </div>
                 <div class="source-pills-wrap">
                     <div class="source-pill"><span class="source-dot"></span> <strong>NASA GPM</strong> <small>Dual Ku/Ka Radar</small></div>
                     <div class="source-pill"><span class="source-dot"></span> <strong>Copernicus Sentinel-1</strong> <small>C-SAR Radar</small></div>
                     <div class="source-pill"><span class="source-dot"></span> <strong>ISRO INSAT-3DR</strong> <small>Imager/Sounder</small></div>
-                    <div class="source-pill"><span class="source-dot"></span> <strong>Open-Meteo GloFAS</strong> <small>River Flow m³/s</small></div>
+                    <div class="source-pill"><span class="source-dot"></span> <strong>Open-Meteo GloFAS</strong> <small>River Flow m&sup3;/s</small></div>
                     <div class="source-pill"><span class="source-dot"></span> <strong>Open-Meteo CAPE</strong> <small>Convective Instability</small></div>
                     <div class="source-pill"><span class="source-dot"></span> <strong>USGS Earthquakes</strong> <small>M2.5+ Real-time</small></div>
                     <div class="source-pill"><span class="source-dot"></span> <strong>IMD Doppler Radar</strong> <small>Reflectivity dBZ</small></div>
@@ -117,72 +143,245 @@
             </div>
         </div>
     </div>
-</div>
 
-
-
-<!-- Section: Streamlined Lovable 3D Emergency Dispatcher -->
-<div class="spatial-section-container mb-5">
-    <div class="card p-4 liquid-glass" style="border: 1px solid rgba(56, 189, 248, 0.4); background: linear-gradient(135deg, rgba(7, 11, 22, 0.9), rgba(3, 7, 18, 0.95)); border-radius: 20px; box-shadow: 0 20px 50px rgba(0,0,0,0.6), 0 0 25px rgba(56, 189, 248, 0.15);">
-        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
-            <div class="d-flex align-items-center gap-2">
-                <span class="pulse-beacon" style="background: #ef4444; width: 8px; height: 8px;"></span>
-                <h2 style="font-family: var(--font-display); font-size: 1.25rem; color: #ffffff; margin: 0;">
-                    🚨 Autonomous Emergency Dispatch Relay
-                </h2>
+    <!-- Section: Red Noir Autonomous Emergency Dispatcher Relay -->
+    <div class="spatial-section-container mb-5">
+        <div class="noir-bento-card p-4" style="border-color: rgba(239, 35, 60, 0.3);">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+                <div class="d-flex align-items-center gap-2">
+                    <div class="beacon-red-radar" style="width: 8px; height: 8px;">
+                        <span class="beacon-ping"></span>
+                        <span class="beacon-dot" style="width: 8px; height: 8px;"></span>
+                    </div>
+                    <h2 style="font-family: var(--font-display, sans-serif); font-size: 1.25rem; color: #ffffff; margin: 0;">
+                        🚨 Autonomous Emergency Dispatch Relay
+                    </h2>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                    <span class="badge" style="background: rgba(239, 35, 60, 0.15); border: 1px solid rgba(239, 35, 60, 0.4); color: #ff758f; font-size: 0.72rem;">
+                        ● ZERO-KEY RELAY ACTIVE
+                    </span>
+                    <span class="badge" style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.15); color: #cbd5e1; font-size: 0.72rem;">
+                        CELLULAR + DIRECT SMTP
+                    </span>
+                </div>
             </div>
-            <div class="d-flex align-items-center gap-2">
-                <span class="badge" style="background: rgba(16, 185, 129, 0.15); border: 1px solid #10b981; color: #34d399; font-size: 0.72rem;">
-                    ● ZERO-KEY RELAY ACTIVE
-                </span>
-                <span class="badge" style="background: rgba(56, 189, 248, 0.15); border: 1px solid #38bdf8; color: #38bdf8; font-size: 0.72rem;">
-                    CELLULAR + DIRECT SMTP
-                </span>
+
+            <p style="color: rgba(255, 255, 255, 0.7); font-size: 0.84rem; margin-bottom: 1.25rem;">
+                Instantly transmit high-priority flash flood alerts directly to emergency personnel, field teams, or civil defense inboxes without requiring any third-party API keys:
+            </p>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.25rem;">
+                <!-- SMS / Mobile Dispatch Form -->
+                <form onsubmit="sendHomeZeroKeySms(event); return false;" class="p-3" style="background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(239, 35, 60, 0.25); border-radius: 14px;">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <strong style="color: #ff758f; font-size: 0.88rem;"><i class="fa-solid fa-mobile-screen"></i> Mobile Phone SMS</strong>
+                        <button type="button" class="badge-btn" onclick="openHomeWhatsApp()" style="font-size: 0.7rem; color: #34d399; border-color: rgba(52, 211, 153, 0.4); background: rgba(52, 211, 153, 0.08); padding: 2px 8px; border-radius: 6px; cursor: pointer;">
+                            <i class="fa-brands fa-whatsapp"></i> WhatsApp
+                        </button>
+                    </div>
+                    <div class="mb-2">
+                        <input type="tel" id="homePhoneInput" placeholder="Mobile Number (e.g. +91 98765 43210)" required style="width: 100%; padding: 0.6rem 0.9rem; border-radius: 10px; background: rgba(0,0,0,0.6); border: 1px solid rgba(239, 35, 60, 0.35); color: #ffffff; font-family: var(--font-mono, monospace); font-size: 0.85rem;">
+                    </div>
+                    <button type="submit" id="btnHomeSendSms" class="noir-btn-glass" style="width: 100%; justify-content: center; background: linear-gradient(135deg, rgba(239, 35, 60, 0.35), rgba(180, 20, 40, 0.5)); border-color: rgba(239, 35, 60, 0.6); color: #ffffff; padding: 0.6rem; font-size: 0.84rem; font-weight: 700;">
+                        🚀 Transmit SMS Alert
+                    </button>
+                    <div id="homeSmsFeedback" style="display: none; margin-top: 0.65rem; padding: 0.5rem 0.8rem; border-radius: 8px; font-size: 0.74rem;"></div>
+                </form>
+
+                <!-- Direct Email Broadcast Form -->
+                <form onsubmit="sendHomeZeroKeyEmail(event); return false;" class="p-3" style="background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 14px;">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <strong style="color: #cbd5e1; font-size: 0.88rem;"><i class="fa-solid fa-envelope text-red"></i> Civil Defense Email</strong>
+                        <button type="button" class="badge-btn" onclick="openHomeDirectMailApp()" style="font-size: 0.7rem; color: #94a3b8; border-color: rgba(255, 255, 255, 0.2); background: rgba(255, 255, 255, 0.05); padding: 2px 8px; border-radius: 6px; cursor: pointer;">
+                            Default Mail App
+                        </button>
+                    </div>
+                    <div class="mb-2">
+                        <input type="email" id="homeEmailInput" placeholder="Official / Personal Email (e.g. dm-ops@gov.in)" required style="width: 100%; padding: 0.6rem 0.9rem; border-radius: 10px; background: rgba(0,0,0,0.6); border: 1px solid rgba(255, 255, 255, 0.2); color: #ffffff; font-family: var(--font-mono, monospace); font-size: 0.85rem;">
+                    </div>
+                    <button type="submit" id="btnHomeSendEmail" class="noir-btn-glass" style="width: 100%; justify-content: center; background: rgba(255, 255, 255, 0.06); border-color: rgba(255, 255, 255, 0.2); color: #ffffff; padding: 0.6rem; font-size: 0.84rem; font-weight: 700;">
+                        ✉️ Transmit Email Alert
+                    </button>
+                    <div id="homeEmailFeedback" style="display: none; margin-top: 0.65rem; padding: 0.5rem 0.8rem; border-radius: 8px; font-size: 0.74rem;"></div>
+                </form>
             </div>
         </div>
+    </div>
 
-        <p style="color: rgba(255, 255, 255, 0.75); font-size: 0.84rem; margin-bottom: 1.25rem;">
-            Instantly transmit high-priority flash flood alerts directly to emergency personnel, field teams, or civil defense inboxes without requiring any third-party API keys:
-        </p>
-
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.25rem;">
-            <!-- SMS / Mobile Dispatch Form -->
-            <form onsubmit="sendHomeZeroKeySms(event); return false;" class="p-3" style="background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 14px;">
-                <div class="d-flex justify-content-between align-items-center mb-2">
-                    <strong style="color: #38bdf8; font-size: 0.88rem;"><i class="fa-solid fa-mobile-screen"></i> Mobile Phone SMS</strong>
-                    <button type="button" class="badge-btn" onclick="openHomeWhatsApp()" style="font-size: 0.7rem; color: #34d399; border-color: rgba(52, 211, 153, 0.4);">
-                        <i class="fa-brands fa-whatsapp"></i> WhatsApp
-                    </button>
+    <!-- Section: Model Context Protocol (MCP) Autonomous Agent Ecosystem -->
+    <div class="spatial-section-container mb-5">
+        <div class="noir-bento-card p-4" style="border-color: rgba(239, 35, 60, 0.25);">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-4">
+                <div style="max-width: 760px;">
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                        <span class="badge" style="background: rgba(239, 35, 60, 0.15); color: #ff758f; border: 1px solid rgba(239, 35, 60, 0.4); font-family: var(--font-mono, monospace); font-size: 0.72rem; letter-spacing: 0.08em;">
+                            ⚡ MODEL CONTEXT PROTOCOL (MCP) &bull; AGENTIC ECOSYSTEM
+                        </span>
+                        <span class="badge" style="background: rgba(16, 185, 129, 0.15); color: #10b981; font-family: var(--font-mono, monospace); font-size: 0.72rem;">
+                            8 Production Tools Online
+                        </span>
+                    </div>
+                    <h2 style="font-size: 1.85rem; font-weight: 800; color: #ffffff; margin-bottom: 0.6rem;">
+                        Autonomous AI Agent Integration &amp; MCP Server
+                    </h2>
+                    <p style="color: #94a3b8; font-size: 0.92rem; line-height: 1.6; margin-bottom: 1.2rem;">
+                        HydroSentinel is equipped with a native <strong>Model Context Protocol (MCP)</strong> server (spec 2024-11-05). External AI agents (<strong>Claude Desktop, Cursor IDE, Antigravity, OpenAI swarm</strong>) can autonomously inspect mountain sensor meshes, execute XGBoost flood risk predictions, track satellite passes, and calculate evacuation routes over standard JSON-RPC 2.0 stdio &amp; SSE streams.
+                    </p>
+                    <div class="d-flex gap-2 flex-wrap">
+                        <a href="{{ url_for('mcp_hub_page') }}" class="shiny-cta" style="padding: 0.6rem 1.4rem; font-size: 0.85rem;">
+                            <span class="relative z-10">⚡ Open MCP Tools &amp; Agent Hub &rarr;</span>
+                        </a>
+                        <button type="button" class="noir-btn-glass" onclick="openCopilotWithPrompt('Predict flash flood risk for Kedarnath using MCP tools')" style="border-color: rgba(239, 35, 60, 0.4); color: #ff758f; padding: 0.6rem 1.2rem; font-size: 0.85rem;">
+                            🤖 Test via Copilot
+                        </button>
+                        <a href="/api/mcp/config" target="_blank" class="noir-btn-subtle" style="border: 1px solid rgba(255, 255, 255, 0.15); padding: 0.6rem 1.2rem; font-size: 0.85rem;">
+                            📋 Get Claude / Cursor Config
+                        </a>
+                    </div>
                 </div>
-                <div class="mb-2">
-                    <input type="tel" id="homePhoneInput" placeholder="Mobile Number (e.g. +91 98765 43210)" required style="width: 100%; padding: 0.6rem 0.9rem; border-radius: 10px; background: rgba(0,0,0,0.5); border: 1px solid rgba(56, 189, 248, 0.4); color: #ffffff; font-family: var(--font-mono); font-size: 0.85rem;">
+                <div style="flex: 1 1 300px; min-width: 280px; background: rgba(0, 0, 0, 0.6); border: 1px solid rgba(239, 35, 60, 0.25); border-radius: 16px; padding: 1.2rem; font-family: var(--font-mono, monospace); font-size: 0.75rem;">
+                    <div style="color: #ff758f; font-weight: 700; margin-bottom: 0.6rem; display: flex; align-items: center; gap: 0.4rem;">
+                        <span class="beacon-dot" style="width: 6px; height: 6px;"></span>
+                        <span>MCP JSON-RPC DISPATCHER</span>
+                    </div>
+                    <div style="color: #64748b; margin-bottom: 0.4rem;">// Registered Geospatial Tools:</div>
+                    <div style="color: #34d399; line-height: 1.6;">&bull; hydrosentinel_predict_flood_risk</div>
+                    <div style="color: #34d399; line-height: 1.6;">&bull; hydrosentinel_get_telemetry</div>
+                    <div style="color: #34d399; line-height: 1.6;">&bull; hydrosentinel_compute_evacuation_route</div>
+                    <div style="color: #34d399; line-height: 1.6;">&bull; hydrosentinel_query_world_geohazards</div>
+                    <div style="color: #34d399; line-height: 1.6;">&bull; hydrosentinel_get_satellite_swaths</div>
+                    <div style="margin-top: 0.8rem; padding-top: 0.6rem; border-top: 1px solid rgba(255,255,255,0.08); color: #94a3b8; font-size: 0.7rem;">
+                        Transports: <span style="color: #f59e0b;">stdio</span> + <span style="color: #ef233c;">HTTP SSE</span>
+                    </div>
                 </div>
-                <button type="submit" id="btnHomeSendSms" class="spatial-btn-primary" style="width: 100%; padding: 0.55rem; font-size: 0.8rem; font-weight: 700;">
-                    🚀 Transmit SMS Alert
-                </button>
-                <div id="homeSmsFeedback" style="display: none; margin-top: 0.65rem; padding: 0.5rem 0.8rem; border-radius: 8px; font-size: 0.74rem;"></div>
-            </form>
-
-            <!-- Direct Email Broadcast Form -->
-            <form onsubmit="sendHomeZeroKeyEmail(event); return false;" class="p-3" style="background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(16, 185, 129, 0.25); border-radius: 14px;">
-                <div class="d-flex justify-content-between align-items-center mb-2">
-                    <strong style="color: #34d399; font-size: 0.88rem;"><i class="fa-solid fa-envelope"></i> Civil Defense Email</strong>
-                    <button type="button" class="badge-btn" onclick="openHomeDirectMailApp()" style="font-size: 0.7rem; color: #94a3b8; border-color: rgba(255, 255, 255, 0.2);">
-                        Default Mail App
-                    </button>
-                </div>
-                <div class="mb-2">
-                    <input type="email" id="homeEmailInput" placeholder="Official / Personal Email (e.g. dm-ops@gov.in)" required style="width: 100%; padding: 0.6rem 0.9rem; border-radius: 10px; background: rgba(0,0,0,0.5); border: 1px solid rgba(52, 211, 153, 0.4); color: #ffffff; font-family: var(--font-mono); font-size: 0.85rem;">
-                </div>
-                <button type="submit" id="btnHomeSendEmail" class="spatial-btn-primary" style="width: 100%; background: linear-gradient(135deg, #059669, #047857) !important; border-color: #10b981 !important; padding: 0.55rem; font-size: 0.8rem; font-weight: 700;">
-                    ✉️ Transmit Email Alert
-                </button>
-                <div id="homeEmailFeedback" style="display: none; margin-top: 0.65rem; padding: 0.5rem 0.8rem; border-radius: 8px; font-size: 0.74rem;"></div>
-            </form>
+            </div>
         </div>
+    </div>
+
+    <!-- Section 2: Active Telemetry Ingestion Grid (Red Noir Bento Style) -->
+    <div class="spatial-section-container">
+        <div class="section-header-noir">
+            <div class="section-eyebrow-red">INGESTION PIPELINES</div>
+            <h2 class="section-title-noir">Multi-Source Geospatial Telemetry</h2>
+            <p class="section-desc-noir">Four synchronized real-time data layers feeding our physics-informed inference models</p>
+        </div>
+
+        <div class="spatial-cards-grid">
+            <div class="noir-bento-card bento-card-hover-red">
+                <div class="card-icon-noir">🛰️</div>
+                <h3 class="card-heading" style="font-size: 1.15rem; font-weight: 700; color: #ffffff; margin-bottom: 0.75rem;">1. Doppler Radar &amp; Satellite</h3>
+                <p class="card-body-text" style="font-size: 0.88rem; color: rgba(255, 255, 255, 0.65); line-height: 1.6; margin-bottom: 1.5rem; flex-grow: 1;">Instantaneous radar precipitation (mm/hr), Doppler cloudburst inflow vectors, and 24h basin accumulation tracking.</p>
+                <div class="card-bottom-pill" style="font-size: 0.72rem; font-family: var(--font-mono, monospace); color: #ff758f; background: rgba(239, 35, 60, 0.08); border: 1px solid rgba(239, 35, 60, 0.25); padding: 0.35rem 0.75rem; border-radius: 9999px; align-self: flex-start;">Radar Inflow &amp; Tau Rate</div>
+            </div>
+
+            <div class="noir-bento-card bento-card-hover-red">
+                <div class="card-icon-noir">🌱</div>
+                <h3 class="card-heading" style="font-size: 1.15rem; font-weight: 700; color: #ffffff; margin-bottom: 0.75rem;">2. Subsurface IoT Arrays</h3>
+                <p class="card-body-text" style="font-size: 0.88rem; color: rgba(255, 255, 255, 0.65); line-height: 1.6; margin-bottom: 1.5rem; flex-grow: 1;">4-depth soil moisture probes (Topsoil, Subsoil, Bedrock, Aquifer) monitoring hydrostatic runoff saturation.</p>
+                <div class="card-bottom-pill" style="font-size: 0.72rem; font-family: var(--font-mono, monospace); color: #34d399; background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.25); padding: 0.35rem 0.75rem; border-radius: 9999px; align-self: flex-start;">Hydro-Saturation Index</div>
+            </div>
+
+            <div class="noir-bento-card bento-card-hover-red">
+                <div class="card-icon-noir">🌊</div>
+                <h3 class="card-heading" style="font-size: 1.15rem; font-weight: 700; color: #ffffff; margin-bottom: 0.75rem;">3. Acoustic River Gauges</h3>
+                <p class="card-body-text" style="font-size: 0.88rem; color: rgba(255, 255, 255, 0.65); line-height: 1.6; margin-bottom: 1.5rem; flex-grow: 1;">Acoustic Doppler river hydrometry measuring stage height (m), flow velocity (m/s), and upstream surges.</p>
+                <div class="card-bottom-pill" style="font-size: 0.72rem; font-family: var(--font-mono, monospace); color: #c084fc; background: rgba(192, 132, 252, 0.08); border: 1px solid rgba(192, 132, 252, 0.25); padding: 0.35rem 0.75rem; border-radius: 9999px; align-self: flex-start;">Gravitational Surge</div>
+            </div>
+
+            <div class="noir-bento-card bento-card-hover-red">
+                <div class="card-icon-noir">📐</div>
+                <h3 class="card-heading" style="font-size: 1.15rem; font-weight: 700; color: #ffffff; margin-bottom: 0.75rem;">4. High-Res DEM Relief</h3>
+                <p class="card-body-text" style="font-size: 0.88rem; color: rgba(255, 255, 255, 0.65); line-height: 1.6; margin-bottom: 1.5rem; flex-grow: 1;">Digital elevation models calculating slope gradients, catchment morphology, and Topographic Wetness Index.</p>
+                <div class="card-bottom-pill" style="font-size: 0.72rem; font-family: var(--font-mono, monospace); color: #fbbf24; background: rgba(251, 191, 36, 0.08); border: 1px solid rgba(251, 191, 36, 0.25); padding: 0.35rem 0.75rem; border-radius: 9999px; align-self: flex-start;">TWI = ln(a / tan &beta;)</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section 3: Active Hilly Valley Sentinel Stations -->
+    <div class="spatial-section-container">
+        <div class="section-header-noir">
+            <div class="section-eyebrow-red">MONITORED BASINS</div>
+            <h2 class="section-title-noir">Active Sentinel Stations</h2>
+            <p class="section-desc-noir">Real-time basin hydrographs, risk classifications, and 3D digital twins</p>
+        </div>
+
+        <div class="spatial-stations-grid">
+            <!-- Station 1 -->
+            <div class="noir-bento-card p-4 d-flex flex-column">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="font-mono" style="font-size: 0.75rem; font-weight: 700; color: rgba(255, 255, 255, 0.6);">STN-KL-01</span>
+                    <span class="badge" style="background: rgba(251, 191, 36, 0.15); border: 1px solid rgba(251, 191, 36, 0.4); color: #fbbf24; font-size: 0.7rem; border-radius: 9999px; padding: 0.2rem 0.6rem;">🟡 Advisory</span>
+                </div>
+                <h4 style="font-size: 1.2rem; font-weight: 700; color: #ffffff; margin-bottom: 0.25rem;">Kullu Valley Catchment</h4>
+                <p style="font-size: 0.8rem; color: rgba(255, 255, 255, 0.5); margin-bottom: 1.25rem;">Himachal Pradesh &bull; 1,280m Elevation &bull; 32.5&deg; Slope</p>
+                <div class="d-flex justify-content-between p-2 mb-3" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; font-size: 0.82rem;">
+                    <div><span style="color: rgba(255,255,255,0.45);">Precip:</span> <strong style="color:#ffffff; font-family:var(--font-mono, monospace);">42 mm/h</strong></div>
+                    <div><span style="color: rgba(255,255,255,0.45);">Stage:</span> <strong style="color:#ffffff; font-family:var(--font-mono, monospace);">3.8 m</strong></div>
+                    <div><span style="color: rgba(255,255,255,0.45);">Soil:</span> <strong style="color:#ffffff; font-family:var(--font-mono, monospace);">78.5%</strong></div>
+                </div>
+                <a href="{{ url_for('dashboard', station='STN-KL-01') }}" class="noir-btn-glass mt-auto" style="justify-content: center; text-decoration: none;">Open 3D Twin &rarr;</a>
+            </div>
+
+            <!-- Station 2: Critical Red Surge -->
+            <div class="noir-bento-card p-4 d-flex flex-column station-critical-red-noir">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="font-mono" style="font-size: 0.75rem; font-weight: 700; color: #ff758f;">STN-AL-02</span>
+                    <span class="badge" style="background: rgba(239, 35, 60, 0.25); border: 1px solid #ef233c; color: #ff758f; font-size: 0.7rem; border-radius: 9999px; padding: 0.2rem 0.6rem;">🔴 Critical Surge</span>
+                </div>
+                <h4 style="font-size: 1.2rem; font-weight: 700; color: #ffffff; margin-bottom: 0.25rem;">Alaknanda Upper Gorge</h4>
+                <p style="font-size: 0.8rem; color: rgba(255, 255, 255, 0.5); margin-bottom: 1.25rem;">Garhwal Himalayas &bull; 1,850m Elevation &bull; 38.0&deg; Slope</p>
+                <div class="d-flex justify-content-between p-2 mb-3" style="background: rgba(239, 35, 60, 0.08); border: 1px solid rgba(239, 35, 60, 0.25); border-radius: 12px; font-size: 0.82rem;">
+                    <div><span style="color: rgba(255,255,255,0.45);">Precip:</span> <strong style="color:#ff758f; font-family:var(--font-mono, monospace);">74 mm/h</strong></div>
+                    <div><span style="color: rgba(255,255,255,0.45);">Stage:</span> <strong style="color:#ff758f; font-family:var(--font-mono, monospace);">5.4 m</strong></div>
+                    <div><span style="color: rgba(255,255,255,0.45);">Soil:</span> <strong style="color:#ff758f; font-family:var(--font-mono, monospace);">88.0%</strong></div>
+                </div>
+                <a href="{{ url_for('dashboard', station='STN-AL-02') }}" class="shiny-cta mt-auto" style="padding: 0.65rem; font-size: 0.85rem; text-decoration: none;">
+                    <span class="relative z-10">Open Critical Twin &rarr;</span>
+                </a>
+            </div>
+
+            <!-- Station 3 -->
+            <div class="noir-bento-card p-4 d-flex flex-column">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="font-mono" style="font-size: 0.75rem; font-weight: 700; color: rgba(255, 255, 255, 0.6);">STN-TS-03</span>
+                    <span class="badge" style="background: rgba(52, 211, 153, 0.15); border: 1px solid rgba(52, 211, 153, 0.4); color: #34d399; font-size: 0.7rem; border-radius: 9999px; padding: 0.2rem 0.6rem;">🟢 Normal</span>
+                </div>
+                <h4 style="font-size: 1.2rem; font-weight: 700; color: #ffffff; margin-bottom: 0.25rem;">Teesta River Basin</h4>
+                <p style="font-size: 0.8rem; color: rgba(255, 255, 255, 0.5); margin-bottom: 1.25rem;">Sikkim Catchment &bull; 920m Elevation &bull; 26.0&deg; Slope</p>
+                <div class="d-flex justify-content-between p-2 mb-3" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; font-size: 0.82rem;">
+                    <div><span style="color: rgba(255,255,255,0.45);">Precip:</span> <strong style="color:#ffffff; font-family:var(--font-mono, monospace);">24 mm/h</strong></div>
+                    <div><span style="color: rgba(255,255,255,0.45);">Stage:</span> <strong style="color:#ffffff; font-family:var(--font-mono, monospace);">2.1 m</strong></div>
+                    <div><span style="color: rgba(255,255,255,0.45);">Soil:</span> <strong style="color:#ffffff; font-family:var(--font-mono, monospace);">62.0%</strong></div>
+                </div>
+                <a href="{{ url_for('dashboard', station='STN-TS-03') }}" class="noir-btn-glass mt-auto" style="justify-content: center; text-decoration: none;">Open 3D Twin &rarr;</a>
+            </div>
+
+            <!-- Station 4 -->
+            <div class="noir-bento-card p-4 d-flex flex-column">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="font-mono" style="font-size: 0.75rem; font-weight: 700; color: rgba(255, 255, 255, 0.6);">STN-WG-04</span>
+                    <span class="badge" style="background: rgba(251, 191, 36, 0.15); border: 1px solid rgba(251, 191, 36, 0.4); color: #fbbf24; font-size: 0.7rem; border-radius: 9999px; padding: 0.2rem 0.6rem;">🟡 Advisory</span>
+                </div>
+                <h4 style="font-size: 1.2rem; font-weight: 700; color: #ffffff; margin-bottom: 0.25rem;">Western Ghats Escarpment</h4>
+                <p style="font-size: 0.8rem; color: rgba(255, 255, 255, 0.5); margin-bottom: 1.25rem;">Idukki Ridge &bull; 750m Elevation &bull; 29.0&deg; Slope</p>
+                <div class="d-flex justify-content-between p-2 mb-3" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; font-size: 0.82rem;">
+                    <div><span style="color: rgba(255,255,255,0.45);">Precip:</span> <strong style="color:#ffffff; font-family:var(--font-mono, monospace);">55 mm/h</strong></div>
+                    <div><span style="color: rgba(255,255,255,0.45);">Stage:</span> <strong style="color:#ffffff; font-family:var(--font-mono, monospace);">4.1 m</strong></div>
+                    <div><span style="color: rgba(255,255,255,0.45);">Soil:</span> <strong style="color:#ffffff; font-family:var(--font-mono, monospace);">82.0%</strong></div>
+                </div>
+                <a href="{{ url_for('dashboard', station='STN-WG-04') }}" class="noir-btn-glass mt-auto" style="justify-content: center; text-decoration: none;">Open 3D Twin &rarr;</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Massive Red Noir Outline Watermark -->
+    <div class="red-noir-watermark-wrap">
+        <h2 class="text-stroke-watermark">HYDROSENTINEL</h2>
     </div>
 </div>
 
+<!-- Emergency Dispatcher JavaScript Functions -->
 <script>
 async function sendHomeZeroKeySms(e) {
     e.preventDefault();
@@ -211,15 +410,18 @@ async function sendHomeZeroKeySms(e) {
         if (typeof playSuccessChime === 'function') playSuccessChime();
 
         fb.style.display = 'block';
-        fb.innerHTML = `✅ <strong>SMS TRANSMITTED!</strong> Sent to <u>${phone}</u>.<br><span style="color: #38bdf8; font-size: 0.72rem;">Tracking ID: ${data.tracking_id} &bull; Free Zero-Key Relay Active</span>`;
+        fb.style.background = 'rgba(239, 35, 60, 0.15)';
+        fb.style.border = '1px solid rgba(239, 35, 60, 0.4)';
+        fb.style.color = '#ff758f';
+        fb.innerHTML = `✅ <strong>SMS TRANSMITTED!</strong> Sent to <u>${phone}</u>.<br><span style="color: #cbd5e1; font-size: 0.72rem;">Tracking ID: ${data.tracking_id} &bull; Free Zero-Key Relay Active</span>`;
         btn.innerText = '✅ SMS Sent!';
-        setTimeout(() => { btn.disabled = false; btn.innerText = '🚀 Send SMS Now'; }, 2500);
+        setTimeout(() => { btn.disabled = false; btn.innerText = '🚀 Transmit SMS Alert'; }, 2500);
     } catch(err) {
         fb.style.display = 'block';
         fb.innerHTML = `⚠️ Opening cellular SMS client...`;
         window.open(`sms:${phone}?body=🚨 FLOOD ALERT: Kedarnath Gorge. Evacuate immediately.`, '_blank');
         btn.disabled = false;
-        btn.innerText = '🚀 Send SMS Now';
+        btn.innerText = '🚀 Transmit SMS Alert';
     }
 }
 
@@ -257,15 +459,18 @@ async function sendHomeZeroKeyEmail(e) {
         if (typeof playSuccessChime === 'function') playSuccessChime();
 
         fb.style.display = 'block';
-        fb.innerHTML = `✅ <strong>REAL EMAIL SENT!</strong> Sent to <u>${email}</u>.<br><span style="color: #34d399; font-size: 0.72rem;">Tracking ID: ${data.email_id} &bull; Delivered to Inbox</span>`;
+        fb.style.background = 'rgba(16, 185, 129, 0.15)';
+        fb.style.border = '1px solid rgba(16, 185, 129, 0.4)';
+        fb.style.color = '#34d399';
+        fb.innerHTML = `✅ <strong>REAL EMAIL SENT!</strong> Sent to <u>${email}</u>.<br><span style="color: #cbd5e1; font-size: 0.72rem;">Tracking ID: ${data.email_id} &bull; Delivered to Inbox</span>`;
         btn.innerText = '✅ Email Sent!';
-        setTimeout(() => { btn.disabled = false; btn.innerText = '🚀 Send Email Now'; }, 2500);
+        setTimeout(() => { btn.disabled = false; btn.innerText = '✉️ Transmit Email Alert'; }, 2500);
     } catch(err) {
         fb.style.display = 'block';
         fb.innerHTML = `⚠️ Opening default mail client...`;
         window.open(`mailto:${email}?subject=🚨 FLOOD ALERT&body=Critical flood alert for Kedarnath Gorge.`, '_blank');
         btn.disabled = false;
-        btn.innerText = '🚀 Send Email Now';
+        btn.innerText = '✉️ Transmit Email Alert';
     }
 }
 
@@ -273,332 +478,403 @@ function openHomeDirectMailApp() {
     const email = document.getElementById('homeEmailInput').value || 'responder@ndrf.gov.in';
     window.open(`mailto:${email}?subject=🚨 EMERGENCY FLOOD ALERT: Kedarnath Gorge&body=🚨 HYDROSENTINEL CRITICAL FLOOD ALERT\nBasin: Kedarnath Mandakini Gorge\nThreat: CRITICAL RED • IMMEDIATE EVACUATION\nLead Time: 3.8 Hours\nDirective: Move to high ground immediately.\n\nLive 3D Twin: https://hydrosentinel.onrender.com/dashboard`, '_blank');
 }
+
+// Ensure landing-red-noir-active class on body when on index page
+document.addEventListener('DOMContentLoaded', () => {
+    document.body.classList.add('landing-red-noir-active');
+});
 </script>
-
-
-<!-- Section: Model Context Protocol (MCP) Autonomous Agent Ecosystem -->
-<div class="spatial-section-container mb-5">
-    <div class="card p-4 liquid-glass" style="border: 1px solid rgba(56, 189, 248, 0.4); background: linear-gradient(135deg, rgba(3, 10, 24, 0.95), rgba(6, 18, 38, 0.95)); border-radius: 24px; position: relative; overflow: hidden;">
-        <div class="d-flex justify-content-between align-items-center flex-wrap gap-4">
-            <div style="max-width: 760px;">
-                <div class="d-flex align-items-center gap-2 mb-2">
-                    <span class="badge" style="background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.4); font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.08em;">
-                        ⚡ MODEL CONTEXT PROTOCOL (MCP) • AGENTIC ECOSYSTEM
-                    </span>
-                    <span class="badge" style="background: rgba(16, 185, 129, 0.15); color: #10b981; font-family: var(--font-mono); font-size: 0.72rem;">
-                        8 Production Tools Online
-                    </span>
-                </div>
-                <h2 style="font-size: 1.85rem; font-weight: 900; color: #ffffff; margin-bottom: 0.6rem;">
-                    Autonomous AI Agent Integration & MCP Server
-                </h2>
-                <p style="color: #94a3b8; font-size: 0.92rem; line-height: 1.6; margin-bottom: 1.2rem;">
-                    HydroSentinel is equipped with a native <strong>Model Context Protocol (MCP)</strong> server (spec 2024-11-05). External AI agents (<strong>Claude Desktop, Cursor IDE, Antigravity, OpenAI swarm</strong>) can autonomously inspect mountain sensor meshes, execute XGBoost flood risk predictions, track satellite passes, and calculate evacuation routes over standard JSON-RPC 2.0 stdio & SSE streams.
-                </p>
-                <div class="d-flex gap-2 flex-wrap">
-                    <a href="{{ url_for('mcp_hub_page') }}" class="btn btn-primary" style="background: linear-gradient(135deg, #0284c7, #0ea5e9); border: none; font-weight: 700;">
-                        ⚡ Open MCP Tools & Agent Hub &rarr;
-                    </a>
-                    <button type="button" class="btn btn-outline" onclick="openCopilotWithPrompt('Predict flash flood risk for Kedarnath using MCP tools')" style="border-color: rgba(56, 189, 248, 0.4); color: #38bdf8;">
-                        🤖 Test via Copilot
-                    </button>
-                    <a href="/api/mcp/config" target="_blank" class="btn btn-outline" style="border-color: rgba(255, 255, 255, 0.2);">
-                        📋 Get Claude / Cursor Config
-                    </a>
-                </div>
-            </div>
-            <div style="flex: 1 1 300px; min-width: 280px; background: rgba(0, 0, 0, 0.45); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 16px; padding: 1.2rem; font-family: var(--font-mono); font-size: 0.75rem;">
-                <div style="color: #38bdf8; font-weight: 700; margin-bottom: 0.6rem; display: flex; align-items: center; gap: 0.4rem;">
-                    <span class="status-pulse-dot" style="background: #38bdf8;"></span>
-                    <span>MCP JSON-RPC DISPATCHER</span>
-                </div>
-                <div style="color: #64748b; margin-bottom: 0.4rem;">// Registered Geospatial Tools:</div>
-                <div style="color: #10b981; line-height: 1.6;">• hydrosentinel_predict_flood_risk</div>
-                <div style="color: #10b981; line-height: 1.6;">• hydrosentinel_get_telemetry</div>
-                <div style="color: #10b981; line-height: 1.6;">• hydrosentinel_compute_evacuation_route</div>
-                <div style="color: #10b981; line-height: 1.6;">• hydrosentinel_query_world_geohazards</div>
-                <div style="color: #10b981; line-height: 1.6;">• hydrosentinel_get_satellite_swaths</div>
-                <div style="margin-top: 0.8rem; padding-top: 0.6rem; border-top: 1px solid rgba(255,255,255,0.08); color: #94a3b8; font-size: 0.7rem;">
-                    Transports: <span style="color: #f59e0b;">stdio</span> + <span style="color: #38bdf8;">HTTP SSE</span>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Section 2: Active Telemetry Ingestion Grid -->
-<div class="spatial-section-container">
-    <div class="section-header-spatial">
-        <div class="section-eyebrow">INGESTION PIPELINES</div>
-        <h2 class="section-title-spatial">Multi-Source Geospatial Telemetry</h2>
-        <p class="section-desc-spatial">Four synchronized real-time data layers feeding our physics-informed inference models</p>
-    </div>
-
-    <div class="spatial-cards-grid">
-        <div class="spatial-card">
-            <div class="card-icon-pill icon-cyan">🛰️</div>
-            <h3 class="card-heading">1. Doppler Radar & Satellite</h3>
-            <p class="card-body-text">Instantaneous radar precipitation (mm/hr), Doppler cloudburst inflow vectors, and 24h basin accumulation tracking.</p>
-            <div class="card-bottom-pill">Radar Inflow & Tau Rate</div>
-        </div>
-
-        <div class="spatial-card">
-            <div class="card-icon-pill icon-emerald">🌱</div>
-            <h3 class="card-heading">2. Subsurface IoT Arrays</h3>
-            <p class="card-body-text">4-depth soil moisture probes (Topsoil, Subsoil, Bedrock, Aquifer) monitoring hydrostatic runoff saturation.</p>
-            <div class="card-bottom-pill">Hydro-Saturation Index</div>
-        </div>
-
-        <div class="spatial-card">
-            <div class="card-icon-pill icon-purple">🌊</div>
-            <h3 class="card-heading">3. Acoustic River Gauges</h3>
-            <p class="card-body-text">Acoustic Doppler river hydrometry measuring stage height (m), flow velocity (m/s), and upstream surges.</p>
-            <div class="card-bottom-pill">Gravitational Surge</div>
-        </div>
-
-        <div class="spatial-card">
-            <div class="card-icon-pill icon-amber">📐</div>
-            <h3 class="card-heading">4. High-Res DEM Relief</h3>
-            <p class="card-body-text">Digital elevation models calculating slope gradients, catchment morphology, and Topographic Wetness Index.</p>
-            <div class="card-bottom-pill">TWI = ln(a / tan &beta;)</div>
-        </div>
-    </div>
-</div>
-
-<!-- Section 3: Active Hilly Valley Sentinel Stations -->
-<div class="spatial-section-container">
-    <div class="section-header-spatial">
-        <div class="section-eyebrow">MONITORED BASINS</div>
-        <h2 class="section-title-spatial">Active Sentinel Stations</h2>
-        <p class="section-desc-spatial">Real-time basin hydrographs, risk classifications, and 3D digital twins</p>
-    </div>
-
-    <div class="spatial-stations-grid">
-        <div class="station-glass-card">
-            <div class="stn-header">
-                <span class="stn-tag">STN-KL-01</span>
-                <span class="stn-badge badge-advisory">🟡 Advisory</span>
-            </div>
-            <h4 class="stn-name">Kullu Valley Catchment</h4>
-            <p class="stn-loc">Himachal Pradesh &bull; 1,280m Elevation &bull; 32.5&deg; Slope</p>
-            <div class="stn-metrics">
-                <div><span class="k">Precip:</span> <strong class="v">42 mm/h</strong></div>
-                <div><span class="k">Stage:</span> <strong class="v">3.8 m</strong></div>
-                <div><span class="k">Soil:</span> <strong class="v">78.5%</strong></div>
-            </div>
-            <a href="{{ url_for('dashboard', station='STN-KL-01') }}" class="stn-launch-btn">Open 3D Twin &rarr;</a>
-        </div>
-
-        <div class="station-glass-card card-critical-glow">
-            <div class="stn-header">
-                <span class="stn-tag">STN-AL-02</span>
-                <span class="stn-badge badge-critical">🔴 Critical Surge</span>
-            </div>
-            <h4 class="stn-name">Alaknanda Upper Gorge</h4>
-            <p class="stn-loc">Garhwal Himalayas &bull; 1,850m Elevation &bull; 38.0&deg; Slope</p>
-            <div class="stn-metrics">
-                <div><span class="k">Precip:</span> <strong class="v text-rose">74 mm/h</strong></div>
-                <div><span class="k">Stage:</span> <strong class="v text-rose">5.4 m</strong></div>
-                <div><span class="k">Soil:</span> <strong class="v text-rose">88.0%</strong></div>
-            </div>
-            <a href="{{ url_for('dashboard', station='STN-AL-02') }}" class="stn-launch-btn btn-danger-glow">Open 3D Twin &rarr;</a>
-        </div>
-
-        <div class="station-glass-card">
-            <div class="stn-header">
-                <span class="stn-tag">STN-TS-03</span>
-                <span class="stn-badge badge-normal">🟢 Normal</span>
-            </div>
-            <h4 class="stn-name">Teesta River Basin</h4>
-            <p class="stn-loc">Sikkim Catchment &bull; 920m Elevation &bull; 26.0&deg; Slope</p>
-            <div class="stn-metrics">
-                <div><span class="k">Precip:</span> <strong class="v">24 mm/h</strong></div>
-                <div><span class="k">Stage:</span> <strong class="v">2.1 m</strong></div>
-                <div><span class="k">Soil:</span> <strong class="v">62.0%</strong></div>
-            </div>
-            <a href="{{ url_for('dashboard', station='STN-TS-03') }}" class="stn-launch-btn">Open 3D Twin &rarr;</a>
-        </div>
-
-        <div class="station-glass-card">
-            <div class="stn-header">
-                <span class="stn-tag">STN-WG-04</span>
-                <span class="stn-badge badge-advisory">🟡 Advisory</span>
-            </div>
-            <h4 class="stn-name">Western Ghats Escarpment</h4>
-            <p class="stn-loc">Idukki Ridge &bull; 750m Elevation &bull; 29.0&deg; Slope</p>
-            <div class="stn-metrics">
-                <div><span class="k">Precip:</span> <strong class="v">55 mm/h</strong></div>
-                <div><span class="k">Stage:</span> <strong class="v">4.1 m</strong></div>
-                <div><span class="k">Soil:</span> <strong class="v">82.0%</strong></div>
-            </div>
-            <a href="{{ url_for('dashboard', station='STN-WG-04') }}" class="stn-launch-btn">Open 3D Twin &rarr;</a>
-        </div>
-    </div>
-</div>
 
 <style>
 /* ==========================================================================
-   HOMEPAGE SPATIAL GLASS ENGINE STYLES
+   RED NOIR DESIGN SYSTEM - STRICTLY SCOPED TO LANDING PAGE
    ========================================================================== */
-.visionos-hero-container {
-    max-width: 1300px;
-    margin: 2rem auto 4rem auto;
-    padding: 0 1.5rem;
+:root {
+    --accent-red: #ef233c;
+    --accent-red-glow: rgba(239, 35, 60, 0.5);
+    --accent-red-bright: #ff758f;
+    --accent-crimson: #d90429;
+}
+
+body.landing-red-noir-active {
+    background-color: #000000 !important;
+}
+
+body.landing-red-noir-active .cyber-grid-backdrop {
+    opacity: 0.12 !important;
+    background-image: 
+        linear-gradient(to right, rgba(239, 35, 60, 0.08) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(239, 35, 60, 0.08) 1px, transparent 1px) !important;
+    background-size: 40px 40px !important;
+}
+
+body.landing-red-noir-active .aurora-orb-container {
+    opacity: 0.15 !important;
+}
+
+/* Custom Animations */
+@keyframes fade-in-up {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes border-spin {
+    from { --gradient-angle: 0deg; }
+    to { --gradient-angle: 360deg; }
+}
+
+@keyframes animStar {
+    from { transform: translateY(0px); }
+    to { transform: translateY(-2000px); }
+}
+
+@property --gradient-angle { 
+    syntax: "<angle>"; 
+    initial-value: 0deg; 
+    inherits: false; 
+}
+
+.animate-fade-up {
+    animation: fade-in-up 0.8s ease-out forwards;
+}
+
+.selection-red ::selection,
+.selection-red::selection {
+    background: #ef233c;
+    color: white;
+}
+
+/* Wrapper & Background Elements */
+.red-noir-landing-experience {
+    position: relative;
+    background-color: #000000;
+    color: #ffffff;
+    overflow-x: hidden;
+    margin-top: -1.5rem;
+    padding-bottom: 3rem;
+}
+
+.red-noir-bg-canvas {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.red-noir-gradient-ambient {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, #180305 0%, #090102 35%, #000000 100%);
+    opacity: 0.95;
+}
+
+.red-noir-radial-glow {
+    position: absolute;
+    top: 25%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 850px;
+    height: 850px;
+    background: radial-gradient(circle, rgba(239, 35, 60, 0.12) 0%, rgba(239, 35, 60, 0.03) 45%, transparent 70%);
+    border-radius: 50%;
+    filter: blur(100px);
+    pointer-events: none;
+}
+
+.red-noir-stars-1 {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 1px;
+    height: 1px;
+    background: transparent;
+    box-shadow: 234px 124px #fff, 654px 345px #fff, 876px 12px #fff, 1200px 800px #fff, 400px 1500px #fff, 1800px 200px #fff, 100px 1000px #fff, 900px 1900px #fff, 500px 600px #fff, 1400px 100px #fff, 300px 400px #fff, 1600px 1200px #fff;
+    animation: animStar 50s linear infinite;
+}
+
+.red-noir-stars-2 {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 2px;
+    height: 2px;
+    background: transparent;
+    box-shadow: 123px 456px #fff, 789px 234px #fff, 456px 890px #fff, 1100px 300px #fff, 200px 1200px #fff, 1500px 500px #fff, 600px 1700px #fff, 1300px 900px #fff;
+    animation: animStar 80s linear infinite;
+}
+
+.red-noir-grid-overlay {
+    position: absolute;
+    inset: 0;
+    background-image: 
+        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    -webkit-mask-image: radial-gradient(circle at center, black 40%, transparent 80%);
+    mask-image: radial-gradient(circle at center, black 40%, transparent 80%);
+}
+
+.red-noir-top-blur {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 140px;
+    pointer-events: none;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.85), transparent);
+    backdrop-filter: blur(8px);
+    -webkit-mask-image: linear-gradient(to bottom, black, transparent);
+    mask-image: linear-gradient(to bottom, black, transparent);
+    z-index: 10;
+}
+
+/* Shiny CTA Button */
+.shiny-cta {
+    --gradient-angle: 0deg;
+    position: relative;
+    overflow: hidden;
+    border-radius: 9999px;
+    padding: 0.85rem 2.2rem;
+    background: linear-gradient(#000000, #000000) padding-box,
+                conic-gradient(from var(--gradient-angle), transparent 0%, #ef233c 5%, #ef233c 15%, #ef233c 30%, transparent 40%, transparent 100%) border-box;
+    border: 2px solid transparent;
+    cursor: pointer;
+    isolation: isolate;
+    animation: border-spin 2.5s linear infinite;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 0.95rem;
+    text-decoration: none;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+}
+
+.shiny-cta::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 50% 50%, white 0.5px, transparent 0);
+    background-size: 4px 4px;
+    opacity: 0.1;
+    z-index: 0;
+}
+
+.shiny-cta:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 0 30px var(--accent-red-glow);
+    color: #ffffff;
+}
+
+/* Hero Section */
+.hero-noir-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 3rem 1.5rem 3.5rem 1.5rem;
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
+    position: relative;
+    z-index: 10;
 }
 
-.hero-capsule-badge {
+.hero-noir-badge {
     display: inline-flex;
     align-items: center;
     gap: 0.75rem;
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.16);
-    backdrop-filter: blur(20px);
-    padding: 0.4rem 0.9rem;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(16px);
+    padding: 0.4rem 1rem;
     border-radius: 9999px;
     margin-bottom: 2rem;
-    box-shadow: inset 0 1px 1px rgba(255,255,255,0.25), 0 10px 25px rgba(0,0,0,0.4);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    transition: border-color 0.25s ease;
 }
-.pulse-beacon {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: #38bdf8;
-    box-shadow: 0 0 10px #38bdf8;
-    animation: beaconPulse 2s infinite;
-}
-@keyframes beaconPulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.4; transform: scale(0.8); }
-}
-.badge-text {
-    font-size: 0.75rem;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    color: rgba(255, 255, 255, 0.85);
-    font-family: var(--font-mono);
-}
-.badge-pill {
-    background: rgba(56, 189, 248, 0.2);
-    border: 1px solid rgba(56, 189, 248, 0.4);
-    color: #38bdf8;
-    font-size: 0.7rem;
-    font-weight: 700;
-    padding: 0.15rem 0.5rem;
-    border-radius: 9999px;
+.hero-noir-badge:hover {
+    border-color: rgba(239, 35, 60, 0.4);
 }
 
-.hero-headline-spatial {
-    font-size: clamp(2.4rem, 5.5vw, 4.5rem);
+.beacon-red-radar {
+    position: relative;
+    display: flex;
+    width: 9px;
+    height: 9px;
+}
+.beacon-ping {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: #ff758f;
+    opacity: 0.75;
+    animation: ping 1.8s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+.beacon-dot {
+    position: relative;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: #ef233c;
+    box-shadow: 0 0 8px #ef233c;
+}
+@keyframes ping {
+    75%, 100% {
+        transform: scale(2.2);
+        opacity: 0;
+    }
+}
+
+.badge-text-noir {
+    font-size: 0.76rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    color: rgba(255, 255, 255, 0.88);
+    font-family: var(--font-mono, monospace);
+}
+
+.badge-pill-crimson {
+    background: rgba(239, 35, 60, 0.18);
+    border: 1px solid rgba(239, 35, 60, 0.45);
+    color: #ff758f;
+    font-size: 0.68rem;
+    font-weight: 700;
+    padding: 0.15rem 0.55rem;
+    border-radius: 9999px;
+    letter-spacing: 0.03em;
+}
+
+.hero-headline-noir {
+    font-size: clamp(2.6rem, 5.8vw, 4.8rem);
     font-weight: 800;
-    line-height: 1.12;
+    line-height: 1.1;
     letter-spacing: -0.035em;
-    color: #ffffff;
     margin-bottom: 1.5rem;
 }
-.gradient-shimmer-text {
-    background: linear-gradient(135deg, #ffffff 20%, #38bdf8 60%, #c084fc 100%);
+
+.text-gradient-white {
+    background: linear-gradient(180deg, #FFFFFF 0%, rgba(255, 255, 255, 0.55) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    display: inline-block;
+    display: block;
 }
 
-.hero-subtext-spatial {
-    font-size: clamp(1rem, 1.3vw, 1.25rem);
-    color: rgba(255, 255, 255, 0.7);
+.hero-accent-red-word {
+    color: #ef233c;
+    display: inline-block;
+    position: relative;
+}
+
+.hero-svg-underline {
+    position: absolute;
+    width: 100%;
+    height: 10px;
+    bottom: -6px;
+    left: 0;
+    color: #ef233c;
+    opacity: 0.7;
+}
+
+.hero-subtext-noir {
+    font-size: clamp(1rem, 1.35vw, 1.25rem);
+    color: rgba(255, 255, 255, 0.68);
     max-width: 820px;
     line-height: 1.65;
-    margin-bottom: 2.5rem;
+    margin-bottom: 2.75rem;
+    font-weight: 300;
 }
 
-.hero-action-pills {
+/* Action Pills */
+.hero-action-pills-noir {
     display: flex;
     flex-wrap: wrap;
     gap: 1rem;
     justify-content: center;
+    align-items: center;
     margin-bottom: 3.5rem;
 }
-.spatial-btn-primary {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.6rem;
-    background: linear-gradient(135deg, #0284c7, #3b82f6);
-    color: #ffffff;
-    padding: 0.85rem 1.8rem;
-    border-radius: 9999px;
-    font-weight: 600;
-    font-size: 0.95rem;
-    border: 1px solid rgba(255, 255, 255, 0.35);
-    box-shadow: inset 0 1px 1px rgba(255,255,255,0.4), 0 12px 30px rgba(2, 132, 199, 0.4);
-    text-decoration: none;
-    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-}
-.spatial-btn-primary:hover {
-    transform: translateY(-2px) scale(1.02);
-    box-shadow: inset 0 1px 1.5px rgba(255,255,255,0.6), 0 20px 40px rgba(2, 132, 199, 0.6);
-}
 
-.spatial-btn-glass {
+.noir-btn-glass {
     display: inline-flex;
     align-items: center;
-    background: rgba(255, 255, 255, 0.06);
-    backdrop-filter: blur(20px);
-    color: #ffffff;
+    gap: 0.5rem;
+    background: rgba(255, 255, 255, 0.04);
+    backdrop-filter: blur(16px);
+    color: #cbd5e1;
     padding: 0.85rem 1.6rem;
     border-radius: 9999px;
     font-weight: 500;
-    font-size: 0.95rem;
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    box-shadow: inset 0 1px 1px rgba(255,255,255,0.2), 0 10px 25px rgba(0, 0, 0, 0.4);
+    font-size: 0.92rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
     text-decoration: none;
-    transition: all 0.3s ease;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
-.spatial-btn-glass:hover {
-    background: rgba(255, 255, 255, 0.12);
-    border-color: rgba(255, 255, 255, 0.3);
+.noir-btn-glass:hover {
+    background: rgba(239, 35, 60, 0.08);
+    border-color: rgba(239, 35, 60, 0.4);
+    color: #ffffff;
     transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(239, 35, 60, 0.12);
 }
 
-.spatial-btn-subtle {
+.noir-btn-subtle {
     display: inline-flex;
     align-items: center;
+    gap: 0.4rem;
     background: transparent;
-    color: rgba(255, 255, 255, 0.6);
+    color: rgba(255, 255, 255, 0.5);
     padding: 0.85rem 1.4rem;
     border-radius: 9999px;
     font-weight: 500;
-    font-size: 0.95rem;
+    font-size: 0.92rem;
     border: 1px solid transparent;
     text-decoration: none;
     transition: all 0.25s ease;
 }
-.spatial-btn-subtle:hover {
+.noir-btn-subtle:hover {
     color: #ffffff;
     background: rgba(255, 255, 255, 0.05);
 }
 
-/* 3D Interactive Card Showcase */
-.spatial-showcase-grid {
-    width: 100%;
-    max-width: 1000px;
+/* Bento Card System */
+.noir-bento-card {
+    background: linear-gradient(180deg, rgba(22, 10, 12, 0.75) 0%, rgba(8, 6, 8, 0.95) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(24px);
+    border-radius: 24px;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 20px 50px rgba(0, 0, 0, 0.7);
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+    overflow: hidden;
 }
+.noir-bento-card:hover {
+    border-color: rgba(239, 35, 60, 0.35);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12), 0 25px 60px rgba(239, 35, 60, 0.12);
+}
+
+/* 3D Showcase Card */
 .spatial-interactive-viewer-card {
-    background: rgba(255, 255, 255, 0.035);
-    border: 1px solid rgba(255, 255, 255, 0.14);
-    backdrop-filter: blur(30px) saturate(190%);
+    background: linear-gradient(180deg, rgba(25, 10, 14, 0.8) 0%, rgba(6, 4, 6, 0.98) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(30px);
     border-radius: 28px;
     padding: 1.5rem;
-    box-shadow: inset 0 1px 1px rgba(255,255,255,0.3), 0 30px 70px -15px rgba(0, 0, 0, 0.7);
+    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.12), 0 30px 70px -15px rgba(0, 0, 0, 0.8);
+    width: 100%;
+    max-width: 1050px;
+    position: relative;
 }
+
 .card-glass-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 1rem;
 }
+
 .live-status-pill {
     display: inline-flex;
     align-items: center;
@@ -607,71 +883,118 @@ function openHomeDirectMailApp() {
     font-weight: 600;
     color: #ffffff;
 }
+
 .dot-green {
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    background: #10b981;
-    box-shadow: 0 0 10px #10b981;
+    background: #ef233c;
+    box-shadow: 0 0 10px #ef233c;
 }
-.tag-meta {
-    font-size: 0.7rem;
-    font-family: var(--font-mono);
-    color: rgba(255, 255, 255, 0.4);
-    letter-spacing: 0.05em;
-}
+
 .hero-filter-chip {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    color: #cbd5e1;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #94a3b8;
     font-size: 0.72rem;
-    font-family: var(--font-mono);
+    font-family: var(--font-mono, monospace);
     padding: 4px 10px;
     border-radius: 999px;
     cursor: pointer;
     transition: all 0.2s ease;
 }
 .hero-filter-chip:hover {
-    background: rgba(56, 189, 248, 0.15);
-    border-color: rgba(56, 189, 248, 0.4);
+    background: rgba(239, 35, 60, 0.15);
+    border-color: rgba(239, 35, 60, 0.4);
     color: #ffffff;
 }
 .hero-filter-chip.active {
-    background: rgba(56, 189, 248, 0.25);
-    border-color: #38bdf8;
-    color: #38bdf8;
+    background: rgba(239, 35, 60, 0.22);
+    border-color: #ef233c;
+    color: #ff758f;
     font-weight: 700;
-    box-shadow: 0 0 10px rgba(56, 189, 248, 0.25);
+    box-shadow: 0 0 12px rgba(239, 35, 60, 0.3);
 }
+
 .hero-cam-btn {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     color: #cbd5e1;
     font-size: 0.7rem;
-    font-family: var(--font-mono);
+    font-family: var(--font-mono, monospace);
     padding: 4px 8px;
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.2s ease;
 }
 .hero-cam-btn:hover {
-    background: rgba(255, 255, 255, 0.12);
-    color: #38bdf8;
-    border-color: rgba(56, 189, 248, 0.4);
+    background: rgba(239, 35, 60, 0.15);
+    color: #ff758f;
+    border-color: rgba(239, 35, 60, 0.4);
 }
+
+.spatial-webgl-canvas-box {
+    width: 100%;
+    height: 440px;
+    border-radius: 20px;
+    overflow: hidden;
+    background: radial-gradient(circle at center, rgba(239, 35, 60, 0.06) 0%, rgba(0, 0, 0, 0.7) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
 .hero-3d-hint-badge {
     position: absolute;
     bottom: 12px;
     left: 16px;
-    background: rgba(3, 7, 18, 0.75);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(10, 5, 8, 0.85);
+    border: 1px solid rgba(239, 35, 60, 0.25);
     backdrop-filter: blur(10px);
     border-radius: 999px;
     padding: 4px 12px;
     font-size: 0.68rem;
-    color: #94a3b8;
+    color: #cbd5e1;
     pointer-events: none;
 }
+
+/* Metrics Ribbon */
+.spatial-metrics-ribbon {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+.metric-pill {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 0.75rem 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    transition: border-color 0.2s ease;
+}
+.metric-pill:hover {
+    border-color: rgba(239, 35, 60, 0.3);
+}
+.m-lbl {
+    font-size: 0.65rem;
+    font-family: var(--font-mono, monospace);
+    color: rgba(255, 255, 255, 0.45);
+    letter-spacing: 0.08em;
+    margin-bottom: 0.25rem;
+}
+.m-val {
+    font-size: 1.15rem;
+    font-weight: 700;
+}
+.val-red { color: #ef233c; text-shadow: 0 0 12px rgba(239, 35, 60, 0.4); }
+.val-crimson { color: #ff758f; text-shadow: 0 0 12px rgba(255, 117, 143, 0.4); }
+.val-cyan { color: #38bdf8; text-shadow: 0 0 12px rgba(56, 189, 248, 0.4); }
+.val-purple { color: #c084fc; text-shadow: 0 0 12px rgba(192, 132, 252, 0.4); }
+.val-amber { color: #fbbf24; text-shadow: 0 0 12px rgba(251, 191, 36, 0.4); }
+.val-green { color: #34d399; text-shadow: 0 0 12px rgba(52, 211, 153, 0.4); }
+
+/* Multi-source ticker bar */
 .multi-source-ticker-bar {
     background: rgba(255, 255, 255, 0.02);
     border: 1px solid rgba(255, 255, 255, 0.08);
@@ -695,246 +1018,128 @@ function openHomeDirectMailApp() {
     color: #cbd5e1;
 }
 .source-pill strong { color: #ffffff; }
-.source-pill small { color: #38bdf8; font-family: var(--font-mono); }
+.source-pill small { color: #ff758f; font-family: var(--font-mono, monospace); }
 .source-dot {
     width: 6px;
     height: 6px;
     border-radius: 50%;
-    background: #10b981;
-    box-shadow: 0 0 6px #10b981;
+    background: #ef233c;
+    box-shadow: 0 0 6px #ef233c;
 }
-.spatial-webgl-canvas-box {
-    width: 100%;
-    height: 440px;
-    border-radius: 20px;
-    overflow: hidden;
-    background: radial-gradient(circle at center, rgba(14, 165, 233, 0.08) 0%, rgba(0, 0, 0, 0.4) 100%);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-}
-.spatial-metrics-ribbon {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 1rem;
-    margin-top: 1.5rem;
-}
-.metric-pill {
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 16px;
-    padding: 0.75rem 1rem;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-}
-.m-lbl {
-    font-size: 0.65rem;
-    font-family: var(--font-mono);
-    color: rgba(255, 255, 255, 0.45);
-    letter-spacing: 0.08em;
-    margin-bottom: 0.25rem;
-}
-.m-val {
-    font-size: 1.15rem;
-    font-weight: 700;
-    font-family: var(--font-display);
-}
-.val-cyan { color: #38bdf8; text-shadow: 0 0 12px rgba(56, 189, 248, 0.4); }
-.val-purple { color: #c084fc; text-shadow: 0 0 12px rgba(192, 132, 252, 0.4); }
-.val-amber { color: #fbbf24; text-shadow: 0 0 12px rgba(251, 191, 36, 0.4); }
-.val-green { color: #34d399; text-shadow: 0 0 12px rgba(52, 211, 153, 0.4); }
 
-/* Section Containers */
+/* Sections */
 .spatial-section-container {
-    max-width: 1300px;
+    max-width: 1250px;
     margin: 4rem auto;
     padding: 0 1.5rem;
+    position: relative;
+    z-index: 10;
 }
-.section-header-spatial {
+.section-header-noir {
     text-align: center;
     margin-bottom: 3rem;
 }
-.section-eyebrow {
+.section-eyebrow-red {
     font-size: 0.75rem;
-    font-family: var(--font-mono);
-    color: #38bdf8;
-    letter-spacing: 0.12em;
+    font-family: var(--font-mono, monospace);
+    color: #ef233c;
+    letter-spacing: 0.15em;
     font-weight: 700;
     margin-bottom: 0.5rem;
+    text-transform: uppercase;
 }
-.section-title-spatial {
+.section-title-noir {
     font-size: clamp(1.8rem, 3.5vw, 2.6rem);
     font-weight: 700;
     color: #ffffff;
     letter-spacing: -0.025em;
     margin-bottom: 0.75rem;
 }
-.section-desc-spatial {
+.section-desc-noir {
     font-size: 1rem;
     color: rgba(255, 255, 255, 0.6);
-    max-width: 600px;
+    max-width: 620px;
     margin: 0 auto;
+    font-weight: 300;
 }
 
-/* Ingestion Cards Grid */
+/* Ingestion Grid */
 .spatial-cards-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
     gap: 1.5rem;
 }
-.spatial-card {
-    background: rgba(255, 255, 255, 0.035);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    backdrop-filter: blur(24px);
-    border-radius: 24px;
+.bento-card-hover-red {
+    position: relative;
     padding: 2rem 1.5rem;
     display: flex;
     flex-direction: column;
-    box-shadow: inset 0 1px 1px rgba(255,255,255,0.25), 0 20px 45px rgba(0, 0, 0, 0.5);
-    transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
-.spatial-card:hover {
-    background: rgba(255, 255, 255, 0.07);
-    border-color: rgba(255, 255, 255, 0.28);
-    transform: translateY(-5px);
-    box-shadow: inset 0 1px 1.5px rgba(255,255,255,0.4), 0 25px 60px rgba(56, 189, 248, 0.2);
+.bento-card-hover-red::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at top right, rgba(239, 35, 60, 0.12), transparent 70%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    border-radius: inherit;
 }
-.card-icon-pill {
+.bento-card-hover-red:hover::after {
+    opacity: 1;
+}
+
+.card-icon-noir {
     width: 48px;
     height: 48px;
-    border-radius: 16px;
+    border-radius: 14px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.4rem;
+    font-size: 1.35rem;
     margin-bottom: 1.25rem;
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-}
-.card-heading {
-    font-size: 1.15rem;
-    font-weight: 700;
-    color: #ffffff;
-    margin-bottom: 0.75rem;
-    letter-spacing: -0.015em;
-}
-.card-body-text {
-    font-size: 0.88rem;
-    color: rgba(255, 255, 255, 0.65);
-    line-height: 1.6;
-    margin-bottom: 1.5rem;
-    flex-grow: 1;
-}
-.card-bottom-pill {
-    font-size: 0.72rem;
-    font-family: var(--font-mono);
-    color: rgba(255, 255, 255, 0.5);
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    padding: 0.35rem 0.75rem;
-    border-radius: 9999px;
-    align-self: flex-start;
+    background: rgba(239, 35, 60, 0.08);
+    border: 1px solid rgba(239, 35, 60, 0.25);
+    color: #ff758f;
 }
 
-/* Stations Grid */
+/* Stations */
 .spatial-stations-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 1.5rem;
 }
-.station-glass-card {
-    background: rgba(255, 255, 255, 0.035);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    backdrop-filter: blur(24px);
-    border-radius: 24px;
-    padding: 1.75rem;
+.station-critical-red-noir {
+    border-color: rgba(239, 35, 60, 0.5) !important;
+    box-shadow: inset 0 1px 1px rgba(239, 35, 60, 0.3), 0 20px 50px rgba(239, 35, 60, 0.2) !important;
+}
+.station-critical-red-noir:hover {
+    box-shadow: inset 0 1px 1px rgba(239, 35, 60, 0.5), 0 25px 60px rgba(239, 35, 60, 0.3) !important;
+}
+
+/* Huge Outline Watermark */
+.red-noir-watermark-wrap {
     display: flex;
-    flex-direction: column;
-    box-shadow: inset 0 1px 1px rgba(255,255,255,0.2), 0 20px 45px rgba(0, 0, 0, 0.5);
-    transition: all 0.35s ease;
-}
-.station-glass-card:hover {
-    background: rgba(255, 255, 255, 0.07);
-    border-color: rgba(255, 255, 255, 0.25);
-    transform: translateY(-4px);
-}
-.card-critical-glow {
-    border-color: rgba(244, 63, 94, 0.4) !important;
-    box-shadow: inset 0 1px 1px rgba(244, 63, 94, 0.4), 0 20px 50px rgba(244, 63, 94, 0.2) !important;
-}
-.stn-header {
-    display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
-    margin-bottom: 0.75rem;
+    padding: 4rem 1rem 2rem 1rem;
+    opacity: 0.16;
+    pointer-events: none;
+    user-select: none;
 }
-.stn-tag {
-    font-size: 0.75rem;
-    font-family: var(--font-mono);
-    font-weight: 700;
-    color: rgba(255, 255, 255, 0.6);
-}
-.stn-badge {
-    font-size: 0.7rem;
-    font-weight: 600;
-    padding: 0.2rem 0.6rem;
-    border-radius: 9999px;
-}
-.badge-advisory { background: rgba(251, 191, 36, 0.15); border: 1px solid rgba(251, 191, 36, 0.35); color: #fbbf24; }
-.badge-critical { background: rgba(244, 63, 94, 0.2); border: 1px solid rgba(244, 63, 94, 0.5); color: #f43f5e; }
-.badge-normal { background: rgba(52, 211, 153, 0.15); border: 1px solid rgba(52, 211, 153, 0.35); color: #34d399; }
-
-.stn-name {
-    font-size: 1.2rem;
-    font-weight: 700;
-    color: #ffffff;
-    margin-bottom: 0.25rem;
-}
-.stn-loc {
-    font-size: 0.8rem;
-    color: rgba(255, 255, 255, 0.5);
-    margin-bottom: 1.25rem;
-}
-.stn-metrics {
-    display: flex;
-    justify-content: space-between;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 14px;
-    padding: 0.75rem;
-    margin-bottom: 1.5rem;
-    font-size: 0.82rem;
-}
-.stn-metrics .k { color: rgba(255, 255, 255, 0.45); }
-.stn-metrics .v { color: #ffffff; font-family: var(--font-mono); }
-.text-rose { color: #f43f5e !important; }
-
-.stn-launch-btn {
-    display: block;
+.text-stroke-watermark {
+    -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.7);
+    color: transparent;
+    font-size: clamp(3.5rem, 13vw, 10.5rem);
+    font-weight: 900;
+    letter-spacing: -0.04em;
     text-align: center;
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    color: #ffffff;
-    padding: 0.75rem;
-    border-radius: 9999px;
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 0.88rem;
-    transition: all 0.25s ease;
-}
-.stn-launch-btn:hover {
-    background: rgba(255, 255, 255, 0.15);
-    border-color: rgba(255, 255, 255, 0.3);
-}
-.btn-danger-glow {
-    background: linear-gradient(135deg, rgba(244, 63, 94, 0.3), rgba(225, 29, 72, 0.2)) !important;
-    border-color: rgba(244, 63, 94, 0.5) !important;
-}
-.btn-danger-glow:hover {
-    background: linear-gradient(135deg, rgba(244, 63, 94, 0.5), rgba(225, 29, 72, 0.4)) !important;
+    line-height: 1;
+    margin: 0;
 }
 </style>
 {% endblock %}
 
 {% block scripts %}
-<script src="{{ url_for('static', filename='js/hero_3d_globe.js') }}?v=SPATIAL_FINAL_1"></script>
+<script src="{{ url_for('static', filename='js/hero_3d_globe.js') }}?v=RED_NOIR_1"></script>
 {% endblock %}
