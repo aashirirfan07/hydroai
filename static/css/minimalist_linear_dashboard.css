@@ -1,0 +1,941 @@
+/* ==========================================================================
+   HYDROSENTINEL AI™ - MINIMALIST LINEAR / VERCEL DESIGN SYSTEM
+   Theme: Matte Obsidian, Hairline Borders, Crisp Typography, High Density
+   Version: 1.2 (Linear Edition)
+   ========================================================================== */
+
+:root {
+    /* Color Palette - Matte Charcoal & Obsidian */
+    --ln-bg-base: #08090c;
+    --ln-bg-surface: #0e1015;
+    --ln-bg-surface-elevated: #13161d;
+    --ln-bg-surface-inset: #161a22;
+    --ln-bg-glass: rgba(14, 16, 21, 0.85);
+
+    /* Hairline Borders */
+    --ln-border-hairline: rgba(255, 255, 255, 0.07);
+    --ln-border-subtle: rgba(255, 255, 255, 0.12);
+    --ln-border-focus: rgba(255, 255, 255, 0.24);
+    --ln-border-emerald: rgba(16, 185, 129, 0.35);
+    --ln-border-cyan: rgba(56, 189, 248, 0.35);
+    --ln-border-crimson: rgba(239, 68, 68, 0.4);
+
+    /* Semantic Status Accents */
+    --ln-emerald: #10b981;
+    --ln-emerald-glow: rgba(16, 185, 129, 0.15);
+    --ln-cyan: #38bdf8;
+    --ln-cyan-glow: rgba(56, 189, 248, 0.12);
+    --ln-amber: #f59e0b;
+    --ln-amber-glow: rgba(245, 158, 11, 0.15);
+    --ln-crimson: #ef4444;
+    --ln-crimson-glow: rgba(239, 68, 68, 0.18);
+    --ln-purple: #a855f7;
+
+    /* Typography Colors */
+    --ln-text-primary: #f8fafc;
+    --ln-text-secondary: #94a3b8;
+    --ln-text-muted: #64748b;
+    --ln-text-dim: #475569;
+
+    /* Font Families */
+    --ln-font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --ln-font-mono: 'JetBrains Mono', monospace;
+
+    /* Shadows & Transitions */
+    --ln-shadow-card: 0 1px 2px rgba(0, 0, 0, 0.6), 0 4px 16px rgba(0, 0, 0, 0.4);
+    --ln-shadow-elevated: 0 8px 32px rgba(0, 0, 0, 0.7);
+    --ln-ease: cubic-bezier(0.16, 1, 0.3, 1);
+    --ln-transition: all 0.2s var(--ln-ease);
+}
+
+/* ==========================================================================
+   GLOBAL CANVAS & BACKGROUND POLISH
+   ========================================================================== */
+body.linear-minimal-mode {
+    background-color: var(--ln-bg-base) !important;
+    color: var(--ln-text-primary) !important;
+    font-family: var(--ln-font-sans) !important;
+    letter-spacing: -0.01em;
+    overflow-x: hidden;
+    --font-display: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif !important;
+}
+
+/* Reset and normalize all headings to crisp sans-serif without distortion */
+body.linear-minimal-mode h1,
+body.linear-minimal-mode h2,
+body.linear-minimal-mode h3,
+body.linear-minimal-mode h4,
+body.linear-minimal-mode h5,
+body.linear-minimal-mode h6,
+body.linear-minimal-mode .threat-headline-group h1,
+body.linear-minimal-mode .mcp-info-col h2 {
+    font-family: var(--ln-font-sans) !important;
+    font-stretch: normal !important;
+    letter-spacing: -0.025em !important;
+    text-transform: none !important;
+    transform: none !important;
+    -webkit-text-stroke: 0 !important;
+    text-shadow: none !important;
+}
+
+/* Suppress distracting orbs, noisy scanlines and floating clutter */
+body.linear-minimal-mode .aurora-orb-container,
+body.linear-minimal-mode .scanline-overlay,
+body.linear-minimal-mode #floatingCopilotBtn,
+body.linear-minimal-mode #floatingFeedbackBtn,
+body.linear-minimal-mode .global-floating-dock {
+    display: none !important;
+}
+
+body.linear-minimal-mode .cyber-grid-backdrop {
+    opacity: 0.04 !important;
+    background-size: 32px 32px !important;
+}
+
+body.linear-minimal-mode .ambient-3d-bg {
+    opacity: 0.2 !important;
+}
+
+/* Subtle top illumination (Linear / Vercel style radial glow) */
+body.linear-minimal-mode::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 1000px;
+    height: 350px;
+    background: radial-gradient(ellipse 60% 40% at 50% 0%, rgba(56, 189, 248, 0.07), rgba(16, 185, 129, 0.03) 60%, transparent 100%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* ==========================================================================
+   MINIMALIST LINEAR NAVBAR OVERRIDES
+   ========================================================================== */
+body.linear-minimal-mode .navbar-floating-wrapper {
+    top: 0.75rem;
+    padding: 0 1.25rem;
+}
+
+@media (min-width: 992px) {
+    body.linear-minimal-mode .header-mobile-menu-btn {
+        display: none !important;
+    }
+}
+
+body.linear-minimal-mode .navbar-floating-inner {
+    background: rgba(14, 16, 21, 0.88) !important;
+    border: 1px solid var(--ln-border-hairline) !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
+    backdrop-filter: blur(16px) saturate(160%) !important;
+    border-radius: 12px !important;
+    padding: 0.45rem 1rem !important;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+body.linear-minimal-mode .brand-title {
+    font-size: 0.92rem !important;
+    font-weight: 700 !important;
+    letter-spacing: -0.01em !important;
+}
+
+body.linear-minimal-mode .brand-badge-ai {
+    font-family: var(--ln-font-mono) !important;
+    font-size: 0.65rem !important;
+    background: rgba(56, 189, 248, 0.1) !important;
+    border: 1px solid rgba(56, 189, 248, 0.25) !important;
+    color: var(--ln-cyan) !important;
+    padding: 0.15rem 0.45rem !important;
+    border-radius: 4px !important;
+}
+
+body.linear-minimal-mode .nav-mesh-status-indicator {
+    background: rgba(16, 185, 129, 0.08) !important;
+    border: 1px solid rgba(16, 185, 129, 0.2) !important;
+    border-radius: 4px !important;
+    padding: 0.2rem 0.5rem !important;
+}
+
+body.linear-minimal-mode .nav-mesh-status-indicator .status-text {
+    font-family: var(--ln-font-mono) !important;
+    font-size: 0.65rem !important;
+    color: var(--ln-emerald) !important;
+    letter-spacing: 0.04em !important;
+}
+
+body.linear-minimal-mode .nav-link-pill {
+    background: transparent !important;
+    border: 1px solid transparent !important;
+    border-radius: 6px !important;
+    padding: 0.35rem 0.75rem !important;
+    color: var(--ln-text-secondary) !important;
+    font-size: 0.82rem !important;
+    font-weight: 500 !important;
+    transition: var(--ln-transition) !important;
+}
+
+body.linear-minimal-mode .nav-link-pill:hover {
+    color: var(--ln-text-primary) !important;
+    background: rgba(255, 255, 255, 0.04) !important;
+    border-color: var(--ln-border-hairline) !important;
+}
+
+body.linear-minimal-mode .nav-link-pill.active {
+    color: #ffffff !important;
+    background: rgba(255, 255, 255, 0.08) !important;
+    border-color: rgba(255, 255, 255, 0.15) !important;
+}
+
+body.linear-minimal-mode .nav-micro-logo {
+    width: 14px !important;
+    height: 14px !important;
+    opacity: 0.85 !important;
+}
+
+body.linear-minimal-mode .nav-dropdown-menu,
+body.linear-minimal-mode .dispatch-dropdown-menu {
+    background: rgba(14, 16, 21, 0.96) !important;
+    border: 1px solid var(--ln-border-subtle) !important;
+    border-radius: 10px !important;
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.7) !important;
+    backdrop-filter: blur(20px) !important;
+    padding: 0.4rem !important;
+}
+
+body.linear-minimal-mode .dropdown-item,
+body.linear-minimal-mode .dispatch-item {
+    border-radius: 6px !important;
+    padding: 0.5rem 0.75rem !important;
+    color: var(--ln-text-secondary) !important;
+    transition: var(--ln-transition) !important;
+}
+
+body.linear-minimal-mode .dropdown-item:hover,
+body.linear-minimal-mode .dispatch-item:hover {
+    background: rgba(255, 255, 255, 0.05) !important;
+    color: var(--ln-text-primary) !important;
+}
+
+body.linear-minimal-mode .btn-clean-dispatch {
+    background: rgba(239, 68, 68, 0.1) !important;
+    border: 1px solid rgba(239, 68, 68, 0.3) !important;
+    color: #fca5a5 !important;
+    border-radius: 6px !important;
+    font-size: 0.8rem !important;
+    font-weight: 600 !important;
+    padding: 0.35rem 0.8rem !important;
+}
+
+/* ==========================================================================
+   MINIMALIST HERO / THREAT MATRIX HEADER
+   ========================================================================== */
+.linear-hero-section {
+    max-width: 1400px;
+    margin: 5.25rem auto 1.25rem auto;
+    padding: 0 1.25rem;
+}
+
+.linear-threat-matrix-bar {
+    background: var(--ln-bg-surface);
+    border: 1px solid var(--ln-border-hairline);
+    border-radius: 12px;
+    padding: 1.1rem 1.35rem;
+    box-shadow: var(--ln-shadow-card);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1.25rem;
+    margin-bottom: 1.25rem;
+}
+
+.threat-left-identity {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+
+.threat-node-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: var(--ln-bg-surface-inset);
+    border: 1px solid var(--ln-border-hairline);
+    border-radius: 6px;
+    padding: 0.2rem 0.55rem;
+    font-family: var(--ln-font-mono);
+    font-size: 0.7rem;
+    color: var(--ln-text-secondary);
+    width: fit-content;
+}
+
+.threat-pulse-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--ln-crimson);
+    box-shadow: 0 0 8px var(--ln-crimson);
+    animation: threatPulse 1.8s infinite ease-in-out;
+}
+
+@keyframes threatPulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.8); }
+}
+
+.threat-headline-group h1 {
+    font-size: 1.55rem !important;
+    font-weight: 700 !important;
+    letter-spacing: -0.025em !important;
+    color: #ffffff !important;
+    margin: 0 !important;
+    line-height: 1.25 !important;
+}
+
+.threat-headline-group p {
+    font-size: 0.8rem;
+    color: var(--ln-text-secondary);
+    margin: 0;
+}
+
+/* 4-Metric Key Ribbon */
+.threat-metrics-strip {
+    display: flex;
+    align-items: center;
+    gap: 1.75rem;
+    flex-wrap: wrap;
+}
+
+.threat-metric-cell {
+    display: flex;
+    flex-direction: column;
+}
+
+.threat-metric-cell .cell-lbl {
+    font-family: var(--ln-font-mono);
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    color: var(--ln-text-muted);
+    letter-spacing: 0.05em;
+    margin-bottom: 0.15rem;
+}
+
+.threat-metric-cell .cell-val {
+    font-family: var(--ln-font-mono);
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--ln-text-primary);
+}
+
+.cell-val.highlight-crimson { color: var(--ln-crimson); }
+.cell-val.highlight-cyan { color: var(--ln-cyan); }
+.cell-val.highlight-emerald { color: var(--ln-emerald); }
+.cell-val.highlight-amber { color: var(--ln-amber); }
+
+.threat-metric-cell .cell-sub {
+    font-size: 0.68rem;
+    color: var(--ln-text-dim);
+}
+
+/* Primary and Secondary Action Buttons */
+body.linear-minimal-mode .btn-ln-primary,
+body.linear-minimal-mode a.btn-ln-primary {
+    background: #ffffff !important;
+    color: #08090c !important;
+    -webkit-text-fill-color: #08090c !important;
+    border: 1px solid rgba(255, 255, 255, 0.9) !important;
+    border-radius: 6px !important;
+    font-size: 0.78rem !important;
+    font-weight: 700 !important;
+    padding: 0.45rem 0.9rem !important;
+    text-decoration: none !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 0.4rem !important;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.5) !important;
+    transition: var(--ln-transition) !important;
+}
+
+body.linear-minimal-mode .btn-ln-primary *,
+body.linear-minimal-mode a.btn-ln-primary * {
+    color: #08090c !important;
+    -webkit-text-fill-color: #08090c !important;
+    font-weight: 700 !important;
+}
+
+body.linear-minimal-mode .btn-ln-primary:hover,
+body.linear-minimal-mode a.btn-ln-primary:hover {
+    background: #e2e8f0 !important;
+    color: #000000 !important;
+    -webkit-text-fill-color: #000000 !important;
+    transform: translateY(-1px);
+}
+
+body.linear-minimal-mode .btn-ln-secondary,
+body.linear-minimal-mode a.btn-ln-secondary {
+    background: #11141a !important;
+    border: 1px solid var(--ln-border-hairline) !important;
+    color: var(--ln-text-primary) !important;
+    -webkit-text-fill-color: var(--ln-text-primary) !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 0.4rem !important;
+    border-radius: 6px !important;
+    font-size: 0.78rem !important;
+    font-weight: 500 !important;
+    padding: 0.45rem 0.85rem !important;
+    text-decoration: none !important;
+    transition: var(--ln-transition) !important;
+}
+
+body.linear-minimal-mode .btn-ln-secondary:hover,
+body.linear-minimal-mode a.btn-ln-secondary:hover {
+    background: #171b24 !important;
+    border-color: var(--ln-border-subtle) !important;
+    color: #ffffff !important;
+}
+
+/* ==========================================================================
+   BENTO OPERATIONAL GRID (3 COLUMNS)
+   ========================================================================== */
+.linear-bento-grid {
+    max-width: 1400px;
+    margin: 0 auto 2.5rem auto;
+    padding: 0 1.25rem;
+    display: grid;
+    grid-template-columns: 1.05fr 1.35fr 1.1fr;
+    gap: 1.25rem;
+}
+
+@media (max-width: 1200px) {
+    .linear-bento-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Linear Card Container */
+.linear-card {
+    background: var(--ln-bg-surface);
+    border: 1px solid var(--ln-border-hairline);
+    border-radius: 12px;
+    box-shadow: var(--ln-shadow-card);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+    transition: var(--ln-transition);
+}
+
+.linear-card:hover {
+    border-color: var(--ln-border-subtle);
+}
+
+.linear-card-header {
+    padding: 0.85rem 1.1rem;
+    border-bottom: 1px solid var(--ln-border-hairline);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.01);
+}
+
+.linear-card-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--ln-text-primary);
+    margin: 0;
+    letter-spacing: -0.01em;
+}
+
+.linear-card-badge {
+    font-family: var(--ln-font-mono);
+    font-size: 0.68rem;
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+    font-weight: 600;
+}
+
+.badge-emerald-soft {
+    background: var(--ln-emerald-glow);
+    border: 1px solid var(--ln-border-emerald);
+    color: var(--ln-emerald);
+}
+
+.badge-cyan-soft {
+    background: var(--ln-cyan-glow);
+    border: 1px solid var(--ln-border-cyan);
+    color: var(--ln-cyan);
+}
+
+.badge-crimson-soft {
+    background: var(--ln-crimson-glow);
+    border: 1px solid var(--ln-border-crimson);
+    color: #fca5a5;
+}
+
+.badge-amber-soft {
+    background: var(--ln-amber-glow);
+    border: 1px solid rgba(245, 158, 11, 0.35);
+    color: var(--ln-amber);
+}
+
+.linear-card-body {
+    padding: 1.1rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ==========================================================================
+   COLUMN 1: HYDROLOGICAL INFLOW & SPLINE
+   ========================================================================== */
+.hydro-kpi-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.hydro-kpi-box {
+    background: var(--ln-bg-surface-inset);
+    border: 1px solid var(--ln-border-hairline);
+    border-radius: 8px;
+    padding: 0.65rem 0.8rem;
+}
+
+.hydro-kpi-box .lbl {
+    font-family: var(--ln-font-mono);
+    font-size: 0.65rem;
+    color: var(--ln-text-muted);
+    text-transform: uppercase;
+}
+
+.hydro-kpi-box .val {
+    font-family: var(--ln-font-mono);
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--ln-text-primary);
+    margin: 0.15rem 0;
+}
+
+.hydro-kpi-box .trend {
+    font-size: 0.68rem;
+    color: var(--ln-text-secondary);
+}
+
+.chart-wrapper-linear {
+    position: relative;
+    height: 180px;
+    width: 100%;
+    margin-bottom: 1rem;
+}
+
+.chart-range-toggle {
+    display: flex;
+    gap: 0.25rem;
+}
+
+.range-chip {
+    background: var(--ln-bg-surface-inset);
+    border: 1px solid var(--ln-border-hairline);
+    color: var(--ln-text-muted);
+    font-family: var(--ln-font-mono);
+    font-size: 0.68rem;
+    padding: 0.15rem 0.45rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: var(--ln-transition);
+}
+
+.range-chip:hover,
+.range-chip.active {
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--ln-text-primary);
+    border-color: rgba(255, 255, 255, 0.18);
+}
+
+.saturation-subcard {
+    background: var(--ln-bg-surface-inset);
+    border: 1px solid var(--ln-border-hairline);
+    border-radius: 8px;
+    padding: 0.85rem;
+    margin-top: auto;
+}
+
+.saturation-bar-track {
+    width: 100%;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 999px;
+    overflow: hidden;
+    margin: 0.45rem 0;
+}
+
+.saturation-bar-fill {
+    height: 100%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #10b981, #f59e0b, #ef4444);
+    transition: width 0.8s ease;
+}
+
+/* ==========================================================================
+   COLUMN 2: 3D EARTH DIGITAL TWIN CONSOLE
+   ========================================================================== */
+.webgl-container-linear {
+    position: relative;
+    height: 310px;
+    width: 100%;
+    background: #040508;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid var(--ln-border-hairline);
+}
+
+#hero3DViewer {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+.webgl-controls-overlay {
+    position: absolute;
+    top: 0.6rem;
+    left: 0.6rem;
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    z-index: 10;
+}
+
+.webgl-bottom-hint {
+    position: absolute;
+    bottom: 0.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(8, 9, 12, 0.8);
+    border: 1px solid var(--ln-border-hairline);
+    border-radius: 999px;
+    padding: 0.2rem 0.65rem;
+    font-family: var(--ln-font-mono);
+    font-size: 0.65rem;
+    color: var(--ln-text-secondary);
+    pointer-events: none;
+    backdrop-filter: blur(8px);
+    white-space: nowrap;
+    z-index: 10;
+}
+
+.hero-filter-chip,
+.hero-cam-btn {
+    background: rgba(8, 9, 12, 0.85);
+    border: 1px solid var(--ln-border-hairline);
+    color: var(--ln-text-secondary);
+    font-family: var(--ln-font-mono);
+    font-size: 0.68rem;
+    padding: 0.22rem 0.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+    backdrop-filter: blur(8px);
+    transition: var(--ln-transition);
+}
+
+.hero-filter-chip:hover,
+.hero-filter-chip.active,
+.hero-cam-btn:hover {
+    background: rgba(255, 255, 255, 0.12);
+    color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.25);
+}
+
+.telemetry-feed-rows {
+    margin-top: 0.85rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+}
+
+.telemetry-row {
+    background: var(--ln-bg-surface-inset);
+    border: 1px solid var(--ln-border-hairline);
+    border-radius: 6px;
+    padding: 0.45rem 0.75rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.74rem;
+}
+
+.telemetry-row-left {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--ln-text-primary);
+}
+
+.telemetry-row-right {
+    font-family: var(--ln-font-mono);
+    color: var(--ln-text-secondary);
+}
+
+/* ==========================================================================
+   COLUMN 3: SENTINEL BASINS & EMERGENCY DISPATCH
+   ========================================================================== */
+.basins-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+    margin-bottom: 1.1rem;
+}
+
+.basin-compact-card {
+    background: var(--ln-bg-surface-inset);
+    border: 1px solid var(--ln-border-hairline);
+    border-radius: 8px;
+    padding: 0.65rem 0.85rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-decoration: none;
+    transition: var(--ln-transition);
+}
+
+.basin-compact-card:hover {
+    background: #181d26;
+    border-color: var(--ln-border-subtle);
+    transform: translateY(-1px);
+}
+
+.basin-compact-card.critical-border {
+    border-color: rgba(239, 68, 68, 0.35);
+    background: rgba(239, 68, 68, 0.04);
+}
+
+.basin-compact-left {
+    display: flex;
+    flex-direction: column;
+}
+
+.basin-tag-line {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-bottom: 0.15rem;
+}
+
+.basin-tag-id {
+    font-family: var(--ln-font-mono);
+    font-size: 0.65rem;
+    color: var(--ln-text-muted);
+}
+
+.basin-compact-name {
+    font-size: 0.84rem;
+    font-weight: 600;
+    color: var(--ln-text-primary);
+}
+
+.basin-compact-meta {
+    font-size: 0.7rem;
+    color: var(--ln-text-secondary);
+    font-family: var(--ln-font-mono);
+}
+
+.basin-compact-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.25rem;
+}
+
+/* Integrated Emergency Dispatch Box */
+.dispatch-compact-box {
+    background: var(--ln-bg-surface-inset);
+    border: 1px solid var(--ln-border-hairline);
+    border-radius: 8px;
+    padding: 0.85rem;
+    margin-top: auto;
+}
+
+.dispatch-compact-box h3 {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--ln-text-primary);
+    margin: 0 0 0.6rem 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.dispatch-input-row {
+    display: flex;
+    gap: 0.4rem;
+}
+
+.dispatch-input-row input {
+    flex: 1;
+    background: #08090c;
+    border: 1px solid var(--ln-border-hairline);
+    border-radius: 6px;
+    padding: 0.45rem 0.65rem;
+    color: #ffffff;
+    font-family: var(--ln-font-mono);
+    font-size: 0.75rem;
+}
+
+.dispatch-input-row input:focus {
+    outline: none;
+    border-color: var(--ln-cyan);
+}
+
+.btn-dispatch-action {
+    background: #1e293b;
+    border: 1px solid var(--ln-border-subtle);
+    border-radius: 6px;
+    color: #ffffff;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.45rem 0.85rem;
+    cursor: pointer;
+    transition: var(--ln-transition);
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.btn-dispatch-action.btn-dispatch-sms {
+    background: #0369a1;
+    border-color: #0284c7;
+}
+
+.btn-dispatch-action.btn-dispatch-sms:hover {
+    background: #0284c7;
+}
+
+.btn-dispatch-action.btn-dispatch-email {
+    background: #047857;
+    border-color: #059669;
+}
+
+.btn-dispatch-action.btn-dispatch-email:hover {
+    background: #059669;
+}
+
+/* ==========================================================================
+   MCP SERVER & INGESTION GRID SECTIONS
+   ========================================================================== */
+.linear-section-wrapper {
+    max-width: 1400px;
+    margin: 0 auto 2.5rem auto;
+    padding: 0 1.25rem;
+}
+
+.linear-mcp-panel {
+    background: var(--ln-bg-surface);
+    border: 1px solid var(--ln-border-hairline);
+    border-radius: 12px;
+    padding: 1.35rem 1.6rem;
+    box-shadow: var(--ln-shadow-card);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.mcp-info-col h2 {
+    font-size: 1.35rem !important;
+    font-weight: 700 !important;
+    letter-spacing: -0.025em !important;
+    color: var(--ln-text-primary) !important;
+    margin: 0.35rem 0 0.4rem 0 !important;
+}
+
+.mcp-info-col p {
+    font-size: 0.82rem;
+    color: var(--ln-text-secondary);
+    line-height: 1.5;
+    margin: 0 0 0.85rem 0;
+    max-width: 650px;
+}
+
+.mcp-actions-row {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+}
+
+.mcp-code-preview {
+    background: var(--ln-bg-surface-inset);
+    border: 1px solid var(--ln-border-hairline);
+    border-radius: 8px;
+    padding: 0.85rem 1.1rem;
+    font-family: var(--ln-font-mono);
+    font-size: 0.72rem;
+    min-width: 280px;
+}
+
+/* 4-Card Ingestion Telemetry Grid */
+.linear-telemetry-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.25rem;
+    margin-bottom: 2rem;
+}
+
+.telemetry-card {
+    background: var(--ln-bg-surface);
+    border: 1px solid var(--ln-border-hairline);
+    border-radius: 10px;
+    padding: 1.25rem;
+    box-shadow: var(--ln-shadow-card);
+    transition: var(--ln-transition);
+    display: flex;
+    flex-direction: column;
+}
+
+.telemetry-card:hover {
+    border-color: var(--ln-border-subtle);
+    transform: translateY(-2px);
+}
+
+.telemetry-card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.telemetry-icon-box {
+    font-size: 1.25rem;
+}
+
+.telemetry-card h3 {
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: var(--ln-text-primary);
+    margin: 0 0 0.4rem 0;
+}
+
+.telemetry-card p {
+    font-size: 0.78rem;
+    color: var(--ln-text-secondary);
+    line-height: 1.5;
+    margin: 0 0 1rem 0;
+    flex: 1;
+}
+
+.telemetry-card-footer {
+    font-family: var(--ln-font-mono);
+    font-size: 0.68rem;
+    color: var(--ln-text-muted);
+    border-top: 1px solid var(--ln-border-hairline);
+    padding-top: 0.5rem;
+}

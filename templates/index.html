@@ -2,188 +2,396 @@
 {% block title %}HydroSentinel AI™ - Autonomous Geospatial Intelligence{% endblock %}
 
 {% block content %}
-<div class="visionos-hero-container">
-    <!-- Hero Capsule Tag -->
-    <div class="hero-capsule-badge">
-        <span class="pulse-beacon"></span>
-        <span class="badge-text">AUTONOMOUS GEOSPATIAL INTELLIGENCE &bull; v4.2 SPATIAL</span>
-        <span class="badge-pill">98.58% R² PRECISION</span>
+<!-- ==========================================================================
+     MINIMALIST LINEAR / VERCEL OPERATIONAL DASHBOARD
+     ========================================================================== -->
+
+<section class="linear-hero-section">
+    <!-- Top Mission Threat Matrix Bar -->
+    <div class="linear-threat-matrix-bar">
+        <div class="threat-left-identity">
+            <div class="threat-node-badge">
+                <span class="threat-pulse-dot"></span>
+                <span>BASIN NODE 0x760 &bull; HIMALAYAN SECTOR</span>
+            </div>
+            <div class="threat-headline-group">
+                <h1>Real-Time Hydrological Threat Matrix</h1>
+                <p>Autonomous physical-geospatial early warning network</p>
+            </div>
+        </div>
+
+        <!-- 4-Metric Key Telemetry Ribbon -->
+        <div class="threat-metrics-strip">
+            <div class="threat-metric-cell">
+                <span class="cell-lbl">Peak Surge Lead Time</span>
+                <span class="cell-val highlight-crimson">3.8 Hours</span>
+                <span class="cell-sub">T-Minus 228 mins</span>
+            </div>
+            <div class="threat-metric-cell">
+                <span class="cell-lbl">Precipitation Inflow</span>
+                <span class="cell-val highlight-cyan">74.2 mm/h</span>
+                <span class="cell-sub">Severe Cloudburst</span>
+            </div>
+            <div class="threat-metric-cell">
+                <span class="cell-lbl">Model Precision</span>
+                <span class="cell-val highlight-emerald">98.58% R²</span>
+                <span class="cell-sub">Physics Ensemble</span>
+            </div>
+            <div class="threat-metric-cell">
+                <span class="cell-lbl">Satellite Telemetry</span>
+                <span class="cell-val highlight-amber">8/8 Live</span>
+                <span class="cell-sub">NASA &bull; CWC &bull; GloFAS</span>
+            </div>
+        </div>
     </div>
 
-    <!-- Main Dynamic Title -->
-    <h1 class="hero-headline-spatial">
-        Autonomous Flash Flood <br>
-        <span class="gradient-shimmer-text">Defense & Early Warning</span>
-    </h1>
+    <!-- Quick Navigation Action Bar -->
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+        <div class="d-flex align-items-center gap-2 flex-wrap">
+            <a href="{{ url_for('dashboard') }}" class="btn-ln-primary">
+                <span>Launch 3D Digital Twin</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+            <a href="{{ url_for('uav_feed') }}" class="btn-ln-secondary">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"></polygon><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect></svg>
+                <span>Live UAV Feed</span>
+            </a>
+            <a href="{{ url_for('predict_datapoint') }}" class="btn-ln-secondary">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                <span>Scenario Simulator</span>
+            </a>
+            <a href="/api/export-cap-alert" target="_blank" class="btn-ln-secondary">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fb923c" stroke-width="2"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg>
+                <span>CAP v1.2 Feed</span>
+            </a>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+            <span class="badge-emerald-soft linear-card-badge">● ZERO-KEY RELAY ONLINE</span>
+            <span class="badge-cyan-soft linear-card-badge">60/120 FPS WEBGL</span>
+        </div>
+    </div>
+</section>
 
-    <!-- Subtitle -->
-    <p class="hero-subtext-spatial">
-        Synthesizing real-time Doppler radar precipitation, IoT soil saturation arrays, and hydrodynamic acoustic gauges into an active physics-informed AI defense network.
-    </p>
+<!-- ==========================================================================
+     BENTO OPERATIONAL GRID (3 FOCUSED COLUMNS)
+     ========================================================================== -->
+<div class="linear-bento-grid">
 
-    
-    <!-- Quick Action Launchpad -->
-    <div class="hero-action-pills">
-        <a href="{{ url_for('dashboard') }}" class="spatial-btn-primary">
-            <span>Launch 3D Digital Twin</span>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-        </a>
-        <a href="{{ url_for('uav_feed') }}" class="spatial-btn-glass">
-            <span>Live UAV Thermal Feed</span>
-        </a>
-        <a href="{{ url_for('predict_datapoint') }}" class="spatial-btn-glass">
-            <span>Scenario Simulator</span>
-        </a>
-        <a href="/api/export-cap-alert" target="_blank" class="spatial-btn-subtle">
-            <span>CAP v1.2 Feed</span>
-        </a>
+    <!-- COLUMN 1: HYDROLOGICAL INFLOW & SPLINE HYDROGRAPH -->
+    <div class="linear-card">
+        <div class="linear-card-header">
+            <div class="linear-card-title">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2"><path d="M2 12c.6 0 1.4-.4 1.8-.8C5 10 6 8 8 8s3 2 4.2 3.2c1.2 1.2 2 1.8 3.8 1.8s3-2 4.2-3.2C21 9 21.6 8 22 8"></path><path d="M2 17c.6 0 1.4-.4 1.8-.8C5 15 6 13 8 13s3 2 4.2 3.2c1.2 1.2 2 1.8 3.8 1.8s3-2 4.2-3.2C21 14 21.6 13 22 13"></path></svg>
+                <span>Discharge Rate Spline</span>
+            </div>
+            <div class="chart-range-toggle">
+                <button type="button" class="range-chip active" onclick="switchHydroRange('6H')">6H</button>
+                <button type="button" class="range-chip" onclick="switchHydroRange('24H')">24H</button>
+                <button type="button" class="range-chip" onclick="switchHydroRange('7D')">7D</button>
+            </div>
+        </div>
+
+        <div class="linear-card-body">
+            <!-- 3-KPI Sub-row -->
+            <div class="hydro-kpi-row">
+                <div class="hydro-kpi-box">
+                    <div class="lbl">Inflow Surge</div>
+                    <div class="val text-rose" id="kpiSurge">5,948 m³/s</div>
+                    <div class="trend text-rose">▲ +312 m³/s·h</div>
+                </div>
+                <div class="hydro-kpi-box">
+                    <div class="lbl">Danger Stage</div>
+                    <div class="val" style="color: #fbbf24;">6,000 m³/s</div>
+                    <div class="trend" style="color: #fbbf24;">99.1% of Cap</div>
+                </div>
+                <div class="hydro-kpi-box">
+                    <div class="lbl">Baseflow</div>
+                    <div class="val" style="color: #34d399;">1,420 m³/s</div>
+                    <div class="trend" style="color: #34d399;">Normal Rest</div>
+                </div>
+            </div>
+
+            <!-- Chart.js Spline Container -->
+            <div class="chart-wrapper-linear">
+                <canvas id="linearHydrographChart"></canvas>
+            </div>
+
+            <!-- Hydro-Saturation Index Subcard -->
+            <div class="saturation-subcard">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                    <span style="font-size: 0.74rem; color: var(--ln-text-secondary); font-family: var(--ln-font-mono);">SOIL HYDRO-SATURATION INDEX</span>
+                    <strong style="font-size: 0.78rem; color: #ef4444; font-family: var(--ln-font-mono);">88.0% CRITICAL</strong>
+                </div>
+                <div class="saturation-bar-track">
+                    <div class="saturation-bar-fill" style="width: 88%;"></div>
+                </div>
+                <div class="d-flex justify-content-between align-items-center mt-2" style="font-size: 0.7rem; color: var(--ln-text-muted);">
+                    <span>Topsoil: 91% &bull; Subsoil: 85%</span>
+                    <span>TWI: ln(a/tanβ) = 11.4</span>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <!-- Spatial 3D Interactive Card Showcase -->
-    <div class="spatial-showcase-grid">
-        <div class="spatial-interactive-viewer-card">
-            <div class="card-glass-header">
-                <div class="d-flex align-items-center gap-3 flex-wrap">
-                    <div class="live-status-pill">
-                        <span class="dot-green"></span> 3D Geospatial Earth & Multi-Source Mesh
-                    </div>
-                    <!-- Layer Filter Chips -->
-                    <div class="hero-filter-group d-flex align-items-center gap-1">
-                        <button type="button" class="hero-filter-chip active" data-filter="ALL" aria-label="Show all layers"><i class="fas fa-globe"></i> All Layers</button>
-                        <button type="button" class="hero-filter-chip" data-filter="SATELLITES" aria-label="Show 4 orbiting satellites"><i class="fas fa-satellite"></i> 4 Satellites</button>
-                        <button type="button" class="hero-filter-chip" data-filter="STATIONS" aria-label="Show 6 monitoring stations"><i class="fas fa-tower-broadcast"></i> 6 Gauges</button>
-                        <button type="button" class="hero-filter-chip" data-filter="HAZARDS" aria-label="Show active global hazards"><i class="fas fa-triangle-exclamation"></i> Live Hazards</button>
-                    </div>
+    <!-- COLUMN 2: 3D DIGITAL TWIN EARTH CONSOLE -->
+    <div class="linear-card">
+        <div class="linear-card-header">
+            <div class="linear-card-title">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                <span>Geospatial Earth Twin</span>
+            </div>
+            <div class="d-flex align-items-center gap-1">
+                <button type="button" id="btnFocusHimalayas" class="hero-cam-btn" title="Focus Central Himalayas" aria-label="Focus Himalayas">🏔️ Himalayas</button>
+                <button type="button" id="btnTrackSat" class="hero-cam-btn" title="Track NASA GPM Satellite" aria-label="Track Satellite">🛰️ Sat</button>
+                <button type="button" id="btnResetOrbit" class="hero-cam-btn" title="Reset Orbit" aria-label="Reset Camera Orbit">↺</button>
+            </div>
+        </div>
+
+        <div class="linear-card-body" style="padding-bottom: 0.75rem;">
+            <!-- 3D Canvas Box -->
+            <div class="webgl-container-linear">
+                <div class="webgl-controls-overlay">
+                    <button type="button" class="hero-filter-chip active" data-filter="ALL" aria-label="Show all layers">All</button>
+                    <button type="button" class="hero-filter-chip" data-filter="SATELLITES" aria-label="Show satellites">Satellites</button>
+                    <button type="button" class="hero-filter-chip" data-filter="STATIONS" aria-label="Show stations">Gauges</button>
+                    <button type="button" class="hero-filter-chip" data-filter="HAZARDS" aria-label="Show hazards">Hazards</button>
                 </div>
-                
-                <div class="d-flex align-items-center gap-2 flex-wrap">
-                    <!-- Quick Camera Action Buttons -->
-                    <div class="hero-cam-group d-flex align-items-center gap-1">
-                        <button type="button" id="btnFocusHimalayas" class="hero-cam-btn" title="Focus Central Himalayas" aria-label="Focus Central Himalayas"><i class="fas fa-mountain"></i> Himalayas</button>
-                        <button type="button" id="btnTrackSat" class="hero-cam-btn" title="Track NASA GPM Satellite" aria-label="Track GPM Satellite"><i class="fas fa-satellite-dish"></i> Track Sat</button>
-                        <button type="button" id="btnResetOrbit" class="hero-cam-btn" title="Reset Camera Orbit" aria-label="Reset Camera Orbit"><i class="fas fa-rotate"></i> Reset</button>
-                    </div>
-                    <span class="badge bg-dark border border-info text-cyan px-2 py-1" style="font-family: var(--font-mono); font-size: 0.72rem;">60/120 FPS WEBGL</span>
+                <div id="hero3DViewer"></div>
+                <div class="webgl-bottom-hint">
+                    <span>👆 Drag to rotate &bull; Hover beacons for live HUD</span>
                 </div>
             </div>
 
-            <!-- 3D Canvas Box with Floating Controls Notice -->
-            <div style="position: relative;">
-                <div id="hero3DViewer" class="spatial-webgl-canvas-box"></div>
-                <div class="hero-3d-hint-badge">
-                    <i class="fas fa-hand-pointer text-cyan"></i> Click/hover beacons or satellites for live telemetry HUD &bull; Drag to rotate
-                </div>
-            </div>
-
-            <!-- Real-Time Ingestion Metric Ribbon -->
-            <div class="spatial-metrics-ribbon">
-                <div class="metric-pill">
-                    <span class="m-lbl">TOTAL PACKETS INGESTED</span>
-                    <span class="m-val val-cyan">842,100</span>
-                </div>
-                <div class="metric-pill">
-                    <span class="m-lbl">MESH SYNC LATENCY</span>
-                    <span class="m-val val-purple">3.8ms</span>
-                </div>
-                <div class="metric-pill">
-                    <span class="m-lbl">EARTH OBSERVATION SYNC</span>
-                    <span class="m-val val-green">8/8 PIPELINES LIVE</span>
-                </div>
-                <div class="metric-pill">
-                    <span class="m-lbl">ACTIVE GEOHAZARDS</span>
-                    <span class="m-val val-amber">TRACKING (EONET/USGS)</span>
-                </div>
-            </div>
-
-            <!-- Multi-Source Data Stream Live Sources Bar -->
-            <div class="multi-source-ticker-bar mt-3">
-                <div class="ticker-header d-flex justify-content-between align-items-center mb-2">
-                    <div class="d-flex align-items-center gap-2">
-                        <span class="pulse-beacon" style="background:#10b981; width:7px; height:7px;"></span>
-                        <strong style="font-size:0.75rem; color:#ffffff; font-family:var(--font-mono); letter-spacing:0.06em;">LIVE CONCURRENT DATA SOURCES (8/8 SYNCED)</strong>
+            <!-- Real-Time Telemetry Feed Rows -->
+            <div class="telemetry-feed-rows">
+                <div class="telemetry-row">
+                    <div class="telemetry-row-left">
+                        <span class="threat-pulse-dot" style="background:#38bdf8; box-shadow:0 0 6px #38bdf8;"></span>
+                        <strong>NASA GPM Ku/Ka Radar</strong>
                     </div>
-                    <span style="font-size:0.7rem; color:#94a3b8; font-family:var(--font-mono);">ZERO-KEY OPEN SCIENTIFIC DATA</span>
+                    <div class="telemetry-row-right">
+                        <span>74.2 mm/h Inflow Rate</span>
+                        <span class="text-success ms-1">● SYNCED</span>
+                    </div>
                 </div>
-                <div class="source-pills-wrap">
-                    <div class="source-pill"><span class="source-dot"></span> <strong>NASA GPM</strong> <small>Dual Ku/Ka Radar</small></div>
-                    <div class="source-pill"><span class="source-dot"></span> <strong>Copernicus Sentinel-1</strong> <small>C-SAR Radar</small></div>
-                    <div class="source-pill"><span class="source-dot"></span> <strong>ISRO INSAT-3DR</strong> <small>Imager/Sounder</small></div>
-                    <div class="source-pill"><span class="source-dot"></span> <strong>Open-Meteo GloFAS</strong> <small>River Flow m³/s</small></div>
-                    <div class="source-pill"><span class="source-dot"></span> <strong>Open-Meteo CAPE</strong> <small>Convective Instability</small></div>
-                    <div class="source-pill"><span class="source-dot"></span> <strong>USGS Earthquakes</strong> <small>M2.5+ Real-time</small></div>
-                    <div class="source-pill"><span class="source-dot"></span> <strong>IMD Doppler Radar</strong> <small>Reflectivity dBZ</small></div>
-                    <div class="source-pill"><span class="source-dot"></span> <strong>CWC River Gauges</strong> <small>Acoustic Stages</small></div>
+
+                <div class="telemetry-row">
+                    <div class="telemetry-row-left">
+                        <span class="threat-pulse-dot" style="background:#ef4444; box-shadow:0 0 6px #ef4444;"></span>
+                        <strong>CWC River Hydrometry</strong>
+                    </div>
+                    <div class="telemetry-row-right">
+                        <span class="text-rose">5.4m Stage (+1.2m)</span>
+                        <span class="badge-crimson-soft ms-1">CRITICAL</span>
+                    </div>
                 </div>
+
+                <div class="telemetry-row">
+                    <div class="telemetry-row-left">
+                        <span class="threat-pulse-dot" style="background:#10b981; box-shadow:0 0 6px #10b981;"></span>
+                        <strong>Copernicus Sentinel-1</strong>
+                    </div>
+                    <div class="telemetry-row-right">
+                        <span>C-SAR Inundation Map</span>
+                        <span class="text-cyan ms-1">PASS 04:12 UTC</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- COLUMN 3: SENTINEL BASINS & ZERO-KEY EMERGENCY DISPATCH -->
+    <div class="linear-card">
+        <div class="linear-card-header">
+            <div class="linear-card-title">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                <span>Sentinel Basins & Relay</span>
+            </div>
+            <span class="badge-crimson-soft linear-card-badge">EVACUATION TIER 1</span>
+        </div>
+
+        <div class="linear-card-body">
+            <!-- Active Basin List -->
+            <div class="basins-stack">
+                <a href="{{ url_for('dashboard', station='STN-AL-02') }}" class="basin-compact-card critical-border" title="Open 3D Twin for Alaknanda">
+                    <div class="basin-compact-left">
+                        <div class="basin-tag-line">
+                            <span class="basin-tag-id">STN-AL-02</span>
+                            <span class="badge-crimson-soft" style="font-size: 0.65rem; padding: 0.1rem 0.35rem; border-radius: 3px;">🔴 Critical</span>
+                        </div>
+                        <div class="basin-compact-name">Alaknanda Upper Gorge</div>
+                        <div class="basin-compact-meta">Stage: 5.4m &bull; Precip: 74 mm/h &bull; Slope: 38°</div>
+                    </div>
+                    <div class="basin-compact-right">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                    </div>
+                </a>
+
+                <a href="{{ url_for('dashboard', station='STN-KL-01') }}" class="basin-compact-card" title="Open 3D Twin for Kullu">
+                    <div class="basin-compact-left">
+                        <div class="basin-tag-line">
+                            <span class="basin-tag-id">STN-KL-01</span>
+                            <span class="badge-amber-soft" style="font-size: 0.65rem; padding: 0.1rem 0.35rem; border-radius: 3px;">🟡 Advisory</span>
+                        </div>
+                        <div class="basin-compact-name">Kullu Valley Catchment</div>
+                        <div class="basin-compact-meta">Stage: 3.8m &bull; Precip: 42 mm/h &bull; Slope: 32°</div>
+                    </div>
+                    <div class="basin-compact-right">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                    </div>
+                </a>
+
+                <a href="{{ url_for('dashboard', station='STN-TS-03') }}" class="basin-compact-card" title="Open 3D Twin for Teesta">
+                    <div class="basin-compact-left">
+                        <div class="basin-tag-line">
+                            <span class="basin-tag-id">STN-TS-03</span>
+                            <span class="badge-emerald-soft" style="font-size: 0.65rem; padding: 0.1rem 0.35rem; border-radius: 3px;">🟢 Normal</span>
+                        </div>
+                        <div class="basin-compact-name">Teesta River Basin</div>
+                        <div class="basin-compact-meta">Stage: 2.1m &bull; Precip: 24 mm/h &bull; Slope: 26°</div>
+                    </div>
+                    <div class="basin-compact-right">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Integrated Emergency Dispatch Relay -->
+            <div class="dispatch-compact-box">
+                <h3>
+                    <span>Zero-Key Emergency Dispatch</span>
+                    <span class="badge-emerald-soft" style="font-size: 0.65rem;">Active</span>
+                </h3>
+
+                <!-- SMS Form -->
+                <form onsubmit="sendHomeZeroKeySms(event); return false;" class="mb-2">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <span style="font-size: 0.72rem; color: var(--ln-text-secondary); font-family: var(--ln-font-mono);">MOBILE SMS DISPATCH</span>
+                        <button type="button" onclick="openHomeWhatsApp()" style="background:none; border:none; color:#34d399; font-size:0.68rem; cursor:pointer; padding:0;">
+                            WhatsApp &rarr;
+                        </button>
+                    </div>
+                    <div class="dispatch-input-row">
+                        <input type="tel" id="homePhoneInput" placeholder="+91 98765 43210" required>
+                        <button type="submit" id="btnHomeSendSms" class="btn-dispatch-action btn-dispatch-sms">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                            <span>Send SMS</span>
+                        </button>
+                    </div>
+                    <div id="homeSmsFeedback" style="display: none; margin-top: 0.4rem; padding: 0.4rem 0.6rem; border-radius: 6px; font-size: 0.7rem; background: rgba(0,0,0,0.5); border: 1px solid var(--ln-border-hairline);"></div>
+                </form>
+
+                <!-- Email Form -->
+                <form onsubmit="sendHomeZeroKeyEmail(event); return false;">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <span style="font-size: 0.72rem; color: var(--ln-text-secondary); font-family: var(--ln-font-mono);">CIVIL DEFENSE EMAIL</span>
+                        <button type="button" onclick="openHomeDirectMailApp()" style="background:none; border:none; color:var(--ln-text-muted); font-size:0.68rem; cursor:pointer; padding:0;">
+                            Default Mail &rarr;
+                        </button>
+                    </div>
+                    <div class="dispatch-input-row">
+                        <input type="email" id="homeEmailInput" placeholder="dm-ops@gov.in" required>
+                        <button type="submit" id="btnHomeSendEmail" class="btn-dispatch-action btn-dispatch-email">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                            <span>Send Email</span>
+                        </button>
+                    </div>
+                    <div id="homeEmailFeedback" style="display: none; margin-top: 0.4rem; padding: 0.4rem 0.6rem; border-radius: 6px; font-size: 0.7rem; background: rgba(0,0,0,0.5); border: 1px solid var(--ln-border-hairline);"></div>
+                </form>
             </div>
         </div>
     </div>
 </div>
 
-
-
-<!-- Section: Streamlined Lovable 3D Emergency Dispatcher -->
-<div class="spatial-section-container mb-5">
-    <div class="card p-4 liquid-glass" style="border: 1px solid rgba(56, 189, 248, 0.4); background: linear-gradient(135deg, rgba(7, 11, 22, 0.9), rgba(3, 7, 18, 0.95)); border-radius: 20px; box-shadow: 0 20px 50px rgba(0,0,0,0.6), 0 0 25px rgba(56, 189, 248, 0.15);">
-        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
-            <div class="d-flex align-items-center gap-2">
-                <span class="pulse-beacon" style="background: #ef4444; width: 8px; height: 8px;"></span>
-                <h2 style="font-family: var(--font-display); font-size: 1.25rem; color: #ffffff; margin: 0;">
-                    🚨 Autonomous Emergency Dispatch Relay
-                </h2>
+<!-- ==========================================================================
+     SECTION: MODEL CONTEXT PROTOCOL (MCP) SERVER INTEGRATION
+     ========================================================================== -->
+<div class="linear-section-wrapper">
+    <div class="linear-mcp-panel">
+        <div class="mcp-info-col">
+            <div class="d-flex align-items-center gap-2 mb-1">
+                <span class="badge-cyan-soft linear-card-badge">⚡ MODEL CONTEXT PROTOCOL</span>
+                <span class="badge-emerald-soft linear-card-badge">8 Tools Online</span>
             </div>
-            <div class="d-flex align-items-center gap-2">
-                <span class="badge" style="background: rgba(16, 185, 129, 0.15); border: 1px solid #10b981; color: #34d399; font-size: 0.72rem;">
-                    ● ZERO-KEY RELAY ACTIVE
-                </span>
-                <span class="badge" style="background: rgba(56, 189, 248, 0.15); border: 1px solid #38bdf8; color: #38bdf8; font-size: 0.72rem;">
-                    CELLULAR + DIRECT SMTP
-                </span>
+            <h2>Autonomous AI Agent Protocol & Tool Hub</h2>
+            <p>
+                Native Model Context Protocol (MCP) server enabling Claude Desktop, Cursor IDE, Antigravity, and OpenAI agents to autonomously query telemetry, compute evacuation paths, and run flood predictions over standard stdio & SSE streams.
+            </p>
+            <div class="mcp-actions-row">
+                <a href="{{ url_for('mcp_hub_page') }}" class="btn-ln-primary">
+                    <span>Open MCP Agent Hub</span>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </a>
+                <button type="button" class="btn-ln-secondary" onclick="if (typeof openCopilotWithPrompt === 'function') openCopilotWithPrompt('Predict flash flood risk for Kedarnath using MCP tools');">
+                    <span>🤖 Test via Copilot</span>
+                </button>
+                <a href="/api/mcp/config" target="_blank" class="btn-ln-secondary">
+                    <span>📋 Claude / Cursor Config</span>
+                </a>
             </div>
         </div>
 
-        <p style="color: rgba(255, 255, 255, 0.75); font-size: 0.84rem; margin-bottom: 1.25rem;">
-            Instantly transmit high-priority flash flood alerts directly to emergency personnel, field teams, or civil defense inboxes without requiring any third-party API keys:
-        </p>
+        <div class="mcp-code-preview">
+            <div style="color: #38bdf8; font-weight: 600; margin-bottom: 0.4rem;">
+                <span class="status-pulse-dot" style="background: #38bdf8;"></span> MCP JSON-RPC DISPATCHER
+            </div>
+            <div style="color: #64748b; margin-bottom: 0.25rem;">// Active Disaster Tools:</div>
+            <div style="color: #10b981; line-height: 1.5;">&bull; hydrosentinel_predict_flood_risk</div>
+            <div style="color: #10b981; line-height: 1.5;">&bull; hydrosentinel_get_telemetry</div>
+            <div style="color: #10b981; line-height: 1.5;">&bull; hydrosentinel_compute_evacuation_route</div>
+            <div style="color: #10b981; line-height: 1.5;">&bull; hydrosentinel_query_world_geohazards</div>
+            <div style="margin-top: 0.5rem; padding-top: 0.4rem; border-top: 1px solid var(--ln-border-hairline); color: #94a3b8; font-size: 0.68rem;">
+                Transports: <span style="color: #f59e0b;">stdio</span> + <span style="color: #38bdf8;">HTTP SSE</span>
+            </div>
+        </div>
+    </div>
 
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.25rem;">
-            <!-- SMS / Mobile Dispatch Form -->
-            <form onsubmit="sendHomeZeroKeySms(event); return false;" class="p-3" style="background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 14px;">
-                <div class="d-flex justify-content-between align-items-center mb-2">
-                    <strong style="color: #38bdf8; font-size: 0.88rem;"><i class="fa-solid fa-mobile-screen"></i> Mobile Phone SMS</strong>
-                    <button type="button" class="badge-btn" onclick="openHomeWhatsApp()" style="font-size: 0.7rem; color: #34d399; border-color: rgba(52, 211, 153, 0.4);">
-                        <i class="fa-brands fa-whatsapp"></i> WhatsApp
-                    </button>
-                </div>
-                <div class="mb-2">
-                    <input type="tel" id="homePhoneInput" placeholder="Mobile Number (e.g. +91 98765 43210)" required style="width: 100%; padding: 0.6rem 0.9rem; border-radius: 10px; background: rgba(0,0,0,0.5); border: 1px solid rgba(56, 189, 248, 0.4); color: #ffffff; font-family: var(--font-mono); font-size: 0.85rem;">
-                </div>
-                <button type="submit" id="btnHomeSendSms" class="spatial-btn-primary" style="width: 100%; padding: 0.55rem; font-size: 0.8rem; font-weight: 700;">
-                    🚀 Transmit SMS Alert
-                </button>
-                <div id="homeSmsFeedback" style="display: none; margin-top: 0.65rem; padding: 0.5rem 0.8rem; border-radius: 8px; font-size: 0.74rem;"></div>
-            </form>
+    <!-- 4-Card Multi-Source Ingestion Pipeline Grid -->
+    <div class="linear-telemetry-grid">
+        <div class="telemetry-card">
+            <div class="telemetry-card-top">
+                <span class="telemetry-icon-box">🛰️</span>
+                <span class="badge-cyan-soft linear-card-badge">Ku/Ka Radar</span>
+            </div>
+            <h3>1. Doppler Radar & Satellite</h3>
+            <p>Instantaneous radar precipitation rates (mm/h), cloudburst inflow vectors, and 24h basin accumulation tracking.</p>
+            <div class="telemetry-card-footer">NASA GPM &bull; INSAT-3DR</div>
+        </div>
 
-            <!-- Direct Email Broadcast Form -->
-            <form onsubmit="sendHomeZeroKeyEmail(event); return false;" class="p-3" style="background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(16, 185, 129, 0.25); border-radius: 14px;">
-                <div class="d-flex justify-content-between align-items-center mb-2">
-                    <strong style="color: #34d399; font-size: 0.88rem;"><i class="fa-solid fa-envelope"></i> Civil Defense Email</strong>
-                    <button type="button" class="badge-btn" onclick="openHomeDirectMailApp()" style="font-size: 0.7rem; color: #94a3b8; border-color: rgba(255, 255, 255, 0.2);">
-                        Default Mail App
-                    </button>
-                </div>
-                <div class="mb-2">
-                    <input type="email" id="homeEmailInput" placeholder="Official / Personal Email (e.g. dm-ops@gov.in)" required style="width: 100%; padding: 0.6rem 0.9rem; border-radius: 10px; background: rgba(0,0,0,0.5); border: 1px solid rgba(52, 211, 153, 0.4); color: #ffffff; font-family: var(--font-mono); font-size: 0.85rem;">
-                </div>
-                <button type="submit" id="btnHomeSendEmail" class="spatial-btn-primary" style="width: 100%; background: linear-gradient(135deg, #059669, #047857) !important; border-color: #10b981 !important; padding: 0.55rem; font-size: 0.8rem; font-weight: 700;">
-                    ✉️ Transmit Email Alert
-                </button>
-                <div id="homeEmailFeedback" style="display: none; margin-top: 0.65rem; padding: 0.5rem 0.8rem; border-radius: 8px; font-size: 0.74rem;"></div>
-            </form>
+        <div class="telemetry-card">
+            <div class="telemetry-card-top">
+                <span class="telemetry-icon-box">🌱</span>
+                <span class="badge-emerald-soft linear-card-badge">IoT Moisture</span>
+            </div>
+            <h3>2. Subsurface IoT Arrays</h3>
+            <p>4-depth soil moisture probes (Topsoil, Subsoil, Bedrock, Aquifer) monitoring hydrostatic runoff saturation.</p>
+            <div class="telemetry-card-footer">Hydro-Saturation Index</div>
+        </div>
+
+        <div class="telemetry-card">
+            <div class="telemetry-card-top">
+                <span class="telemetry-icon-box">🌊</span>
+                <span class="badge-crimson-soft linear-card-badge">Stage Meters</span>
+            </div>
+            <h3>3. Acoustic River Gauges</h3>
+            <p>Acoustic Doppler river hydrometry measuring stage height (m), flow velocity (m/s), and upstream surges.</p>
+            <div class="telemetry-card-footer">CWC &bull; GloFAS Open Mesh</div>
+        </div>
+
+        <div class="telemetry-card">
+            <div class="telemetry-card-top">
+                <span class="telemetry-icon-box">📐</span>
+                <span class="badge-amber-soft linear-card-badge">DEM Relief</span>
+            </div>
+            <h3>4. High-Res DEM Relief</h3>
+            <p>Digital elevation models calculating slope gradients, catchment morphology, and Topographic Wetness Index.</p>
+            <div class="telemetry-card-footer">TWI = ln(a / tan β)</div>
         </div>
     </div>
 </div>
 
 <script>
+// Zero-Key Emergency SMS & Email Handlers
 async function sendHomeZeroKeySms(e) {
     e.preventDefault();
     const phone = document.getElementById('homePhoneInput').value;
@@ -191,7 +399,7 @@ async function sendHomeZeroKeySms(e) {
     const fb = document.getElementById('homeSmsFeedback');
 
     btn.disabled = true;
-    btn.innerText = '📡 Dispatched...';
+    btn.innerHTML = '<span>📡 Sending...</span>';
     if (typeof playTactileClick === 'function') playTactileClick();
 
     try {
@@ -200,9 +408,9 @@ async function sendHomeZeroKeySms(e) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 phone_number: phone,
-                station_name: 'Kedarnath Mandakini Gorge',
+                station_name: 'Alaknanda Upper Gorge',
                 threat_level: 'CRITICAL RED • IMMEDIATE EVACUATION',
-                precip_rate: '88.0 mm/h',
+                precip_rate: '74.0 mm/h',
                 lead_time: '3.8 Hours',
                 notes: 'Evacuate to designated Highland Safe Shelters (>2,200m).'
             })
@@ -211,22 +419,25 @@ async function sendHomeZeroKeySms(e) {
         if (typeof playSuccessChime === 'function') playSuccessChime();
 
         fb.style.display = 'block';
-        fb.innerHTML = `✅ <strong>SMS TRANSMITTED!</strong> Sent to <u>${phone}</u>.<br><span style="color: #38bdf8; font-size: 0.72rem;">Tracking ID: ${data.tracking_id} &bull; Free Zero-Key Relay Active</span>`;
-        btn.innerText = '✅ SMS Sent!';
-        setTimeout(() => { btn.disabled = false; btn.innerText = '🚀 Send SMS Now'; }, 2500);
+        fb.innerHTML = `✅ <strong>SMS TRANSMITTED!</strong> Sent to <u>${phone}</u>.<br><span style="color: #38bdf8; font-size: 0.68rem;">Tracking ID: ${data.tracking_id || 'HS-7601'} &bull; Zero-Key Relay Active</span>`;
+        btn.innerHTML = '<span>✅ Sent!</span>';
+        setTimeout(() => {
+            btn.disabled = false;
+            btn.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg><span>Send SMS</span>';
+        }, 2500);
     } catch(err) {
         fb.style.display = 'block';
         fb.innerHTML = `⚠️ Opening cellular SMS client...`;
-        window.open(`sms:${phone}?body=🚨 FLOOD ALERT: Kedarnath Gorge. Evacuate immediately.`, '_blank');
+        window.open(`sms:${phone}?body=🚨 FLOOD ALERT: Alaknanda Upper Gorge. Evacuate immediately.`, '_blank');
         btn.disabled = false;
-        btn.innerText = '🚀 Send SMS Now';
+        btn.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg><span>Send SMS</span>';
     }
 }
 
 function openHomeWhatsApp() {
     let phone = document.getElementById('homePhoneInput').value.replace(/[^0-9]/g, '') || '919876543210';
     if (phone.length === 10) phone = '91' + phone;
-    const text = encodeURIComponent(`🚨 *HYDROSENTINEL CRITICAL FLOOD ALERT*\n\n📍 *Basin:* Kedarnath Mandakini Gorge\n⚠️ *Threat:* CRITICAL RED • IMMEDIATE EVACUATION\n⏱️ *Lead Time:* 3.8 Hours\n🏃 Move to designated safe shelters (>2,200m).\n\n🌐 https://hydrosentinel.onrender.com/dashboard`);
+    const text = encodeURIComponent(`🚨 *HYDROSENTINEL CRITICAL FLOOD ALERT*\n\n📍 *Basin:* Alaknanda Upper Gorge\n⚠️ *Threat:* CRITICAL RED • IMMEDIATE EVACUATION\n⏱️ *Lead Time:* 3.8 Hours\n🏃 Move to designated safe shelters (>2,200m).\n\n🌐 https://hydrosentinel.onrender.com/dashboard`);
     window.open(`https://wa.me/${phone}?text=${text}`, '_blank');
 }
 
@@ -237,7 +448,7 @@ async function sendHomeZeroKeyEmail(e) {
     const fb = document.getElementById('homeEmailFeedback');
 
     btn.disabled = true;
-    btn.innerText = '📡 Dispatched...';
+    btn.innerHTML = '<span>📡 Sending...</span>';
     if (typeof playTactileClick === 'function') playTactileClick();
 
     try {
@@ -246,9 +457,9 @@ async function sendHomeZeroKeyEmail(e) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 recipient_email: email,
-                station_name: 'Kedarnath Mandakini Gorge',
+                station_name: 'Alaknanda Upper Gorge',
                 threat_level: 'CRITICAL RED • IMMEDIATE EVACUATION',
-                precip_rate: '88.0 mm/h',
+                precip_rate: '74.0 mm/h',
                 lead_time: '3.8 Hours',
                 notes: 'Emergency flood warning situation brief.'
             })
@@ -257,682 +468,122 @@ async function sendHomeZeroKeyEmail(e) {
         if (typeof playSuccessChime === 'function') playSuccessChime();
 
         fb.style.display = 'block';
-        fb.innerHTML = `✅ <strong>REAL EMAIL SENT!</strong> Sent to <u>${email}</u>.<br><span style="color: #34d399; font-size: 0.72rem;">Tracking ID: ${data.email_id} &bull; Delivered to Inbox</span>`;
-        btn.innerText = '✅ Email Sent!';
-        setTimeout(() => { btn.disabled = false; btn.innerText = '🚀 Send Email Now'; }, 2500);
+        fb.innerHTML = `✅ <strong>EMAIL SENT!</strong> Sent to <u>${email}</u>.<br><span style="color: #34d399; font-size: 0.68rem;">Tracking ID: ${data.email_id || 'HS-EML-98'} &bull; Delivered</span>`;
+        btn.innerHTML = '<span>✅ Sent!</span>';
+        setTimeout(() => {
+            btn.disabled = false;
+            btn.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg><span>Send Email</span>';
+        }, 2500);
     } catch(err) {
         fb.style.display = 'block';
-        fb.innerHTML = `⚠️ Opening default mail client...`;
-        window.open(`mailto:${email}?subject=🚨 FLOOD ALERT&body=Critical flood alert for Kedarnath Gorge.`, '_blank');
+        fb.innerHTML = `⚠️ Opening mail client...`;
+        window.open(`mailto:${email}?subject=🚨 FLOOD ALERT&body=Critical flood alert for Alaknanda Gorge.`, '_blank');
         btn.disabled = false;
-        btn.innerText = '🚀 Send Email Now';
+        btn.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg><span>Send Email</span>';
     }
 }
 
 function openHomeDirectMailApp() {
     const email = document.getElementById('homeEmailInput').value || 'responder@ndrf.gov.in';
-    window.open(`mailto:${email}?subject=🚨 EMERGENCY FLOOD ALERT: Kedarnath Gorge&body=🚨 HYDROSENTINEL CRITICAL FLOOD ALERT\nBasin: Kedarnath Mandakini Gorge\nThreat: CRITICAL RED • IMMEDIATE EVACUATION\nLead Time: 3.8 Hours\nDirective: Move to high ground immediately.\n\nLive 3D Twin: https://hydrosentinel.onrender.com/dashboard`, '_blank');
+    window.open(`mailto:${email}?subject=🚨 EMERGENCY FLOOD ALERT: Alaknanda Upper Gorge&body=🚨 HYDROSENTINEL CRITICAL FLOOD ALERT\nBasin: Alaknanda Upper Gorge\nThreat: CRITICAL RED • IMMEDIATE EVACUATION\nLead Time: 3.8 Hours\nDirective: Move to high ground immediately.\n\nLive 3D Twin: https://hydrosentinel.onrender.com/dashboard`, '_blank');
 }
+
+// Hydrograph Spline Range Switcher
+let hydroChartInstance = null;
+const hydroDataPresets = {
+    '6H': {
+        labels: ['00:00', '01:00', '02:00', '03:00', '04:00', '05:00'],
+        data: [2800, 3400, 4200, 5100, 5650, 5948],
+        surge: '5,948 m³/s'
+    },
+    '24H': {
+        labels: ['-20h', '-16h', '-12h', '-8h', '-4h', 'Now'],
+        data: [1800, 2100, 2900, 3800, 4900, 5948],
+        surge: '5,948 m³/s'
+    },
+    '7D': {
+        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+        data: [1420, 1600, 2200, 3100, 4300, 5200, 5948],
+        surge: '5,948 m³/s'
+    }
+};
+
+function switchHydroRange(range) {
+    document.querySelectorAll('.range-chip').forEach(btn => {
+        btn.classList.toggle('active', btn.innerText.trim() === range);
+    });
+    if (hydroChartInstance && hydroDataPresets[range]) {
+        const p = hydroDataPresets[range];
+        hydroChartInstance.data.labels = p.labels;
+        hydroChartInstance.data.datasets[0].data = p.data;
+        hydroChartInstance.update();
+        document.getElementById('kpiSurge').innerText = p.surge;
+    }
+}
+
+function initLinearHydrographChart() {
+    const ctx = document.getElementById('linearHydrographChart');
+    if (!ctx || typeof Chart === 'undefined') return;
+
+    const gradient = ctx.getContext('2d').createLinearGradient(0, 0, 0, 180);
+    gradient.addColorStop(0, 'rgba(16, 185, 129, 0.35)');
+    gradient.addColorStop(1, 'rgba(16, 185, 129, 0.0)');
+
+    hydroChartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['00:00', '01:00', '02:00', '03:00', '04:00', '05:00'],
+            datasets: [{
+                label: 'Inflow (m³/s)',
+                data: [2800, 3400, 4200, 5100, 5650, 5948],
+                borderColor: '#10b981',
+                borderWidth: 2,
+                pointBackgroundColor: '#10b981',
+                pointBorderColor: '#0e1015',
+                pointBorderWidth: 2,
+                pointRadius: 3,
+                pointHoverRadius: 5,
+                tension: 0.35,
+                fill: true,
+                backgroundColor: gradient
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    backgroundColor: '#161a22',
+                    titleColor: '#f8fafc',
+                    bodyColor: '#10b981',
+                    borderColor: 'rgba(255, 255, 255, 0.1)',
+                    borderWidth: 1,
+                    padding: 8,
+                    displayColors: false,
+                    callbacks: {
+                        label: function(c) { return `${c.parsed.y} m³/s discharge`; }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    grid: { color: 'rgba(255, 255, 255, 0.04)', drawBorder: false },
+                    ticks: { color: '#64748b', font: { family: "'JetBrains Mono', monospace", size: 10 } }
+                },
+                y: {
+                    grid: { color: 'rgba(255, 255, 255, 0.04)', drawBorder: false },
+                    ticks: { color: '#64748b', font: { family: "'JetBrains Mono', monospace", size: 10 } }
+                }
+            }
+        }
+    });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    initLinearHydrographChart();
+});
 </script>
-
-
-<!-- Section: Model Context Protocol (MCP) Autonomous Agent Ecosystem -->
-<div class="spatial-section-container mb-5">
-    <div class="card p-4 liquid-glass" style="border: 1px solid rgba(56, 189, 248, 0.4); background: linear-gradient(135deg, rgba(3, 10, 24, 0.95), rgba(6, 18, 38, 0.95)); border-radius: 24px; position: relative; overflow: hidden;">
-        <div class="d-flex justify-content-between align-items-center flex-wrap gap-4">
-            <div style="max-width: 760px;">
-                <div class="d-flex align-items-center gap-2 mb-2">
-                    <span class="badge" style="background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.4); font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.08em;">
-                        ⚡ MODEL CONTEXT PROTOCOL (MCP) • AGENTIC ECOSYSTEM
-                    </span>
-                    <span class="badge" style="background: rgba(16, 185, 129, 0.15); color: #10b981; font-family: var(--font-mono); font-size: 0.72rem;">
-                        8 Production Tools Online
-                    </span>
-                </div>
-                <h2 style="font-size: 1.85rem; font-weight: 900; color: #ffffff; margin-bottom: 0.6rem;">
-                    Autonomous AI Agent Integration & MCP Server
-                </h2>
-                <p style="color: #94a3b8; font-size: 0.92rem; line-height: 1.6; margin-bottom: 1.2rem;">
-                    HydroSentinel is equipped with a native <strong>Model Context Protocol (MCP)</strong> server (spec 2024-11-05). External AI agents (<strong>Claude Desktop, Cursor IDE, Antigravity, OpenAI swarm</strong>) can autonomously inspect mountain sensor meshes, execute XGBoost flood risk predictions, track satellite passes, and calculate evacuation routes over standard JSON-RPC 2.0 stdio & SSE streams.
-                </p>
-                <div class="d-flex gap-2 flex-wrap">
-                    <a href="{{ url_for('mcp_hub_page') }}" class="btn btn-primary" style="background: linear-gradient(135deg, #0284c7, #0ea5e9); border: none; font-weight: 700;">
-                        ⚡ Open MCP Tools & Agent Hub &rarr;
-                    </a>
-                    <button type="button" class="btn btn-outline" onclick="openCopilotWithPrompt('Predict flash flood risk for Kedarnath using MCP tools')" style="border-color: rgba(56, 189, 248, 0.4); color: #38bdf8;">
-                        🤖 Test via Copilot
-                    </button>
-                    <a href="/api/mcp/config" target="_blank" class="btn btn-outline" style="border-color: rgba(255, 255, 255, 0.2);">
-                        📋 Get Claude / Cursor Config
-                    </a>
-                </div>
-            </div>
-            <div style="flex: 1 1 300px; min-width: 280px; background: rgba(0, 0, 0, 0.45); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 16px; padding: 1.2rem; font-family: var(--font-mono); font-size: 0.75rem;">
-                <div style="color: #38bdf8; font-weight: 700; margin-bottom: 0.6rem; display: flex; align-items: center; gap: 0.4rem;">
-                    <span class="status-pulse-dot" style="background: #38bdf8;"></span>
-                    <span>MCP JSON-RPC DISPATCHER</span>
-                </div>
-                <div style="color: #64748b; margin-bottom: 0.4rem;">// Registered Geospatial Tools:</div>
-                <div style="color: #10b981; line-height: 1.6;">• hydrosentinel_predict_flood_risk</div>
-                <div style="color: #10b981; line-height: 1.6;">• hydrosentinel_get_telemetry</div>
-                <div style="color: #10b981; line-height: 1.6;">• hydrosentinel_compute_evacuation_route</div>
-                <div style="color: #10b981; line-height: 1.6;">• hydrosentinel_query_world_geohazards</div>
-                <div style="color: #10b981; line-height: 1.6;">• hydrosentinel_get_satellite_swaths</div>
-                <div style="margin-top: 0.8rem; padding-top: 0.6rem; border-top: 1px solid rgba(255,255,255,0.08); color: #94a3b8; font-size: 0.7rem;">
-                    Transports: <span style="color: #f59e0b;">stdio</span> + <span style="color: #38bdf8;">HTTP SSE</span>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Section 2: Active Telemetry Ingestion Grid -->
-<div class="spatial-section-container">
-    <div class="section-header-spatial">
-        <div class="section-eyebrow">INGESTION PIPELINES</div>
-        <h2 class="section-title-spatial">Multi-Source Geospatial Telemetry</h2>
-        <p class="section-desc-spatial">Four synchronized real-time data layers feeding our physics-informed inference models</p>
-    </div>
-
-    <div class="spatial-cards-grid">
-        <div class="spatial-card">
-            <div class="card-icon-pill icon-cyan">🛰️</div>
-            <h3 class="card-heading">1. Doppler Radar & Satellite</h3>
-            <p class="card-body-text">Instantaneous radar precipitation (mm/hr), Doppler cloudburst inflow vectors, and 24h basin accumulation tracking.</p>
-            <div class="card-bottom-pill">Radar Inflow & Tau Rate</div>
-        </div>
-
-        <div class="spatial-card">
-            <div class="card-icon-pill icon-emerald">🌱</div>
-            <h3 class="card-heading">2. Subsurface IoT Arrays</h3>
-            <p class="card-body-text">4-depth soil moisture probes (Topsoil, Subsoil, Bedrock, Aquifer) monitoring hydrostatic runoff saturation.</p>
-            <div class="card-bottom-pill">Hydro-Saturation Index</div>
-        </div>
-
-        <div class="spatial-card">
-            <div class="card-icon-pill icon-purple">🌊</div>
-            <h3 class="card-heading">3. Acoustic River Gauges</h3>
-            <p class="card-body-text">Acoustic Doppler river hydrometry measuring stage height (m), flow velocity (m/s), and upstream surges.</p>
-            <div class="card-bottom-pill">Gravitational Surge</div>
-        </div>
-
-        <div class="spatial-card">
-            <div class="card-icon-pill icon-amber">📐</div>
-            <h3 class="card-heading">4. High-Res DEM Relief</h3>
-            <p class="card-body-text">Digital elevation models calculating slope gradients, catchment morphology, and Topographic Wetness Index.</p>
-            <div class="card-bottom-pill">TWI = ln(a / tan &beta;)</div>
-        </div>
-    </div>
-</div>
-
-<!-- Section 3: Active Hilly Valley Sentinel Stations -->
-<div class="spatial-section-container">
-    <div class="section-header-spatial">
-        <div class="section-eyebrow">MONITORED BASINS</div>
-        <h2 class="section-title-spatial">Active Sentinel Stations</h2>
-        <p class="section-desc-spatial">Real-time basin hydrographs, risk classifications, and 3D digital twins</p>
-    </div>
-
-    <div class="spatial-stations-grid">
-        <div class="station-glass-card">
-            <div class="stn-header">
-                <span class="stn-tag">STN-KL-01</span>
-                <span class="stn-badge badge-advisory">🟡 Advisory</span>
-            </div>
-            <h4 class="stn-name">Kullu Valley Catchment</h4>
-            <p class="stn-loc">Himachal Pradesh &bull; 1,280m Elevation &bull; 32.5&deg; Slope</p>
-            <div class="stn-metrics">
-                <div><span class="k">Precip:</span> <strong class="v">42 mm/h</strong></div>
-                <div><span class="k">Stage:</span> <strong class="v">3.8 m</strong></div>
-                <div><span class="k">Soil:</span> <strong class="v">78.5%</strong></div>
-            </div>
-            <a href="{{ url_for('dashboard', station='STN-KL-01') }}" class="stn-launch-btn">Open 3D Twin &rarr;</a>
-        </div>
-
-        <div class="station-glass-card card-critical-glow">
-            <div class="stn-header">
-                <span class="stn-tag">STN-AL-02</span>
-                <span class="stn-badge badge-critical">🔴 Critical Surge</span>
-            </div>
-            <h4 class="stn-name">Alaknanda Upper Gorge</h4>
-            <p class="stn-loc">Garhwal Himalayas &bull; 1,850m Elevation &bull; 38.0&deg; Slope</p>
-            <div class="stn-metrics">
-                <div><span class="k">Precip:</span> <strong class="v text-rose">74 mm/h</strong></div>
-                <div><span class="k">Stage:</span> <strong class="v text-rose">5.4 m</strong></div>
-                <div><span class="k">Soil:</span> <strong class="v text-rose">88.0%</strong></div>
-            </div>
-            <a href="{{ url_for('dashboard', station='STN-AL-02') }}" class="stn-launch-btn btn-danger-glow">Open 3D Twin &rarr;</a>
-        </div>
-
-        <div class="station-glass-card">
-            <div class="stn-header">
-                <span class="stn-tag">STN-TS-03</span>
-                <span class="stn-badge badge-normal">🟢 Normal</span>
-            </div>
-            <h4 class="stn-name">Teesta River Basin</h4>
-            <p class="stn-loc">Sikkim Catchment &bull; 920m Elevation &bull; 26.0&deg; Slope</p>
-            <div class="stn-metrics">
-                <div><span class="k">Precip:</span> <strong class="v">24 mm/h</strong></div>
-                <div><span class="k">Stage:</span> <strong class="v">2.1 m</strong></div>
-                <div><span class="k">Soil:</span> <strong class="v">62.0%</strong></div>
-            </div>
-            <a href="{{ url_for('dashboard', station='STN-TS-03') }}" class="stn-launch-btn">Open 3D Twin &rarr;</a>
-        </div>
-
-        <div class="station-glass-card">
-            <div class="stn-header">
-                <span class="stn-tag">STN-WG-04</span>
-                <span class="stn-badge badge-advisory">🟡 Advisory</span>
-            </div>
-            <h4 class="stn-name">Western Ghats Escarpment</h4>
-            <p class="stn-loc">Idukki Ridge &bull; 750m Elevation &bull; 29.0&deg; Slope</p>
-            <div class="stn-metrics">
-                <div><span class="k">Precip:</span> <strong class="v">55 mm/h</strong></div>
-                <div><span class="k">Stage:</span> <strong class="v">4.1 m</strong></div>
-                <div><span class="k">Soil:</span> <strong class="v">82.0%</strong></div>
-            </div>
-            <a href="{{ url_for('dashboard', station='STN-WG-04') }}" class="stn-launch-btn">Open 3D Twin &rarr;</a>
-        </div>
-    </div>
-</div>
-
-<style>
-/* ==========================================================================
-   HOMEPAGE SPATIAL GLASS ENGINE STYLES
-   ========================================================================== */
-.visionos-hero-container {
-    max-width: 1300px;
-    margin: 2rem auto 4rem auto;
-    padding: 0 1.5rem;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-}
-
-.hero-capsule-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.75rem;
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.16);
-    backdrop-filter: blur(20px);
-    padding: 0.4rem 0.9rem;
-    border-radius: 9999px;
-    margin-bottom: 2rem;
-    box-shadow: inset 0 1px 1px rgba(255,255,255,0.25), 0 10px 25px rgba(0,0,0,0.4);
-}
-.pulse-beacon {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: #38bdf8;
-    box-shadow: 0 0 10px #38bdf8;
-    animation: beaconPulse 2s infinite;
-}
-@keyframes beaconPulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.4; transform: scale(0.8); }
-}
-.badge-text {
-    font-size: 0.75rem;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    color: rgba(255, 255, 255, 0.85);
-    font-family: var(--font-mono);
-}
-.badge-pill {
-    background: rgba(56, 189, 248, 0.2);
-    border: 1px solid rgba(56, 189, 248, 0.4);
-    color: #38bdf8;
-    font-size: 0.7rem;
-    font-weight: 700;
-    padding: 0.15rem 0.5rem;
-    border-radius: 9999px;
-}
-
-.hero-headline-spatial {
-    font-size: clamp(2.4rem, 5.5vw, 4.5rem);
-    font-weight: 800;
-    line-height: 1.12;
-    letter-spacing: -0.035em;
-    color: #ffffff;
-    margin-bottom: 1.5rem;
-}
-.gradient-shimmer-text {
-    background: linear-gradient(135deg, #ffffff 20%, #38bdf8 60%, #c084fc 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    display: inline-block;
-}
-
-.hero-subtext-spatial {
-    font-size: clamp(1rem, 1.3vw, 1.25rem);
-    color: rgba(255, 255, 255, 0.7);
-    max-width: 820px;
-    line-height: 1.65;
-    margin-bottom: 2.5rem;
-}
-
-.hero-action-pills {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-    justify-content: center;
-    margin-bottom: 3.5rem;
-}
-.spatial-btn-primary {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.6rem;
-    background: linear-gradient(135deg, #0284c7, #3b82f6);
-    color: #ffffff;
-    padding: 0.85rem 1.8rem;
-    border-radius: 9999px;
-    font-weight: 600;
-    font-size: 0.95rem;
-    border: 1px solid rgba(255, 255, 255, 0.35);
-    box-shadow: inset 0 1px 1px rgba(255,255,255,0.4), 0 12px 30px rgba(2, 132, 199, 0.4);
-    text-decoration: none;
-    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-}
-.spatial-btn-primary:hover {
-    transform: translateY(-2px) scale(1.02);
-    box-shadow: inset 0 1px 1.5px rgba(255,255,255,0.6), 0 20px 40px rgba(2, 132, 199, 0.6);
-}
-
-.spatial-btn-glass {
-    display: inline-flex;
-    align-items: center;
-    background: rgba(255, 255, 255, 0.06);
-    backdrop-filter: blur(20px);
-    color: #ffffff;
-    padding: 0.85rem 1.6rem;
-    border-radius: 9999px;
-    font-weight: 500;
-    font-size: 0.95rem;
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    box-shadow: inset 0 1px 1px rgba(255,255,255,0.2), 0 10px 25px rgba(0, 0, 0, 0.4);
-    text-decoration: none;
-    transition: all 0.3s ease;
-}
-.spatial-btn-glass:hover {
-    background: rgba(255, 255, 255, 0.12);
-    border-color: rgba(255, 255, 255, 0.3);
-    transform: translateY(-2px);
-}
-
-.spatial-btn-subtle {
-    display: inline-flex;
-    align-items: center;
-    background: transparent;
-    color: rgba(255, 255, 255, 0.6);
-    padding: 0.85rem 1.4rem;
-    border-radius: 9999px;
-    font-weight: 500;
-    font-size: 0.95rem;
-    border: 1px solid transparent;
-    text-decoration: none;
-    transition: all 0.25s ease;
-}
-.spatial-btn-subtle:hover {
-    color: #ffffff;
-    background: rgba(255, 255, 255, 0.05);
-}
-
-/* 3D Interactive Card Showcase */
-.spatial-showcase-grid {
-    width: 100%;
-    max-width: 1000px;
-}
-.spatial-interactive-viewer-card {
-    background: rgba(255, 255, 255, 0.035);
-    border: 1px solid rgba(255, 255, 255, 0.14);
-    backdrop-filter: blur(30px) saturate(190%);
-    border-radius: 28px;
-    padding: 1.5rem;
-    box-shadow: inset 0 1px 1px rgba(255,255,255,0.3), 0 30px 70px -15px rgba(0, 0, 0, 0.7);
-}
-.card-glass-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1rem;
-}
-.live-status-pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: #ffffff;
-}
-.dot-green {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: #10b981;
-    box-shadow: 0 0 10px #10b981;
-}
-.tag-meta {
-    font-size: 0.7rem;
-    font-family: var(--font-mono);
-    color: rgba(255, 255, 255, 0.4);
-    letter-spacing: 0.05em;
-}
-.hero-filter-chip {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    color: #cbd5e1;
-    font-size: 0.72rem;
-    font-family: var(--font-mono);
-    padding: 4px 10px;
-    border-radius: 999px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-.hero-filter-chip:hover {
-    background: rgba(56, 189, 248, 0.15);
-    border-color: rgba(56, 189, 248, 0.4);
-    color: #ffffff;
-}
-.hero-filter-chip.active {
-    background: rgba(56, 189, 248, 0.25);
-    border-color: #38bdf8;
-    color: #38bdf8;
-    font-weight: 700;
-    box-shadow: 0 0 10px rgba(56, 189, 248, 0.25);
-}
-.hero-cam-btn {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    color: #cbd5e1;
-    font-size: 0.7rem;
-    font-family: var(--font-mono);
-    padding: 4px 8px;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-.hero-cam-btn:hover {
-    background: rgba(255, 255, 255, 0.12);
-    color: #38bdf8;
-    border-color: rgba(56, 189, 248, 0.4);
-}
-.hero-3d-hint-badge {
-    position: absolute;
-    bottom: 12px;
-    left: 16px;
-    background: rgba(3, 7, 18, 0.75);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    border-radius: 999px;
-    padding: 4px 12px;
-    font-size: 0.68rem;
-    color: #94a3b8;
-    pointer-events: none;
-}
-.multi-source-ticker-bar {
-    background: rgba(255, 255, 255, 0.02);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 14px;
-    padding: 10px 14px;
-}
-.source-pills-wrap {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-}
-.source-pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 999px;
-    padding: 3px 10px;
-    font-size: 0.7rem;
-    color: #cbd5e1;
-}
-.source-pill strong { color: #ffffff; }
-.source-pill small { color: #38bdf8; font-family: var(--font-mono); }
-.source-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: #10b981;
-    box-shadow: 0 0 6px #10b981;
-}
-.spatial-webgl-canvas-box {
-    width: 100%;
-    height: 440px;
-    border-radius: 20px;
-    overflow: hidden;
-    background: radial-gradient(circle at center, rgba(14, 165, 233, 0.08) 0%, rgba(0, 0, 0, 0.4) 100%);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-}
-.spatial-metrics-ribbon {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 1rem;
-    margin-top: 1.5rem;
-}
-.metric-pill {
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 16px;
-    padding: 0.75rem 1rem;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-}
-.m-lbl {
-    font-size: 0.65rem;
-    font-family: var(--font-mono);
-    color: rgba(255, 255, 255, 0.45);
-    letter-spacing: 0.08em;
-    margin-bottom: 0.25rem;
-}
-.m-val {
-    font-size: 1.15rem;
-    font-weight: 700;
-    font-family: var(--font-display);
-}
-.val-cyan { color: #38bdf8; text-shadow: 0 0 12px rgba(56, 189, 248, 0.4); }
-.val-purple { color: #c084fc; text-shadow: 0 0 12px rgba(192, 132, 252, 0.4); }
-.val-amber { color: #fbbf24; text-shadow: 0 0 12px rgba(251, 191, 36, 0.4); }
-.val-green { color: #34d399; text-shadow: 0 0 12px rgba(52, 211, 153, 0.4); }
-
-/* Section Containers */
-.spatial-section-container {
-    max-width: 1300px;
-    margin: 4rem auto;
-    padding: 0 1.5rem;
-}
-.section-header-spatial {
-    text-align: center;
-    margin-bottom: 3rem;
-}
-.section-eyebrow {
-    font-size: 0.75rem;
-    font-family: var(--font-mono);
-    color: #38bdf8;
-    letter-spacing: 0.12em;
-    font-weight: 700;
-    margin-bottom: 0.5rem;
-}
-.section-title-spatial {
-    font-size: clamp(1.8rem, 3.5vw, 2.6rem);
-    font-weight: 700;
-    color: #ffffff;
-    letter-spacing: -0.025em;
-    margin-bottom: 0.75rem;
-}
-.section-desc-spatial {
-    font-size: 1rem;
-    color: rgba(255, 255, 255, 0.6);
-    max-width: 600px;
-    margin: 0 auto;
-}
-
-/* Ingestion Cards Grid */
-.spatial-cards-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 1.5rem;
-}
-.spatial-card {
-    background: rgba(255, 255, 255, 0.035);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    backdrop-filter: blur(24px);
-    border-radius: 24px;
-    padding: 2rem 1.5rem;
-    display: flex;
-    flex-direction: column;
-    box-shadow: inset 0 1px 1px rgba(255,255,255,0.25), 0 20px 45px rgba(0, 0, 0, 0.5);
-    transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-}
-.spatial-card:hover {
-    background: rgba(255, 255, 255, 0.07);
-    border-color: rgba(255, 255, 255, 0.28);
-    transform: translateY(-5px);
-    box-shadow: inset 0 1px 1.5px rgba(255,255,255,0.4), 0 25px 60px rgba(56, 189, 248, 0.2);
-}
-.card-icon-pill {
-    width: 48px;
-    height: 48px;
-    border-radius: 16px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.4rem;
-    margin-bottom: 1.25rem;
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-}
-.card-heading {
-    font-size: 1.15rem;
-    font-weight: 700;
-    color: #ffffff;
-    margin-bottom: 0.75rem;
-    letter-spacing: -0.015em;
-}
-.card-body-text {
-    font-size: 0.88rem;
-    color: rgba(255, 255, 255, 0.65);
-    line-height: 1.6;
-    margin-bottom: 1.5rem;
-    flex-grow: 1;
-}
-.card-bottom-pill {
-    font-size: 0.72rem;
-    font-family: var(--font-mono);
-    color: rgba(255, 255, 255, 0.5);
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    padding: 0.35rem 0.75rem;
-    border-radius: 9999px;
-    align-self: flex-start;
-}
-
-/* Stations Grid */
-.spatial-stations-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 1.5rem;
-}
-.station-glass-card {
-    background: rgba(255, 255, 255, 0.035);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    backdrop-filter: blur(24px);
-    border-radius: 24px;
-    padding: 1.75rem;
-    display: flex;
-    flex-direction: column;
-    box-shadow: inset 0 1px 1px rgba(255,255,255,0.2), 0 20px 45px rgba(0, 0, 0, 0.5);
-    transition: all 0.35s ease;
-}
-.station-glass-card:hover {
-    background: rgba(255, 255, 255, 0.07);
-    border-color: rgba(255, 255, 255, 0.25);
-    transform: translateY(-4px);
-}
-.card-critical-glow {
-    border-color: rgba(244, 63, 94, 0.4) !important;
-    box-shadow: inset 0 1px 1px rgba(244, 63, 94, 0.4), 0 20px 50px rgba(244, 63, 94, 0.2) !important;
-}
-.stn-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 0.75rem;
-}
-.stn-tag {
-    font-size: 0.75rem;
-    font-family: var(--font-mono);
-    font-weight: 700;
-    color: rgba(255, 255, 255, 0.6);
-}
-.stn-badge {
-    font-size: 0.7rem;
-    font-weight: 600;
-    padding: 0.2rem 0.6rem;
-    border-radius: 9999px;
-}
-.badge-advisory { background: rgba(251, 191, 36, 0.15); border: 1px solid rgba(251, 191, 36, 0.35); color: #fbbf24; }
-.badge-critical { background: rgba(244, 63, 94, 0.2); border: 1px solid rgba(244, 63, 94, 0.5); color: #f43f5e; }
-.badge-normal { background: rgba(52, 211, 153, 0.15); border: 1px solid rgba(52, 211, 153, 0.35); color: #34d399; }
-
-.stn-name {
-    font-size: 1.2rem;
-    font-weight: 700;
-    color: #ffffff;
-    margin-bottom: 0.25rem;
-}
-.stn-loc {
-    font-size: 0.8rem;
-    color: rgba(255, 255, 255, 0.5);
-    margin-bottom: 1.25rem;
-}
-.stn-metrics {
-    display: flex;
-    justify-content: space-between;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 14px;
-    padding: 0.75rem;
-    margin-bottom: 1.5rem;
-    font-size: 0.82rem;
-}
-.stn-metrics .k { color: rgba(255, 255, 255, 0.45); }
-.stn-metrics .v { color: #ffffff; font-family: var(--font-mono); }
-.text-rose { color: #f43f5e !important; }
-
-.stn-launch-btn {
-    display: block;
-    text-align: center;
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    color: #ffffff;
-    padding: 0.75rem;
-    border-radius: 9999px;
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 0.88rem;
-    transition: all 0.25s ease;
-}
-.stn-launch-btn:hover {
-    background: rgba(255, 255, 255, 0.15);
-    border-color: rgba(255, 255, 255, 0.3);
-}
-.btn-danger-glow {
-    background: linear-gradient(135deg, rgba(244, 63, 94, 0.3), rgba(225, 29, 72, 0.2)) !important;
-    border-color: rgba(244, 63, 94, 0.5) !important;
-}
-.btn-danger-glow:hover {
-    background: linear-gradient(135deg, rgba(244, 63, 94, 0.5), rgba(225, 29, 72, 0.4)) !important;
-}
-</style>
 {% endblock %}
 
 {% block scripts %}
