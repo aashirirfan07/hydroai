@@ -920,4 +920,15 @@
         renderer.setSize(width, height);
     }
 
+    // Expose for Google Flow linked views across the dashboard
+    window.focusEarthLocation = function(lat, lon, label) {
+        if (typeof latLonToVector3 === 'function' && typeof smoothFocusCamera === 'function') {
+            const targetPos = latLonToVector3(lat, lon, GLOBE_RADIUS);
+            smoothFocusCamera(targetPos, 26);
+            if (typeof flashStatus === 'function') {
+                flashStatus(`🎯 Locked: ${label} (${lat.toFixed(1)}°N, ${lon.toFixed(1)}°E)`);
+            }
+        }
+    };
+
 })();

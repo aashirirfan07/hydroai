@@ -6,7 +6,7 @@
      APPLE / VERCEL BENTO BOX DELUXE DASHBOARD
      ========================================================================== -->
 
-<section class="linear-hero-section">
+<section class="linear-hero-section" id="threatHero">
     <!-- Top Mission Threat Matrix Bar -->
     <div class="linear-threat-matrix-bar">
         <div class="threat-left-identity">
@@ -45,18 +45,18 @@
         </div>
     </div>
 
-    <!-- Quick Navigation Action Bar -->
-    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+    <!-- Quick Action Launch Buttons & Zero-Key Badge -->
+    <div class="threat-quick-actions-bar">
         <div class="d-flex align-items-center gap-2 flex-wrap">
             <a href="{{ url_for('dashboard') }}" class="btn-ln-primary">
                 <span>Launch 3D Digital Twin</span>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
             </a>
-            <a href="{{ url_for('uav_feed') }}" class="btn-ln-secondary">
+            <a href="/drone-feed" class="btn-ln-secondary">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"></polygon><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect></svg>
                 <span>Live UAV Feed</span>
             </a>
-            <a href="{{ url_for('predict_datapoint') }}" class="btn-ln-secondary">
+            <a href="/physics-sandbox" class="btn-ln-secondary">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
                 <span>Scenario Simulator</span>
             </a>
@@ -65,12 +65,40 @@
                 <span>CAP v1.2 Feed</span>
             </a>
         </div>
-        <div class="d-flex align-items-center gap-2">
-            <span class="badge-emerald-soft linear-card-badge">● ZERO-KEY RELAY ONLINE</span>
-            <span class="badge-cyan-soft linear-card-badge">60/120 FPS WEBGL</span>
-        </div>
     </div>
 </section>
+
+<!-- ==========================================================================
+     GOOGLE UX FLOW: 5-STAGE OPERATIONAL TRIAGE PIPELINE RAIL
+     ========================================================================== -->
+<div class="google-flow-pipeline" id="triageFlowRail">
+    <button type="button" class="flow-step-item active" id="flowStep1" onclick="jumpToFlowStep(1, 'threatHero')">
+        <span class="flow-step-number">1</span>
+        <span>Threat Detection</span>
+        <span class="badge-crimson-soft ms-1" style="font-size: 0.65rem; padding: 2px 6px;">3.8h Lead</span>
+    </button>
+    <span class="flow-step-divider">→</span>
+    <button type="button" class="flow-step-item" id="flowStep2" onclick="jumpToFlowStep(2, 'cardEarthTwin')">
+        <span class="flow-step-number">2</span>
+        <span>3D Geospatial Twin</span>
+    </button>
+    <span class="flow-step-divider">→</span>
+    <button type="button" class="flow-step-item" id="flowStep3" onclick="jumpToFlowStep(3, 'cardSentinelBasins')">
+        <span class="flow-step-number">3</span>
+        <span>Catchment Triage</span>
+        <span class="badge-crimson-soft ms-1" style="font-size: 0.65rem; padding: 2px 6px;">5.4m Stage</span>
+    </button>
+    <span class="flow-step-divider">→</span>
+    <button type="button" class="flow-step-item" id="flowStep4" onclick="jumpToFlowStep(4, 'dispatchRibbon')">
+        <span class="flow-step-number">4</span>
+        <span>Zero-Key Dispatch</span>
+    </button>
+    <span class="flow-step-divider">→</span>
+    <button type="button" class="flow-step-item" id="flowStep5" onclick="jumpToFlowStep(5, 'uavReconSection')">
+        <span class="flow-step-number">5</span>
+        <span>UAV Drone Swarm</span>
+    </button>
+</div>
 
 <!-- ==========================================================================
      BENTO OPERATIONAL GRID (3 BALANCED EQUAL-HEIGHT COLUMNS)
@@ -78,7 +106,7 @@
 <div class="linear-bento-grid">
 
     <!-- COLUMN 1: HYDROLOGICAL INFLOW & SPLINE HYDROGRAPH -->
-    <div class="linear-card">
+    <div class="linear-card" id="cardHydroSpline">
         <div class="linear-card-header">
             <div class="linear-card-title">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2"><path d="M2 12c.6 0 1.4-.4 1.8-.8C5 10 6 8 8 8s3 2 4.2 3.2c1.2 1.2 2 1.8 3.8 1.8s3-2 4.2-3.2C21 9 21.6 8 22 8"></path><path d="M2 17c.6 0 1.4-.4 1.8-.8C5 15 6 13 8 13s3 2 4.2 3.2c1.2 1.2 2 1.8 3.8 1.8s3-2 4.2-3.2C21 14 21.6 13 22 13"></path></svg>
@@ -134,7 +162,7 @@
     </div>
 
     <!-- COLUMN 2: 3D DIGITAL TWIN EARTH CONSOLE -->
-    <div class="linear-card">
+    <div class="linear-card" id="cardEarthTwin">
         <div class="linear-card-header">
             <div class="linear-card-title">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
@@ -158,7 +186,7 @@
                 </div>
                 <div id="hero3DViewer"></div>
                 <div class="webgl-bottom-hint">
-                    <span>👆 Drag to rotate &bull; Hover beacons for live HUD</span>
+                    <span>👆 Drag to rotate &bull; Click basin cards below to lock focus</span>
                 </div>
             </div>
 
@@ -201,26 +229,31 @@
     </div>
 
     <!-- COLUMN 3: SENTINEL BASIN THREAT MATRIX WITH VISUAL WATER GAUGES -->
-    <div class="linear-card">
+    <div class="linear-card" id="cardSentinelBasins">
         <div class="linear-card-header">
             <div class="linear-card-title">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
-                <span>Sentinel Basins & Gauges</span>
+                <span>Sentinel Basins</span>
             </div>
-            <span class="badge-crimson-soft linear-card-badge">EVACUATION TIER 1</span>
+            <div class="d-flex align-items-center gap-1">
+                <button type="button" id="btnSurgeDrill" class="btn-surge-drill" onclick="toggleSurgeDrill(event)" title="Simulate +25mm/h Cloudburst Drill" style="font-size: 0.67rem; padding: 0.18rem 0.5rem; white-space: nowrap;">⚡ Test Drill</button>
+                <span class="badge-crimson-soft linear-card-badge" style="white-space: nowrap;">TIER 1 ALERT</span>
+            </div>
         </div>
 
         <div class="linear-card-body">
-            <!-- Active Basin List with Visual Water Level Progress Bars -->
+            <!-- Active Basin List with Visual Water Level Progress Bars & Google Linked Views -->
             <div class="basins-stack">
                 <!-- Basin 1: Alaknanda (Critical) -->
-                <a href="{{ url_for('dashboard', station='STN-AL-02') }}" class="basin-deluxe-card critical-border" title="Open 3D Twin for Alaknanda">
+                <div class="basin-deluxe-card critical-border active-focus" id="basinCard-STN-AL-02" onclick="focusBasinNode(event, 'STN-AL-02', 30.33, 79.22, 'Alaknanda Upper Gorge')" title="Click to Focus 3D Globe">
                     <div class="basin-deluxe-top">
                         <div class="d-flex align-items-center gap-2">
                             <span class="basin-tag-id">STN-AL-02</span>
                             <span class="badge-crimson-soft" style="font-size: 0.65rem; padding: 0.12rem 0.4rem; border-radius: 4px;">🔴 Critical Surge</span>
                         </div>
-                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                        <a href="{{ url_for('dashboard', station='STN-AL-02') }}" class="text-secondary" title="Open Full Telemetry Page" onclick="event.stopPropagation();">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                        </a>
                     </div>
                     <div class="basin-deluxe-name">Alaknanda Upper Gorge</div>
                     
@@ -228,27 +261,29 @@
                     <div class="basin-stage-gauge">
                         <div class="stage-gauge-labels">
                             <span style="color: #94a3b8;">Stage Level:</span>
-                            <strong style="color: #ef4444;">5.4m / 6.0m (90% Danger)</strong>
+                            <strong style="color: #ef4444;" id="stageValAlaknanda">5.4m / 6.0m (90% Danger)</strong>
                         </div>
                         <div class="stage-gauge-track">
-                            <div class="stage-gauge-fill stage-fill-critical" style="width: 90%;"></div>
+                            <div class="stage-gauge-fill stage-fill-critical" id="stageFillAlaknanda" style="width: 90%;"></div>
                         </div>
                     </div>
                     <div class="basin-deluxe-meta">
-                        <span>Precip: <strong class="text-rose">74 mm/h</strong></span>
+                        <span>Precip: <strong class="text-rose" id="precipAlaknanda">74 mm/h</strong></span>
                         <span>Slope: <strong>38.0°</strong></span>
                         <span>Soil: <strong class="text-rose">88%</strong></span>
                     </div>
-                </a>
+                </div>
 
                 <!-- Basin 2: Kullu Valley (Advisory) -->
-                <a href="{{ url_for('dashboard', station='STN-KL-01') }}" class="basin-deluxe-card" title="Open 3D Twin for Kullu">
+                <div class="basin-deluxe-card" id="basinCard-STN-KL-01" onclick="focusBasinNode(event, 'STN-KL-01', 31.95, 77.10, 'Kullu Valley Catchment')" title="Click to Focus 3D Globe">
                     <div class="basin-deluxe-top">
                         <div class="d-flex align-items-center gap-2">
                             <span class="basin-tag-id">STN-KL-01</span>
                             <span class="badge-amber-soft" style="font-size: 0.65rem; padding: 0.12rem 0.4rem; border-radius: 4px;">🟡 Advisory</span>
                         </div>
-                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                        <a href="{{ url_for('dashboard', station='STN-KL-01') }}" class="text-secondary" title="Open Full Telemetry Page" onclick="event.stopPropagation();">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                        </a>
                     </div>
                     <div class="basin-deluxe-name">Kullu Valley Catchment</div>
                     
@@ -256,27 +291,29 @@
                     <div class="basin-stage-gauge">
                         <div class="stage-gauge-labels">
                             <span style="color: #94a3b8;">Stage Level:</span>
-                            <strong style="color: #f59e0b;">3.8m / 5.0m (76% Warning)</strong>
+                            <strong style="color: #f59e0b;" id="stageValKullu">3.8m / 5.0m (76% Warning)</strong>
                         </div>
                         <div class="stage-gauge-track">
-                            <div class="stage-gauge-fill stage-fill-advisory" style="width: 76%;"></div>
+                            <div class="stage-gauge-fill stage-fill-advisory" id="stageFillKullu" style="width: 76%;"></div>
                         </div>
                     </div>
                     <div class="basin-deluxe-meta">
-                        <span>Precip: <strong>42 mm/h</strong></span>
+                        <span>Precip: <strong id="precipKullu">42 mm/h</strong></span>
                         <span>Slope: <strong>32.5°</strong></span>
                         <span>Soil: <strong>78.5%</strong></span>
                     </div>
-                </a>
+                </div>
 
                 <!-- Basin 3: Teesta River (Normal) -->
-                <a href="{{ url_for('dashboard', station='STN-TS-03') }}" class="basin-deluxe-card" title="Open 3D Twin for Teesta">
+                <div class="basin-deluxe-card" id="basinCard-STN-TS-03" onclick="focusBasinNode(event, 'STN-TS-03', 27.20, 88.50, 'Teesta River Basin')" title="Click to Focus 3D Globe">
                     <div class="basin-deluxe-top">
                         <div class="d-flex align-items-center gap-2">
                             <span class="basin-tag-id">STN-TS-03</span>
                             <span class="badge-emerald-soft" style="font-size: 0.65rem; padding: 0.12rem 0.4rem; border-radius: 4px;">🟢 Normal</span>
                         </div>
-                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                        <a href="{{ url_for('dashboard', station='STN-TS-03') }}" class="text-secondary" title="Open Full Telemetry Page" onclick="event.stopPropagation();">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                        </a>
                     </div>
                     <div class="basin-deluxe-name">Teesta River Basin</div>
                     
@@ -284,18 +321,18 @@
                     <div class="basin-stage-gauge">
                         <div class="stage-gauge-labels">
                             <span style="color: #94a3b8;">Stage Level:</span>
-                            <strong style="color: #10b981;">2.1m / 4.5m (46% Nominal)</strong>
+                            <strong style="color: #10b981;" id="stageValTeesta">2.1m / 4.5m (46% Nominal)</strong>
                         </div>
                         <div class="stage-gauge-track">
-                            <div class="stage-gauge-fill stage-fill-normal" style="width: 46%;"></div>
+                            <div class="stage-gauge-fill stage-fill-normal" id="stageFillTeesta" style="width: 46%;"></div>
                         </div>
                     </div>
                     <div class="basin-deluxe-meta">
-                        <span>Precip: <strong>24 mm/h</strong></span>
+                        <span>Precip: <strong id="precipTeesta">24 mm/h</strong></span>
                         <span>Slope: <strong>26.0°</strong></span>
                         <span>Soil: <strong>62.0%</strong></span>
                     </div>
-                </a>
+                </div>
             </div>
         </div>
     </div>
@@ -304,7 +341,7 @@
 <!-- ==========================================================================
      MISSION CONTROL: DEDICATED FULL-WIDTH EMERGENCY DISPATCH RIBBON
      ========================================================================== -->
-<div class="linear-section-wrapper">
+<div class="linear-section-wrapper" id="dispatchRibbon">
     <div class="emergency-dispatch-ribbon">
         <div class="dispatch-ribbon-info">
             <div class="d-flex align-items-center gap-2 mb-1">
@@ -406,7 +443,7 @@
     </div>
 
     <!-- 4-Card Multi-Source Ingestion Pipeline Grid with Illuminated Squircle Vessels -->
-    <div class="linear-telemetry-grid">
+    <div class="linear-telemetry-grid" id="uavReconSection">
         <div class="telemetry-card">
             <div class="telemetry-card-top">
                 <div class="telemetry-icon-vessel vessel-cyan">
@@ -469,7 +506,112 @@
     </div>
 </div>
 
+<!-- Floating HUD Toast Notification Container -->
+<div class="hud-toast-container" id="hudToastContainer"></div>
+
 <script>
+// ==========================================================================
+// GOOGLE UX FLOW: OPERATIONAL INTERACTION ENGINE
+// ==========================================================================
+
+function showHudToast(message, type = 'normal') {
+    const container = document.getElementById('hudToastContainer');
+    if (!container) return;
+    const toast = document.createElement('div');
+    toast.className = `hud-toast ${type === 'alert' ? 'hud-toast-alert' : (type === 'warn' ? 'hud-toast-warn' : 'hud-toast-success')}`;
+    const icon = type === 'alert' ? '🚨' : (type === 'warn' ? '⚠️' : '🎯');
+    toast.innerHTML = `<span style="font-size: 1.1rem;">${icon}</span><div>${message}</div>`;
+    container.appendChild(toast);
+    setTimeout(() => {
+        toast.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(12px)';
+        setTimeout(() => toast.remove(), 300);
+    }, 4000);
+}
+
+function jumpToFlowStep(stepIndex, targetId) {
+    document.querySelectorAll('.flow-step-item').forEach(el => el.classList.remove('active'));
+    const activeBtn = document.getElementById(`flowStep${stepIndex}`);
+    if (activeBtn) activeBtn.classList.add('active');
+
+    const el = document.getElementById(targetId);
+    if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        el.style.transition = 'box-shadow 0.4s ease';
+        el.style.boxShadow = '0 0 25px rgba(56, 189, 248, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2)';
+        setTimeout(() => {
+            el.style.boxShadow = '';
+        }, 1600);
+    }
+}
+
+function focusBasinNode(event, stationId, lat, lon, label) {
+    document.querySelectorAll('.basin-deluxe-card').forEach(c => c.classList.remove('active-focus'));
+    const card = document.getElementById(`basinCard-${stationId}`);
+    if (card) card.classList.add('active-focus');
+
+    if (typeof window.focusEarthLocation === 'function') {
+        window.focusEarthLocation(lat, lon, label);
+    }
+    showHudToast(`<strong>3D GLOBE FOCUSED:</strong> ${label} (${lat.toFixed(1)}°N, ${lon.toFixed(1)}°E) &bull; Target locked`, 'normal');
+}
+
+let isSurgeDrillActive = false;
+function toggleSurgeDrill(event) {
+    event.stopPropagation();
+    const btn = document.getElementById('btnSurgeDrill');
+    isSurgeDrillActive = !isSurgeDrillActive;
+
+    const alaknandaVal = document.getElementById('stageValAlaknanda');
+    const alaknandaFill = document.getElementById('stageFillAlaknanda');
+    const kulluVal = document.getElementById('stageValKullu');
+    const kulluFill = document.getElementById('stageFillKullu');
+    const teestaVal = document.getElementById('stageValTeesta');
+    const teestaFill = document.getElementById('stageFillTeesta');
+    const kpiSurge = document.getElementById('kpiSurge');
+
+    if (isSurgeDrillActive) {
+        btn.classList.add('simulating');
+        btn.innerHTML = '⚡ Reset Surge Drill';
+
+        if (alaknandaVal) alaknandaVal.innerHTML = '5.95m / 6.0m (99.2% BREACH)';
+        if (alaknandaFill) alaknandaFill.style.width = '99.2%';
+        if (kulluVal) kulluVal.innerHTML = '4.85m / 5.0m (97% CRITICAL)';
+        if (kulluFill) {
+            kulluFill.className = 'stage-gauge-fill stage-fill-critical';
+            kulluFill.style.width = '97%';
+        }
+        if (teestaVal) teestaVal.innerHTML = '3.9m / 4.5m (86% SPILLWAY)';
+        if (teestaFill) {
+            teestaFill.className = 'stage-gauge-fill stage-fill-advisory';
+            teestaFill.style.width = '86%';
+        }
+        if (kpiSurge) kpiSurge.innerHTML = '6,420 m³/s';
+
+        showHudToast('<strong>CLOUDBURST SURGE INJECTED:</strong> Inflow jumped to 6,420 m³/s &bull; Evacuation Tier 1 Breach Thresholds breached.', 'alert');
+    } else {
+        btn.classList.remove('simulating');
+        btn.innerHTML = '⚡ Test Surge Drill';
+
+        if (alaknandaVal) alaknandaVal.innerHTML = '5.4m / 6.0m (90% Danger)';
+        if (alaknandaFill) alaknandaFill.style.width = '90%';
+        if (kulluVal) kulluVal.innerHTML = '3.8m / 5.0m (76% Warning)';
+        if (kulluFill) {
+            kulluFill.className = 'stage-gauge-fill stage-fill-advisory';
+            kulluFill.style.width = '76%';
+        }
+        if (teestaVal) teestaVal.innerHTML = '2.1m / 4.5m (46% Nominal)';
+        if (teestaFill) {
+            teestaFill.className = 'stage-gauge-fill stage-fill-normal';
+            teestaFill.style.width = '46%';
+        }
+        if (kpiSurge) kpiSurge.innerHTML = '5,948 m³/s';
+
+        showHudToast('<strong>TELEMETRY RESTORED:</strong> Normal live telemetry sync restored from CWC and GPM mesh.', 'normal');
+    }
+}
+
 // Zero-Key Emergency SMS & Email Handlers
 async function sendHomeZeroKeySms(e) {
     e.preventDefault();
@@ -478,7 +620,7 @@ async function sendHomeZeroKeySms(e) {
     const fb = document.getElementById('homeSmsFeedback');
 
     btn.disabled = true;
-    btn.innerHTML = '<span>📡 Sending...</span>';
+    btn.innerHTML = '<span>📡 Transmitting...</span>';
     if (typeof playTactileClick === 'function') playTactileClick();
 
     try {
@@ -486,37 +628,36 @@ async function sendHomeZeroKeySms(e) {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                phone_number: phone,
+                recipient_phone: phone,
                 station_name: 'Alaknanda Upper Gorge',
                 threat_level: 'CRITICAL RED • IMMEDIATE EVACUATION',
-                precip_rate: '74.0 mm/h',
-                lead_time: '3.8 Hours',
-                notes: 'Evacuate to designated Highland Safe Shelters (>2,200m).'
+                lead_time: '3.8 Hours'
             })
         });
         const data = await res.json();
         if (typeof playSuccessChime === 'function') playSuccessChime();
 
         fb.style.display = 'block';
-        fb.innerHTML = `✅ <strong>SMS TRANSMITTED!</strong> Sent to <u>${phone}</u>.<br><span style="color: #38bdf8; font-size: 0.68rem;">Tracking ID: ${data.tracking_id || 'HS-7601'} &bull; Zero-Key Relay Active</span>`;
+        fb.innerHTML = `✅ <strong>ALERT RELAYED!</strong> Sent to <u>${phone}</u>.<br><span style="color: #34d399; font-size: 0.68rem;">Direct Carrier Dispatch &bull; Broadcast ID: ${data.broadcast_id || 'CAP-ZERO-99'}</span>`;
         btn.innerHTML = '<span>✅ Sent!</span>';
+        showHudToast(`<strong>SMS BROADCAST SENT:</strong> Dispatched to ${phone} &bull; Relay confirmed`, 'normal');
         setTimeout(() => {
             btn.disabled = false;
             btn.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg><span>Send SMS</span>';
         }, 2500);
     } catch(err) {
         fb.style.display = 'block';
-        fb.innerHTML = `⚠️ Opening cellular SMS client...`;
-        window.open(`sms:${phone}?body=🚨 FLOOD ALERT: Alaknanda Upper Gorge. Evacuate immediately.`, '_blank');
+        fb.innerHTML = `⚠️ Fallback to WhatsApp...`;
+        openHomeDirectWhatsApp();
         btn.disabled = false;
         btn.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg><span>Send SMS</span>';
     }
 }
 
-function openHomeWhatsApp() {
-    let phone = document.getElementById('homePhoneInput').value.replace(/[^0-9]/g, '') || '919876543210';
-    if (phone.length === 10) phone = '91' + phone;
-    const text = encodeURIComponent(`🚨 *HYDROSENTINEL CRITICAL FLOOD ALERT*\n\n📍 *Basin:* Alaknanda Upper Gorge\n⚠️ *Threat:* CRITICAL RED • IMMEDIATE EVACUATION\n⏱️ *Lead Time:* 3.8 Hours\n🏃 Move to designated safe shelters (>2,200m).\n\n🌐 https://hydrosentinel.onrender.com/dashboard`);
+function openHomeDirectWhatsApp() {
+    const phone = (document.getElementById('homePhoneInput').value || '+919876543210').replace(/[^0-9]/g, '');
+    const text = encodeURIComponent('🚨 HYDROSENTINEL CRITICAL FLOOD ALERT\nBasin: Alaknanda Upper Gorge\nThreat: CRITICAL RED • IMMEDIATE EVACUATION\nLead Time: 3.8 Hours\nDirective: Move to high ground immediately.\nLive 3D Twin: https://hydrosentinel.onrender.com/dashboard');
+    showHudToast(`<strong>WHATSAPP DISPATCH PRIMED:</strong> Opening web messenger session`, 'warn');
     window.open(`https://wa.me/${phone}?text=${text}`, '_blank');
 }
 
@@ -538,9 +679,7 @@ async function sendHomeZeroKeyEmail(e) {
                 recipient_email: email,
                 station_name: 'Alaknanda Upper Gorge',
                 threat_level: 'CRITICAL RED • IMMEDIATE EVACUATION',
-                precip_rate: '74.0 mm/h',
-                lead_time: '3.8 Hours',
-                notes: 'Emergency flood warning situation brief.'
+                lead_time: '3.8 Hours'
             })
         });
         const data = await res.json();
@@ -549,14 +688,15 @@ async function sendHomeZeroKeyEmail(e) {
         fb.style.display = 'block';
         fb.innerHTML = `✅ <strong>EMAIL SENT!</strong> Sent to <u>${email}</u>.<br><span style="color: #34d399; font-size: 0.68rem;">Tracking ID: ${data.email_id || 'HS-EML-98'} &bull; Delivered</span>`;
         btn.innerHTML = '<span>✅ Sent!</span>';
+        showHudToast(`<strong>CAP v1.2 EMAIL DISPATCHED:</strong> Delivered to ${email}`, 'normal');
         setTimeout(() => {
             btn.disabled = false;
             btn.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg><span>Send Email</span>';
         }, 2500);
     } catch(err) {
         fb.style.display = 'block';
-        fb.innerHTML = `⚠️ Opening mail client...`;
-        window.open(`mailto:${email}?subject=🚨 FLOOD ALERT&body=Critical flood alert for Alaknanda Gorge.`, '_blank');
+        fb.innerHTML = `⚠️ Fallback to Mail Client...`;
+        openHomeDirectMailApp();
         btn.disabled = false;
         btn.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg><span>Send Email</span>';
     }
@@ -564,6 +704,7 @@ async function sendHomeZeroKeyEmail(e) {
 
 function openHomeDirectMailApp() {
     const email = document.getElementById('homeEmailInput').value || 'responder@ndrf.gov.in';
+    showHudToast(`<strong>MAIL CLIENT LAUNCHED:</strong> Situation brief pre-populated for ${email}`, 'normal');
     window.open(`mailto:${email}?subject=🚨 EMERGENCY FLOOD ALERT: Alaknanda Upper Gorge&body=🚨 HYDROSENTINEL CRITICAL FLOOD ALERT\nBasin: Alaknanda Upper Gorge\nThreat: CRITICAL RED • IMMEDIATE EVACUATION\nLead Time: 3.8 Hours\nDirective: Move to high ground immediately.\n\nLive 3D Twin: https://hydrosentinel.onrender.com/dashboard`, '_blank');
 }
 
@@ -597,6 +738,7 @@ function switchHydroRange(range) {
         hydroChartInstance.data.datasets[0].data = p.data;
         hydroChartInstance.update();
         document.getElementById('kpiSurge').innerText = p.surge;
+        showHudToast(`<strong>TIMEFRAME SWITCHED:</strong> Hydrograph window updated to ${range}`, 'normal');
     }
 }
 
