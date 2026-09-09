@@ -3,7 +3,7 @@
 
 {% block content %}
 <!-- ==========================================================================
-     MINIMALIST LINEAR / VERCEL OPERATIONAL DASHBOARD
+     APPLE / VERCEL BENTO BOX DELUXE DASHBOARD
      ========================================================================== -->
 
 <section class="linear-hero-section">
@@ -73,7 +73,7 @@
 </section>
 
 <!-- ==========================================================================
-     BENTO OPERATIONAL GRID (3 FOCUSED COLUMNS)
+     BENTO OPERATIONAL GRID (3 BALANCED EQUAL-HEIGHT COLUMNS)
      ========================================================================== -->
 <div class="linear-bento-grid">
 
@@ -200,103 +200,162 @@
         </div>
     </div>
 
-    <!-- COLUMN 3: SENTINEL BASINS & ZERO-KEY EMERGENCY DISPATCH -->
+    <!-- COLUMN 3: SENTINEL BASIN THREAT MATRIX WITH VISUAL WATER GAUGES -->
     <div class="linear-card">
         <div class="linear-card-header">
             <div class="linear-card-title">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
-                <span>Sentinel Basins & Relay</span>
+                <span>Sentinel Basins & Gauges</span>
             </div>
             <span class="badge-crimson-soft linear-card-badge">EVACUATION TIER 1</span>
         </div>
 
         <div class="linear-card-body">
-            <!-- Active Basin List -->
+            <!-- Active Basin List with Visual Water Level Progress Bars -->
             <div class="basins-stack">
-                <a href="{{ url_for('dashboard', station='STN-AL-02') }}" class="basin-compact-card critical-border" title="Open 3D Twin for Alaknanda">
-                    <div class="basin-compact-left">
-                        <div class="basin-tag-line">
+                <!-- Basin 1: Alaknanda (Critical) -->
+                <a href="{{ url_for('dashboard', station='STN-AL-02') }}" class="basin-deluxe-card critical-border" title="Open 3D Twin for Alaknanda">
+                    <div class="basin-deluxe-top">
+                        <div class="d-flex align-items-center gap-2">
                             <span class="basin-tag-id">STN-AL-02</span>
-                            <span class="badge-crimson-soft" style="font-size: 0.65rem; padding: 0.1rem 0.35rem; border-radius: 3px;">🔴 Critical</span>
+                            <span class="badge-crimson-soft" style="font-size: 0.65rem; padding: 0.12rem 0.4rem; border-radius: 4px;">🔴 Critical Surge</span>
                         </div>
-                        <div class="basin-compact-name">Alaknanda Upper Gorge</div>
-                        <div class="basin-compact-meta">Stage: 5.4m &bull; Precip: 74 mm/h &bull; Slope: 38°</div>
-                    </div>
-                    <div class="basin-compact-right">
                         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
                     </div>
+                    <div class="basin-deluxe-name">Alaknanda Upper Gorge</div>
+                    
+                    <!-- Visual Water Level Stage Meter -->
+                    <div class="basin-stage-gauge">
+                        <div class="stage-gauge-labels">
+                            <span style="color: #94a3b8;">Stage Level:</span>
+                            <strong style="color: #ef4444;">5.4m / 6.0m (90% Danger)</strong>
+                        </div>
+                        <div class="stage-gauge-track">
+                            <div class="stage-gauge-fill stage-fill-critical" style="width: 90%;"></div>
+                        </div>
+                    </div>
+                    <div class="basin-deluxe-meta">
+                        <span>Precip: <strong class="text-rose">74 mm/h</strong></span>
+                        <span>Slope: <strong>38.0°</strong></span>
+                        <span>Soil: <strong class="text-rose">88%</strong></span>
+                    </div>
                 </a>
 
-                <a href="{{ url_for('dashboard', station='STN-KL-01') }}" class="basin-compact-card" title="Open 3D Twin for Kullu">
-                    <div class="basin-compact-left">
-                        <div class="basin-tag-line">
+                <!-- Basin 2: Kullu Valley (Advisory) -->
+                <a href="{{ url_for('dashboard', station='STN-KL-01') }}" class="basin-deluxe-card" title="Open 3D Twin for Kullu">
+                    <div class="basin-deluxe-top">
+                        <div class="d-flex align-items-center gap-2">
                             <span class="basin-tag-id">STN-KL-01</span>
-                            <span class="badge-amber-soft" style="font-size: 0.65rem; padding: 0.1rem 0.35rem; border-radius: 3px;">🟡 Advisory</span>
+                            <span class="badge-amber-soft" style="font-size: 0.65rem; padding: 0.12rem 0.4rem; border-radius: 4px;">🟡 Advisory</span>
                         </div>
-                        <div class="basin-compact-name">Kullu Valley Catchment</div>
-                        <div class="basin-compact-meta">Stage: 3.8m &bull; Precip: 42 mm/h &bull; Slope: 32°</div>
-                    </div>
-                    <div class="basin-compact-right">
                         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
                     </div>
+                    <div class="basin-deluxe-name">Kullu Valley Catchment</div>
+                    
+                    <!-- Visual Water Level Stage Meter -->
+                    <div class="basin-stage-gauge">
+                        <div class="stage-gauge-labels">
+                            <span style="color: #94a3b8;">Stage Level:</span>
+                            <strong style="color: #f59e0b;">3.8m / 5.0m (76% Warning)</strong>
+                        </div>
+                        <div class="stage-gauge-track">
+                            <div class="stage-gauge-fill stage-fill-advisory" style="width: 76%;"></div>
+                        </div>
+                    </div>
+                    <div class="basin-deluxe-meta">
+                        <span>Precip: <strong>42 mm/h</strong></span>
+                        <span>Slope: <strong>32.5°</strong></span>
+                        <span>Soil: <strong>78.5%</strong></span>
+                    </div>
                 </a>
 
-                <a href="{{ url_for('dashboard', station='STN-TS-03') }}" class="basin-compact-card" title="Open 3D Twin for Teesta">
-                    <div class="basin-compact-left">
-                        <div class="basin-tag-line">
+                <!-- Basin 3: Teesta River (Normal) -->
+                <a href="{{ url_for('dashboard', station='STN-TS-03') }}" class="basin-deluxe-card" title="Open 3D Twin for Teesta">
+                    <div class="basin-deluxe-top">
+                        <div class="d-flex align-items-center gap-2">
                             <span class="basin-tag-id">STN-TS-03</span>
-                            <span class="badge-emerald-soft" style="font-size: 0.65rem; padding: 0.1rem 0.35rem; border-radius: 3px;">🟢 Normal</span>
+                            <span class="badge-emerald-soft" style="font-size: 0.65rem; padding: 0.12rem 0.4rem; border-radius: 4px;">🟢 Normal</span>
                         </div>
-                        <div class="basin-compact-name">Teesta River Basin</div>
-                        <div class="basin-compact-meta">Stage: 2.1m &bull; Precip: 24 mm/h &bull; Slope: 26°</div>
-                    </div>
-                    <div class="basin-compact-right">
                         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                    </div>
+                    <div class="basin-deluxe-name">Teesta River Basin</div>
+                    
+                    <!-- Visual Water Level Stage Meter -->
+                    <div class="basin-stage-gauge">
+                        <div class="stage-gauge-labels">
+                            <span style="color: #94a3b8;">Stage Level:</span>
+                            <strong style="color: #10b981;">2.1m / 4.5m (46% Nominal)</strong>
+                        </div>
+                        <div class="stage-gauge-track">
+                            <div class="stage-gauge-fill stage-fill-normal" style="width: 46%;"></div>
+                        </div>
+                    </div>
+                    <div class="basin-deluxe-meta">
+                        <span>Precip: <strong>24 mm/h</strong></span>
+                        <span>Slope: <strong>26.0°</strong></span>
+                        <span>Soil: <strong>62.0%</strong></span>
                     </div>
                 </a>
             </div>
+        </div>
+    </div>
+</div>
 
-            <!-- Integrated Emergency Dispatch Relay -->
-            <div class="dispatch-compact-box">
-                <h3>
-                    <span>Zero-Key Emergency Dispatch</span>
-                    <span class="badge-emerald-soft" style="font-size: 0.65rem;">Active</span>
-                </h3>
+<!-- ==========================================================================
+     MISSION CONTROL: DEDICATED FULL-WIDTH EMERGENCY DISPATCH RIBBON
+     ========================================================================== -->
+<div class="linear-section-wrapper">
+    <div class="emergency-dispatch-ribbon">
+        <div class="dispatch-ribbon-info">
+            <div class="d-flex align-items-center gap-2 mb-1">
+                <span class="threat-pulse-dot"></span>
+                <span class="badge-crimson-soft linear-card-badge">🚨 EMERGENCY ALERT RELAY</span>
+                <span class="badge-emerald-soft linear-card-badge">● ZERO-KEY ACTIVE</span>
+            </div>
+            <h3>Autonomous Emergency Broadcast Network</h3>
+            <p>
+                Transmit real-time critical cloudburst and flood breach warnings directly to first responder mobile phones, disaster management teams, or civil defense inboxes without third-party API keys.
+            </p>
+        </div>
 
-                <!-- SMS Form -->
-                <form onsubmit="sendHomeZeroKeySms(event); return false;" class="mb-2">
-                    <div class="d-flex justify-content-between align-items-center mb-1">
-                        <span style="font-size: 0.72rem; color: var(--ln-text-secondary); font-family: var(--ln-font-mono);">MOBILE SMS DISPATCH</span>
-                        <button type="button" onclick="openHomeWhatsApp()" style="background:none; border:none; color:#34d399; font-size:0.68rem; cursor:pointer; padding:0;">
+        <div class="dispatch-forms-grid">
+            <!-- SMS Form Cell -->
+            <div class="dispatch-cell-box">
+                <form onsubmit="sendHomeZeroKeySms(event); return false;">
+                    <div class="dispatch-cell-top">
+                        <strong style="color: #38bdf8;">📱 Mobile Phone SMS</strong>
+                        <button type="button" onclick="openHomeWhatsApp()" style="background:none; border:none; color:#34d399; font-size:0.68rem; cursor:pointer; padding:0; font-family:var(--ln-font-mono);">
                             WhatsApp &rarr;
                         </button>
                     </div>
-                    <div class="dispatch-input-row">
+                    <div class="dispatch-input-group">
                         <input type="tel" id="homePhoneInput" placeholder="+91 98765 43210" required>
-                        <button type="submit" id="btnHomeSendSms" class="btn-dispatch-action btn-dispatch-sms">
+                        <button type="submit" id="btnHomeSendSms" class="btn-dispatch-submit btn-dispatch-sms">
                             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
                             <span>Send SMS</span>
                         </button>
                     </div>
-                    <div id="homeSmsFeedback" style="display: none; margin-top: 0.4rem; padding: 0.4rem 0.6rem; border-radius: 6px; font-size: 0.7rem; background: rgba(0,0,0,0.5); border: 1px solid var(--ln-border-hairline);"></div>
+                    <div id="homeSmsFeedback" style="display: none; margin-top: 0.4rem; padding: 0.4rem 0.6rem; border-radius: 6px; font-size: 0.7rem; background: rgba(0,0,0,0.6); border: 1px solid var(--ln-border-hairline);"></div>
                 </form>
+            </div>
 
-                <!-- Email Form -->
+            <!-- Email Form Cell -->
+            <div class="dispatch-cell-box">
                 <form onsubmit="sendHomeZeroKeyEmail(event); return false;">
-                    <div class="d-flex justify-content-between align-items-center mb-1">
-                        <span style="font-size: 0.72rem; color: var(--ln-text-secondary); font-family: var(--ln-font-mono);">CIVIL DEFENSE EMAIL</span>
-                        <button type="button" onclick="openHomeDirectMailApp()" style="background:none; border:none; color:var(--ln-text-muted); font-size:0.68rem; cursor:pointer; padding:0;">
+                    <div class="dispatch-cell-top">
+                        <strong style="color: #34d399;">✉️ Civil Defense Email</strong>
+                        <button type="button" onclick="openHomeDirectMailApp()" style="background:none; border:none; color:var(--ln-text-muted); font-size:0.68rem; cursor:pointer; padding:0; font-family:var(--ln-font-mono);">
                             Default Mail &rarr;
                         </button>
                     </div>
-                    <div class="dispatch-input-row">
+                    <div class="dispatch-input-group">
                         <input type="email" id="homeEmailInput" placeholder="dm-ops@gov.in" required>
-                        <button type="submit" id="btnHomeSendEmail" class="btn-dispatch-action btn-dispatch-email">
+                        <button type="submit" id="btnHomeSendEmail" class="btn-dispatch-submit btn-dispatch-email">
                             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
                             <span>Send Email</span>
                         </button>
                     </div>
-                    <div id="homeEmailFeedback" style="display: none; margin-top: 0.4rem; padding: 0.4rem 0.6rem; border-radius: 6px; font-size: 0.7rem; background: rgba(0,0,0,0.5); border: 1px solid var(--ln-border-hairline);"></div>
+                    <div id="homeEmailFeedback" style="display: none; margin-top: 0.4rem; padding: 0.4rem 0.6rem; border-radius: 6px; font-size: 0.7rem; background: rgba(0,0,0,0.6); border: 1px solid var(--ln-border-hairline);"></div>
                 </form>
             </div>
         </div>
@@ -346,46 +405,66 @@
         </div>
     </div>
 
-    <!-- 4-Card Multi-Source Ingestion Pipeline Grid -->
+    <!-- 4-Card Multi-Source Ingestion Pipeline Grid with Illuminated Squircle Vessels -->
     <div class="linear-telemetry-grid">
         <div class="telemetry-card">
             <div class="telemetry-card-top">
-                <span class="telemetry-icon-box">🛰️</span>
-                <span class="badge-cyan-soft linear-card-badge">Ku/Ka Radar</span>
+                <div class="telemetry-icon-vessel vessel-cyan">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg>
+                </div>
+                <span class="badge-cyan-soft linear-card-badge">74.2 mm/h</span>
             </div>
             <h3>1. Doppler Radar & Satellite</h3>
             <p>Instantaneous radar precipitation rates (mm/h), cloudburst inflow vectors, and 24h basin accumulation tracking.</p>
-            <div class="telemetry-card-footer">NASA GPM &bull; INSAT-3DR</div>
+            <div class="telemetry-card-footer">
+                <span>NASA GPM &bull; INSAT-3DR</span>
+                <span class="text-cyan">● Ku/Ka Radar</span>
+            </div>
         </div>
 
         <div class="telemetry-card">
             <div class="telemetry-card-top">
-                <span class="telemetry-icon-box">🌱</span>
-                <span class="badge-emerald-soft linear-card-badge">IoT Moisture</span>
+                <div class="telemetry-icon-vessel vessel-emerald">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20"></path><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                </div>
+                <span class="badge-emerald-soft linear-card-badge">4 IoT Probes</span>
             </div>
             <h3>2. Subsurface IoT Arrays</h3>
             <p>4-depth soil moisture probes (Topsoil, Subsoil, Bedrock, Aquifer) monitoring hydrostatic runoff saturation.</p>
-            <div class="telemetry-card-footer">Hydro-Saturation Index</div>
+            <div class="telemetry-card-footer">
+                <span>Hydro-Saturation Index</span>
+                <span class="text-emerald">● 88% Soil Sat</span>
+            </div>
         </div>
 
         <div class="telemetry-card">
             <div class="telemetry-card-top">
-                <span class="telemetry-icon-box">🌊</span>
-                <span class="badge-crimson-soft linear-card-badge">Stage Meters</span>
+                <div class="telemetry-icon-vessel vessel-crimson">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12c.6 0 1.4-.4 1.8-.8C5 10 6 8 8 8s3 2 4.2 3.2c1.2 1.2 2 1.8 3.8 1.8s3-2 4.2-3.2C21 9 21.6 8 22 8"></path><path d="M2 17c.6 0 1.4-.4 1.8-.8C5 15 6 13 8 13s3 2 4.2 3.2c1.2 1.2 2 1.8 3.8 1.8s3-2 4.2-3.2C21 14 21.6 13 22 13"></path></svg>
+                </div>
+                <span class="badge-crimson-soft linear-card-badge">5.4m Stage</span>
             </div>
             <h3>3. Acoustic River Gauges</h3>
             <p>Acoustic Doppler river hydrometry measuring stage height (m), flow velocity (m/s), and upstream surges.</p>
-            <div class="telemetry-card-footer">CWC &bull; GloFAS Open Mesh</div>
+            <div class="telemetry-card-footer">
+                <span>CWC &bull; GloFAS Open Mesh</span>
+                <span class="text-rose">● Surge +312m³/s</span>
+            </div>
         </div>
 
         <div class="telemetry-card">
             <div class="telemetry-card-top">
-                <span class="telemetry-icon-box">📐</span>
-                <span class="badge-amber-soft linear-card-badge">DEM Relief</span>
+                <div class="telemetry-icon-vessel vessel-amber">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+                </div>
+                <span class="badge-amber-soft linear-card-badge">TWI 11.4</span>
             </div>
             <h3>4. High-Res DEM Relief</h3>
             <p>Digital elevation models calculating slope gradients, catchment morphology, and Topographic Wetness Index.</p>
-            <div class="telemetry-card-footer">TWI = ln(a / tan β)</div>
+            <div class="telemetry-card-footer">
+                <span>TWI = ln(a / tan β)</span>
+                <span class="text-amber">● Slope 38°</span>
+            </div>
         </div>
     </div>
 </div>
@@ -525,7 +604,7 @@ function initLinearHydrographChart() {
     const ctx = document.getElementById('linearHydrographChart');
     if (!ctx || typeof Chart === 'undefined') return;
 
-    const gradient = ctx.getContext('2d').createLinearGradient(0, 0, 0, 180);
+    const gradient = ctx.getContext('2d').createLinearGradient(0, 0, 0, 195);
     gradient.addColorStop(0, 'rgba(16, 185, 129, 0.35)');
     gradient.addColorStop(1, 'rgba(16, 185, 129, 0.0)');
 
@@ -539,10 +618,10 @@ function initLinearHydrographChart() {
                 borderColor: '#10b981',
                 borderWidth: 2,
                 pointBackgroundColor: '#10b981',
-                pointBorderColor: '#0e1015',
+                pointBorderColor: '#0d0f14',
                 pointBorderWidth: 2,
-                pointRadius: 3,
-                pointHoverRadius: 5,
+                pointRadius: 3.5,
+                pointHoverRadius: 6,
                 tension: 0.35,
                 fill: true,
                 backgroundColor: gradient
@@ -554,7 +633,7 @@ function initLinearHydrographChart() {
             plugins: {
                 legend: { display: false },
                 tooltip: {
-                    backgroundColor: '#161a22',
+                    backgroundColor: '#151821',
                     titleColor: '#f8fafc',
                     bodyColor: '#10b981',
                     borderColor: 'rgba(255, 255, 255, 0.1)',
