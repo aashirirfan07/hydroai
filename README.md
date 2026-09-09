@@ -1,5 +1,5 @@
 # Flash Flood Prediction System for Hilly Regions using Multi-Source Data
-
+project link : https://hydrosentinel-ai.onrender.com/
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Framework: Flask](https://img.shields.io/badge/Framework-Flask-black.svg)](https://flask.palletsprojects.com/)
@@ -42,7 +42,8 @@ graph TD
    - **Topographic & DEM**: Elevation ($m$), slope steepness ($deg$), and Topographic Wetness Index (TWI).
 
 2. **Domain-Specific Hydrological Engineering**:
-   - Topographic Wetness Index proxy: $TWI = \ln\left(rac{A}{	an(eta)}ight)$
+   - Topographic Wetness Index proxy: $TWI = \ln\left(rac{A}{	an(eta)}
+ight)$
    - Gravitational Runoff Kinetic Surge: $V 	imes \sin(eta)$
    - Soil Saturation Thresholding: Excess runoff coefficient calculation.
 
@@ -84,7 +85,7 @@ flash_flood_prediction_system/
 
 ### 1. Clone & Setup Environment
 ```bash
-git clone https://github.com/SahilInstinct/Student-Performance-Predictor.git
+will add
 cd flash_flood_prediction_system
 
 # Create and activate virtual environment
