@@ -804,13 +804,130 @@ CITIZEN_INCIDENTS = [
 
 
 # ==============================================================================
-# 📧 RESEND EMAIL DISASTER ALERT SERVICE
+# 📧 EMAIL DISASTER ALERT SERVICE (Resend API + Gmail SMTP dual engine)
 # ==============================================================================
+import smtplib
+import ssl
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+
 try:
     import resend
     RESEND_AVAILABLE = True
 except ImportError:
     RESEND_AVAILABLE = False
+
+def _build_email_html(station_name, threat_level, precip_rate, lead_time, notes):
+    """Build the HTML email body for emergency alerts."""
+    return f'''
+    <div style="font-family: Arial, sans-serif; background-color: #030712; color: #ffffff; padding: 30px; border-radius: 12px; max-width: 600px; margin: auto;">
+        <div style="border-bottom: 2px solid #ef4444; padding-bottom: 15px; margin-bottom: 20px;">
+            <span style="background: #ef4444; color: white; padding: 4px 10px; border-radius: 9999px; font-size: 11px; font-weight: bold; text-transform: uppercase;">EMERGENCY BROADCAST</span>
+            <h2 style="color: #ffffff; margin: 10px 0 0 0;">HydroSentinel AI&#8482; &bull; National Disaster Alert</h2>
+        </div>
+        <p style="color: #94a3b8; font-size: 14px;">Official emergency advisory from the Autonomous Flash Flood Defense Network:</p>
+        <div style="background: rgba(239,68,68,0.15); border: 1px solid #ef4444; border-radius: 8px; padding: 15px; margin: 20px 0;">
+            <div style="font-size: 13px; color: #f87171; font-weight: bold;">MONITORED BASIN:</div>
+            <div style="font-size: 18px; color: #ffffff; font-weight: bold; margin-bottom: 10px;">{station_name}</div>
+            <table style="width:100%; font-size: 13px; border-collapse: collapse;">
+                <tr><td style="padding:4px 0;"><strong>THREAT LEVEL:</strong></td><td style="color:#ef4444;">{threat_level}</td></tr>
+                <tr><td style="padding:4px 0;"><strong>RADAR INFLOW:</strong></td><td>{precip_rate}</td></tr>
+                <tr><td style="padding:4px 0;"><strong>WARNING LEAD TIME:</strong></td><td style="color:#fbbf24;">{lead_time}</td></tr>
+                <tr><td style="padding:4px 0;"><strong>AI CONFIDENCE:</strong></td><td>98.58% R²</td></tr>
+            </table>
+        </div>
+        <p style="font-size: 13px; color: #cbd5e1; line-height: 1.5;"><strong>Field Directives:</strong> {notes}</p>
+        <div style="text-align: center; margin-top: 30px;">
+            <a href="https://hydrosentinel.onrender.com/dashboard" style="background: #0284c7; color: #ffffff; padding: 12px 24px; border-radius: 9999px; text-decoration: none; font-weight: bold; font-size: 14px; display: inline-block;">
+                Launch 3D Digital Twin Command &rarr;
+            </a>
+        </div>
+        <div style="border-top: 1px solid rgba(255,255,255,0.1); margin-top: 30px; padding-top: 15px; font-size: 11px; color: #64748b; text-align: center;">
+            Issued under NDMA guidelines &bull; Powered by Team Quantum Minds &bull; HydroSentinel AI&#8482;
+        </div>
+    </div>
+    '''
+
+def _send_via_resend(recipient, subject, html_body, api_key):
+    """Try sending via Resend API. Returns (success: bool, status_msg: str, email_id: str)."""
+    try:
+        import resend as _resend
+        _resend.api_key = api_key
+        r = _resend.Emails.send({
+            "from": "HydroSentinel Alerts <onboarding@resend.dev>",
+            "to": [recipient],
+            "subject": subject,
+            "html": html_body
+        })
+        eid = r.id if hasattr(r, 'id') else str(r)
+        return True, "DELIVERED_VIA_RESEND", eid
+    except Exception as e:
+        return False, f"RESEND_FAILED: {str(e)[:100]}", ""
+
+def _send_via_gmail_smtp(recipient, subject, html_body, gmail_user, gmail_app_password):
+    """Try sending via Gmail SMTP. Returns (success: bool, status_msg: str, email_id: str)."""
+    try:
+        msg = MIMEMultipart('alternative')
+        msg['Subject'] = subject
+        msg['From'] = f"HydroSentinel AI <{gmail_user}>"
+        msg['To'] = recipient
+        msg.attach(MIMEText(html_body, 'html'))
+        ctx = ssl.create_default_context()
+        with smtplib.SMTP_SSL('smtp.gmail.com', 465, context=ctx) as server:
+            server.login(gmail_user, gmail_app_password)
+            server.sendmail(gmail_user, recipient, msg.as_string())
+        eid = f"GMAIL-{int(time.time())}-{random.randint(1000,9999)}"
+        return True, "DELIVERED_VIA_GMAIL_SMTP", eid
+    except Exception as e:
+        return False, f"GMAIL_FAILED: {str(e)[:100]}", ""
+
+def _dispatch_email(recipient, subject, station_name, threat_level, precip_rate, lead_time, notes):
+    """
+    Master email dispatcher — tries Resend, then Gmail SMTP.
+    Returns dict with status, delivery_status, email_id, method, message.
+    """
+    html_body = _build_email_html(station_name, threat_level, precip_rate, lead_time, notes)
+    email_id = f"HS-{int(time.time())}-{random.randint(1000,9999)}"
+
+    resend_key   = os.environ.get('RESEND_API_KEY', '').strip()
+    gmail_user   = os.environ.get('GMAIL_USER', '').strip()
+    gmail_pass   = os.environ.get('GMAIL_APP_PASSWORD', '').strip()
+
+    # --- Try Resend first ---
+    if resend_key and RESEND_AVAILABLE:
+        ok, status, eid = _send_via_resend(recipient, subject, html_body, resend_key)
+        if ok:
+            return {"status": "success", "delivery_status": status,
+                    "email_id": eid, "method": "Resend API",
+                    "message": f"Email dispatched to {recipient} via Resend API."}
+        # Resend failed — try Gmail next
+        logger.warning(f"Resend failed ({status}), trying Gmail SMTP...")
+
+    # --- Try Gmail SMTP ---
+    if gmail_user and gmail_pass:
+        ok, status, eid = _send_via_gmail_smtp(recipient, subject, html_body, gmail_user, gmail_pass)
+        if ok:
+            return {"status": "success", "delivery_status": status,
+                    "email_id": eid, "method": "Gmail SMTP",
+                    "message": f"Email dispatched to {recipient} via Gmail SMTP."}
+        logger.warning(f"Gmail SMTP failed ({status})")
+        return {"status": "error", "delivery_status": status,
+                "email_id": email_id, "method": "Gmail SMTP",
+                "message": f"Email delivery failed: {status}"}
+
+    # --- No credentials configured ---
+    configured = []
+    if not resend_key:   configured.append("RESEND_API_KEY")
+    if not gmail_user:   configured.append("GMAIL_USER")
+    if not gmail_pass:   configured.append("GMAIL_APP_PASSWORD")
+    return {
+        "status": "no_credentials",
+        "delivery_status": "NOT_SENT — No email credentials configured",
+        "email_id": email_id,
+        "method": "none",
+        "missing_env_vars": configured,
+        "message": f"Set RESEND_API_KEY or (GMAIL_USER + GMAIL_APP_PASSWORD) in Render environment variables."
+    }
 
 
 # ==============================================================================
@@ -927,197 +1044,54 @@ def api_send_instant_sms():
 
 @app.route('/api/send-instant-email', methods=['POST'])
 def api_send_instant_email():
-    '''Sends real emergency emails via Resend API (onboarding@resend.dev sender works without custom domain).'''
+    '''Sends real emergency emails. Uses Resend API if RESEND_API_KEY set, else Gmail SMTP if GMAIL_USER+GMAIL_APP_PASSWORD set.'''
     data = request.get_json() or {}
-    recipient = data.get('recipient_email', '').strip()
+    recipient    = data.get('recipient_email', '').strip()
     station_name = data.get('station_name', 'Kedarnath Mandakini Gorge')
     threat_level = data.get('threat_level', 'CRITICAL RED • IMMEDIATE EVACUATION')
-    precip_rate = data.get('precip_rate', '88.0 mm/h')
-    lead_time = data.get('lead_time', '3.8 Hours')
-    notes = data.get('notes', 'Autonomous flash flood early warning broadcast.')
+    precip_rate  = data.get('precip_rate', '88.0 mm/h')
+    lead_time    = data.get('lead_time', '3.8 Hours')
+    notes        = data.get('notes', 'Autonomous flash flood early warning broadcast.')
 
     if not recipient or '@' not in recipient:
         return jsonify({'status': 'error', 'message': 'Valid recipient email address is required.'}), 400
 
-    api_key = os.environ.get('RESEND_API_KEY')
-    email_id = f"INSTANT-{int(time.time())}-{random.randint(1000, 9999)}"
     subject = f"🚨 EMERGENCY FLOOD ALERT: {station_name} [{threat_level}]"
+    result  = _dispatch_email(recipient, subject, station_name, threat_level, precip_rate, lead_time, notes)
+    result['recipient']  = recipient
+    result['timestamp']  = datetime.now(timezone.utc).isoformat()
+    http_code = 500 if result['status'] == 'error' else 200
+    return jsonify(result), http_code
 
-    html_content = f'''
-    <div style="font-family: Arial, sans-serif; background-color: #030712; color: #ffffff; padding: 30px; border-radius: 12px; max-width: 600px; margin: auto;">
-        <div style="border-bottom: 2px solid #ef4444; padding-bottom: 15px; margin-bottom: 20px;">
-            <span style="background: #ef4444; color: white; padding: 4px 10px; border-radius: 9999px; font-size: 11px; font-weight: bold; text-transform: uppercase;">EMERGENCY BROADCAST</span>
-            <h2 style="color: #ffffff; margin: 10px 0 0 0;">HydroSentinel AI™ &bull; National Disaster Alert</h2>
-        </div>
-        <p style="color: #94a3b8; font-size: 14px;">Official emergency situation advisory issued by the Autonomous Flash Flood Defense Network:</p>
-        <div style="background: rgba(239, 68, 68, 0.15); border: 1px solid #ef4444; border-radius: 8px; padding: 15px; margin: 20px 0;">
-            <div style="font-size: 13px; color: #f87171; font-weight: bold;">MONITORED BASIN:</div>
-            <div style="font-size: 18px; color: #ffffff; font-weight: bold; margin-bottom: 10px;">{station_name}</div>
-            <table style="width:100%; font-size: 13px; border-collapse: collapse;">
-                <tr><td style="padding: 4px 0;"><strong>THREAT LEVEL:</strong></td><td style="color: #ef4444;">{threat_level}</td></tr>
-                <tr><td style="padding: 4px 0;"><strong>RADAR INFLOW:</strong></td><td>{precip_rate}</td></tr>
-                <tr><td style="padding: 4px 0;"><strong>WARNING LEAD TIME:</strong></td><td style="color: #fbbf24;">{lead_time}</td></tr>
-                <tr><td style="padding: 4px 0;"><strong>AI CONFIDENCE:</strong></td><td>98.58% R²</td></tr>
-            </table>
-        </div>
-        <p style="font-size: 13px; color: #cbd5e1; line-height: 1.5;"><strong>Field Directives:</strong> {notes}</p>
-        <div style="text-align: center; margin-top: 30px;">
-            <a href="https://hydrosentinel.onrender.com/dashboard" style="background: #0284c7; color: #ffffff; padding: 12px 24px; border-radius: 9999px; text-decoration: none; font-weight: bold; font-size: 14px; display: inline-block;">
-                Launch 3D Digital Twin Command &rarr;
-            </a>
-        </div>
-        <div style="border-top: 1px solid rgba(255,255,255,0.1); margin-top: 30px; padding-top: 15px; font-size: 11px; color: #64748b; text-align: center;">
-            Issued in accordance with NDMA guidelines &bull; Powered by Team Quantum Minds &bull; HydroSentinel AI™
-        </div>
-    </div>
-    '''
-
-    send_status = "SIMULATED (No RESEND_API_KEY set)"
-    if api_key and RESEND_AVAILABLE:
-        try:
-            import resend as _resend
-            _resend.api_key = api_key
-            r = _resend.Emails.send({
-                "from": "HydroSentinel Alerts <onboarding@resend.dev>",
-                "to": [recipient],
-                "subject": subject,
-                "html": html_content
-            })
-            email_id = r.get('id', email_id)
-            send_status = "DELIVERED_LIVE_RESEND"
-        except Exception as e:
-            send_status = f"FAILED: {str(e)[:80]}"
-            return jsonify({
-                "status": "error",
-                "delivery_status": send_status,
-                "email_id": email_id,
-                "recipient": recipient,
-                "timestamp": datetime.now(timezone.utc).isoformat(),
-                "message": f"Email delivery failed: {str(e)}"
-            }), 500
-    else:
-        # No API key — return helpful error so frontend can fallback to mailto
-        return jsonify({
-            "status": "no_api_key",
-            "delivery_status": send_status,
-            "email_id": email_id,
-            "recipient": recipient,
-            "subject": subject,
-            "timestamp": datetime.now(timezone.utc).isoformat(),
-            "message": "RESEND_API_KEY not configured. Set it in environment variables to enable live email dispatch."
-        }), 200
-
-    return jsonify({
-        "status": "success",
-        "delivery_status": send_status,
-        "email_id": email_id,
-        "recipient": recipient,
-        "subject": subject,
-        "timestamp": datetime.now(timezone.utc).isoformat(),
-        "message": f"Disaster alert email successfully dispatched to {recipient} via Resend API!"
-    }), 200
 
 @app.route('/api/send-alert-email', methods=['POST'])
 def api_send_alert_email():
-    '''Dispatches emergency flood alert emails via Resend API.'''
+    '''Dispatches emergency flood alert emails via Resend API or Gmail SMTP fallback.'''
     data = request.get_json() or {}
-    recipient = data.get('recipient_email', '').strip()
+    recipient    = data.get('recipient_email', '').strip()
     station_name = data.get('station_name', 'Kedarnath Mandakini Gorge')
     threat_level = data.get('threat_level', 'CRITICAL EVACUATION SURGE')
-    precip_rate = data.get('precip_rate', '88.0 mm/h')
-    lead_time = data.get('lead_time', '3.8 Hours')
-    notes = data.get('notes', 'Monsoonal cloudburst detected. River stage approaching breach threshold.')
-    
+    precip_rate  = data.get('precip_rate', '88.0 mm/h')
+    lead_time    = data.get('lead_time', '3.8 Hours')
+    notes        = data.get('notes', 'Monsoonal cloudburst detected. River stage approaching breach threshold.')
+
     if not recipient or '@' not in recipient:
         return jsonify({'status': 'error', 'message': 'Valid recipient email address is required.'}), 400
-        
-    api_key = os.environ.get('RESEND_API_KEY')
-    email_id = f"resend-{int(time.time())}-{random.randint(1000, 9999)}"
-    
-    html_content = f'''
-    <div style="font-family: Arial, sans-serif; background-color: #030712; color: #ffffff; padding: 30px; border-radius: 12px; max-width: 600px; margin: auto;">
-        <div style="border-bottom: 2px solid #ef4444; padding-bottom: 15px; margin-bottom: 20px;">
-            <span style="background: #ef4444; color: white; padding: 4px 10px; border-radius: 9999px; font-size: 11px; font-weight: bold; text-transform: uppercase;">EMERGENCY BROADCAST</span>
-            <h2 style="color: #ffffff; margin: 10px 0 0 0;">HydroSentinel AI™ &bull; National Disaster Alert</h2>
-        </div>
-        
-        <p style="color: #94a3b8; font-size: 14px;">Official emergency situation advisory issued by the Autonomous Flash Flood Defense Network:</p>
-        
-        <div style="background: rgba(239, 68, 68, 0.15); border: 1px solid #ef4444; border-radius: 8px; padding: 15px; margin: 20px 0;">
-            <div style="font-size: 13px; color: #f87171; font-weight: bold;">MONITORED BASIN:</div>
-            <div style="font-size: 18px; color: #ffffff; font-weight: bold; margin-bottom: 10px;">{station_name}</div>
-            
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 13px;">
-                <div><strong>THREAT LEVEL:</strong> <span style="color: #ef4444;">{threat_level}</span></div>
-                <div><strong>RADAR INFLOW:</strong> {precip_rate}</div>
-                <div><strong>WARNING LEAD TIME:</strong> <span style="color: #fbbf24;">{lead_time}</span></div>
-                <div><strong>AI CONFIDENCE:</strong> 98.58% R²</div>
-            </div>
-        </div>
-        
-        <p style="font-size: 13px; color: #cbd5e1; line-height: 1.5;"><strong>Field Directives:</strong> {notes}</p>
-        
-        <div style="text-align: center; margin-top: 30px;">
-            <a href="https://hydrosentinel.onrender.com/dashboard" style="background: #0284c7; color: #ffffff; padding: 12px 24px; border-radius: 9999px; text-decoration: none; font-weight: bold; font-size: 14px; display: inline-block;">
-                Launch 3D Digital Twin Command &rarr;
-            </a>
-        </div>
-        
-        <div style="border-top: 1px solid rgba(255,255,255,0.1); margin-top: 30px; padding-top: 15px; font-size: 11px; color: #64748b; text-align: center;">
-            Issued in accordance with NDMA guidelines &bull; Powered by Team Quantum Minds &bull; Dispatched via Resend API
-        </div>
-    </div>
-    '''
-    
-    send_status = "SIMULATED (No RESEND_API_KEY set)"
-    if api_key and RESEND_AVAILABLE:
-        try:
-            import resend as _resend
-            _resend.api_key = api_key
-            r = _resend.Emails.send({
-                "from": "HydroSentinel Alerts <onboarding@resend.dev>",
-                "to": [recipient],
-                "subject": f"🚨 CRITICAL FLOOD ALERT: {station_name} [{threat_level}]",
-                "html": html_content
-            })
-            email_id = r.get('id', email_id)
-            send_status = "DELIVERED_LIVE_RESEND"
-        except Exception as e:
-            send_status = f"FAILED: {str(e)[:80]}"
-            return jsonify({
-                "status": "error",
-                "delivery_status": send_status,
-                "email_id": email_id,
-                "recipient": recipient,
-                "timestamp": datetime.now(timezone.utc).isoformat(),
-                "provider": "Resend Cloud API (https://resend.com)",
-                "message": f"Email delivery failed: {str(e)}"
-            }), 500
-    else:
-        return jsonify({
-            "status": "no_api_key",
-            "delivery_status": send_status,
-            "email_id": email_id,
-            "recipient": recipient,
-            "timestamp": datetime.now(timezone.utc).isoformat(),
-            "provider": "Resend Cloud API (https://resend.com)",
-            "message": "RESEND_API_KEY environment variable not set. Add it to send live emails."
-        }), 200
 
-    return jsonify({
-        "status": "success",
-        "delivery_status": send_status,
-        "email_id": email_id,
-        "recipient": recipient,
-        "timestamp": datetime.now(timezone.utc).isoformat(),
-        "provider": "Resend Cloud API (https://resend.com)",
-        "message": f"Disaster situation brief dispatched successfully to {recipient}."
-    }), 200
+    subject = f"🚨 CRITICAL FLOOD ALERT: {station_name} [{threat_level}]"
+    result  = _dispatch_email(recipient, subject, station_name, threat_level, precip_rate, lead_time, notes)
+    result['recipient']  = recipient
+    result['timestamp']  = datetime.now(timezone.utc).isoformat()
+    result['provider']   = result.get('method', 'Email Dispatch Engine')
+    http_code = 500 if result['status'] == 'error' else 200
+    return jsonify(result), http_code
+
 
 
 # ==============================================================================
 # 🧪 INTERACTIVE HYDRODYNAMIC PHYSICS SANDBOX & LIDAR BEDROCK SLICER
 # ==============================================================================
+
 @app.route('/physics-sandbox')
 def physics_sandbox_page():
     '''Interactive Catchment Hydrodynamic Physics Lab & Bedrock Slicer.'''

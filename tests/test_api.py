@@ -382,7 +382,7 @@ def test_api_send_alert_email(client):
     assert res.status_code == 200
     json_data = res.get_json()
     # Accepts 'success' (Resend key set) or 'no_api_key' (test environment without key)
-    assert json_data['status'] in ('success', 'no_api_key')
+    assert json_data['status'] in ('success', 'no_api_key', 'no_credentials')
     assert 'email_id' in json_data
     assert json_data['recipient'] == 'test.responder@ndrf.gov.in'
 
@@ -411,7 +411,7 @@ def test_api_send_instant_email(client):
     assert res.status_code == 200
     json_data = res.get_json()
     # Accepts 'success' (Resend key set) or 'no_api_key' (test environment without key)
-    assert json_data['status'] in ('success', 'no_api_key')
+    assert json_data['status'] in ('success', 'no_api_key', 'no_credentials')
     assert 'email_id' in json_data
     assert json_data['recipient'] == 'rescue.officer@gmail.com'
 
