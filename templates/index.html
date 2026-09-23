@@ -663,49 +663,77 @@ function openHomeDirectWhatsApp() {
 
 async function sendHomeZeroKeyEmail(e) {
     e.preventDefault();
-    const email = document.getElementById('homeEmailInput').value;
+    const email = document.getElementById('homeEmailInput').value.trim();
     const btn = document.getElementById('btnHomeSendEmail');
     const fb = document.getElementById('homeEmailFeedback');
 
+    if (!email || !email.includes('@')) {
+        alert('Please enter a valid email address!');
+        return;
+    }
+
+    const subject = `🚨 EMERGENCY FLOOD ALERT: Alaknanda Upper Gorge [CRITICAL RED]`;
+    const body = `🚨 HYDROSENTINEL CRITICAL FLOOD ALERT\n` +
+                 `═══════════════════════════════════════\n` +
+                 `Basin: Alaknanda Upper Gorge\n` +
+                 `Threat: CRITICAL RED • IMMEDIATE EVACUATION\n` +
+                 `Rainfall Inflow: 74.0 mm/h\n` +
+                 `Warning Lead Time: 3.8 Hours\n\n` +
+                 `Directive: Move to high ground immediately (>2,200m).\n\n` +
+                 `Live 3D Twin: https://hydrosentinel.onrender.com/dashboard\n` +
+                 `Issued by Team Quantum Minds | HydroSentinel AI`;
+
+    const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(email)}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    const mailtoUrl = `mailto:${encodeURIComponent(email)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+    // ⚡ Open Gmail immediately on user click (never blocked)
+    window.open(gmailUrl, '_blank');
+
     btn.disabled = true;
-    btn.innerHTML = '<span>📡 Sending...</span>';
+    btn.innerHTML = '<span>📡 Opening...</span>';
     if (typeof playTactileClick === 'function') playTactileClick();
 
-    try {
-        const res = await fetch('/api/send-instant-email', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                recipient_email: email,
-                station_name: 'Alaknanda Upper Gorge',
-                threat_level: 'CRITICAL RED • IMMEDIATE EVACUATION',
-                lead_time: '3.8 Hours'
-            })
-        });
-        const data = await res.json();
-        if (typeof playSuccessChime === 'function') playSuccessChime();
+    // Background server call
+    fetch('/api/send-instant-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            recipient_email: email,
+            station_name: 'Alaknanda Upper Gorge',
+            threat_level: 'CRITICAL RED • IMMEDIATE EVACUATION',
+            lead_time: '3.8 Hours'
+        })
+    }).catch(() => {});
 
-        fb.style.display = 'block';
-        fb.innerHTML = `✅ <strong>EMAIL SENT!</strong> Sent to <u>${email}</u>.<br><span style="color: #34d399; font-size: 0.68rem;">Tracking ID: ${data.email_id || 'HS-EML-98'} &bull; Delivered</span>`;
-        btn.innerHTML = '<span>✅ Sent!</span>';
-        showHudToast(`<strong>CAP v1.2 EMAIL DISPATCHED:</strong> Delivered to ${email}`, 'normal');
-        setTimeout(() => {
-            btn.disabled = false;
-            btn.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg><span>Send Email</span>';
-        }, 2500);
-    } catch(err) {
-        fb.style.display = 'block';
-        fb.innerHTML = `⚠️ Fallback to Mail Client...`;
-        openHomeDirectMailApp();
+    fb.style.display = 'block';
+    fb.innerHTML = `
+        <div style="font-size:0.78rem; color:#34d399; font-weight:700; margin-bottom:4px;">
+            ✅ Gmail Compose tab opened for ${email}!
+        </div>
+        <div style="font-size:0.7rem; color:#cbd5e1; margin-bottom:6px;">
+            Click <strong>"Send"</strong> in Gmail to deliver immediately.
+        </div>
+        <div style="display:flex; gap:6px;">
+            <a href="${gmailUrl}" target="_blank" style="color:#ea4335; text-decoration:underline; font-size:0.7rem; font-weight:bold;">Re-open Gmail</a>
+            <span style="color:#64748b;">•</span>
+            <a href="${mailtoUrl}" style="color:#38bdf8; text-decoration:underline; font-size:0.7rem;">Open Mail App</a>
+        </div>
+    `;
+
+    if (typeof playSuccessChime === 'function') playSuccessChime();
+    showHudToast(`<strong>GMAIL COMPOSE LAUNCHED:</strong> Pre-filled for ${email}`, 'normal');
+
+    setTimeout(() => {
         btn.disabled = false;
         btn.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg><span>Send Email</span>';
-    }
+    }, 2500);
 }
 
 function openHomeDirectMailApp() {
-    const email = document.getElementById('homeEmailInput').value || 'responder@ndrf.gov.in';
-    showHudToast(`<strong>MAIL CLIENT LAUNCHED:</strong> Situation brief pre-populated for ${email}`, 'normal');
-    window.open(`mailto:${email}?subject=🚨 EMERGENCY FLOOD ALERT: Alaknanda Upper Gorge&body=🚨 HYDROSENTINEL CRITICAL FLOOD ALERT\nBasin: Alaknanda Upper Gorge\nThreat: CRITICAL RED • IMMEDIATE EVACUATION\nLead Time: 3.8 Hours\nDirective: Move to high ground immediately.\n\nLive 3D Twin: https://hydrosentinel.onrender.com/dashboard`, '_blank');
+    const email = document.getElementById('homeEmailInput').value.trim() || 'responder@ndrf.gov.in';
+    const subject = `🚨 EMERGENCY FLOOD ALERT: Alaknanda Upper Gorge`;
+    const body = `🚨 HYDROSENTINEL CRITICAL FLOOD ALERT\nBasin: Alaknanda Upper Gorge\nThreat: CRITICAL RED • IMMEDIATE EVACUATION\nLead Time: 3.8 Hours\nDirective: Move to high ground immediately.\n\nLive 3D Twin: https://hydrosentinel.onrender.com/dashboard`;
+    window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(email)}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`, '_blank');
 }
 
 // Hydrograph Spline Range Switcher

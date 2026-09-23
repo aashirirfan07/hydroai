@@ -91,13 +91,36 @@
 </style>
 
 <script>
+function getAlertPayload(recipient, basin, threat, note) {
+    const subject = `🚨 EMERGENCY FLOOD ALERT: ${basin} [${threat}]`;
+    const body = `🚨 HYDROSENTINEL AI™ — CRITICAL FLOOD ADVISORY\n` +
+                 `═══════════════════════════════════════════════\n\n` +
+                 `📍 MONITORED BASIN:     ${basin}\n` +
+                 `⚠️  THREAT SEVERITY:     ${threat}\n` +
+                 `🌧️  RADAR PRECIP INFLOW: 88.0 mm/h\n` +
+                 `⏱️  WARNING LEAD TIME:   3.8 Hours\n` +
+                 `🤖  AI CONFIDENCE:       98.58% R²\n\n` +
+                 `FIELD DIRECTIVES:\n` +
+                 `${note || 'Immediate civilian evacuation advisory. Move to designated Highland Safe Shelters (>2,200m).'}\n\n` +
+                 `═══════════════════════════════════════════════\n` +
+                 `🌐 Live 3D Twin HUD: https://hydrosentinel.onrender.com/dashboard\n` +
+                 `Issued under NDMA Guidelines • Team Quantum Minds`;
+    return { subject, body };
+}
+
+function copyAlertToClipboard(basin, threat) {
+    const p = getAlertPayload('all', basin, threat);
+    navigator.clipboard.writeText(p.subject + '\n\n' + p.body).then(() => {
+        alert('📋 Official Flood Alert Directive copied to clipboard! You can paste it anywhere.');
+    });
+}
+
 function openDirectMailClientFromInline() {
-    const to = document.getElementById('inlineRecipientEmail').value || 'responder@ndrf.gov.in';
+    const to = document.getElementById('inlineRecipientEmail').value.trim() || 'responder@ndrf.gov.in';
     const basin = document.getElementById('inlineBasinSelect').value;
     const threat = document.getElementById('inlineThreatSelect').value;
-    const subject = encodeURIComponent(`🚨 CRITICAL FLOOD ALERT: ${basin} [${threat}]`);
-    const body = encodeURIComponent(`🚨 HYDROSENTINEL CRITICAL DISASTER ALERT\n\nBasin: ${basin}\nThreat Level: ${threat}\nPrecipitation Rate: 88.0 mm/h\nWarning Lead Time: 3.8 Hours\n\nImmediate civilian evacuation advisory. Move to designated Highland Safe Shelters (>2,200m).\n\nLive 3D Twin: https://hydrosentinel.onrender.com/dashboard`);
-    window.open(`mailto:${to}?subject=${subject}&body=${body}`, '_blank');
+    const p = getAlertPayload(to, basin, threat);
+    window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(to)}&su=${encodeURIComponent(p.subject)}&body=${encodeURIComponent(p.body)}`, '_blank');
 }
 
 async function sendInlineZeroKeyEmail(e) {
@@ -113,19 +136,24 @@ async function sendInlineZeroKeyEmail(e) {
         feedback.style.background = 'rgba(239,68,68,0.15)';
         feedback.style.border = '1px solid rgba(239,68,68,0.4)';
         feedback.style.color = '#f87171';
-        feedback.innerHTML = '❌ <strong>Valid email address required.</strong>';
+        feedback.innerHTML = '❌ <strong>Valid email address required.</strong> Please enter your email (e.g. name@gmail.com).';
         return;
     }
 
-    // --- Dispatch animation ---
+    const { subject, body } = getAlertPayload(recipient, basin, threat);
+    const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(recipient)}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    const mailtoUrl = `mailto:${encodeURIComponent(recipient)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    const waUrl = `https://wa.me/?text=${encodeURIComponent(subject + '\n\n' + body)}`;
+
+    // ⚡ Open Gmail immediately on user click (synchronous = never blocked by browser popup blockers!)
+    const win = window.open(gmailUrl, '_blank');
+
     btn.disabled = true;
-    const originalText = btn.innerText;
-    const steps = ['📡 Initialising relay...', '🛰️ Connecting satellite mesh...', '⚡ Encrypting payload...', '📨 Dispatching alert...'];
-    let si = 0;
-    const anim = setInterval(() => { btn.innerText = steps[si++ % steps.length]; }, 420);
+    const origText = btn.innerText;
+    btn.innerText = '📡 Opening Gmail...';
     if (typeof playTactileClick === 'function') playTactileClick();
 
-    // Also ping the backend (best-effort — works if GMAIL/Resend configured)
+    // Background call to server dispatch (if Render has API keys configured)
     fetch('/api/send-instant-email', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -135,72 +163,52 @@ async function sendInlineZeroKeyEmail(e) {
             threat_level: threat,
             precip_rate: '88.0 mm/h',
             lead_time: '3.8 Hours',
-            notes: 'Emergency broadcast issued. Inundation crest reaching lower valley in 3.8 hours.'
+            notes: 'Immediate civilian evacuation advisory. Move to designated Highland Safe Shelters (>2,200m).'
         })
     }).then(r => r.json()).then(data => {
         if (data.status === 'success') {
-            clearInterval(anim);
-            btn.innerText = '✅ Email Sent!';
-            feedback.style.display = 'block';
-            feedback.style.background = 'rgba(16,185,129,0.15)';
-            feedback.style.border = '1px solid rgba(16,185,129,0.4)';
-            feedback.style.color = '#34d399';
-            feedback.innerHTML = `✅ <strong>EMERGENCY ALERT DISPATCHED!</strong> Delivered to <u>${recipient}</u><br><span style="font-size:0.78rem;color:#34d399;">ID: ${data.email_id} &bull; Via: ${data.method || 'Server'}</span>`;
-            setTimeout(() => { btn.disabled = false; btn.innerText = originalText; }, 4000);
-            return;
+            feedback.innerHTML += `<div style="margin-top:8px; font-size:0.75rem; color:#34d399;">⚡ Server Cloud Relay also dispatched live (ID: ${data.email_id})</div>`;
         }
-        // Server not configured — fall through to mailto
-        _doMailtoFallback(recipient, basin, threat, btn, feedback, anim, originalText);
-    }).catch(() => {
-        _doMailtoFallback(recipient, basin, threat, btn, feedback, anim, originalText);
-    });
-}
+    }).catch(() => {});
 
-function _doMailtoFallback(recipient, basin, threat, btn, feedback, anim, originalText) {
-    // After 1.5s of "animation", open Gmail and show success
+    feedback.style.display = 'block';
+    feedback.style.background = 'rgba(16, 185, 129, 0.15)';
+    feedback.style.border = '1.5px solid #10b981';
+    feedback.style.color = '#ffffff';
+    feedback.innerHTML = `
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:12px;">
+            <div>
+                <div style="font-size:1.05rem; font-weight:800; color:#34d399; margin-bottom:4px;">
+                    ✅ Gmail Pre-Filled & Ready for ${recipient}!
+                </div>
+                <div style="font-size:0.85rem; color:#cbd5e1; line-height:1.4;">
+                    Subject, basin threat data & NDMA evacuation directives are pre-populated. Simply hit <strong>"Send"</strong> in the opened Gmail tab.
+                </div>
+            </div>
+            <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                <a href="${gmailUrl}" target="_blank" class="spatial-btn-primary" style="background:#ea4335 !important; border-color:#ea4335 !important; padding:0.45rem 0.9rem; font-size:0.8rem; text-decoration:none; display:inline-flex; align-items:center; gap:5px;">
+                    ✉️ Re-open Gmail
+                </a>
+                <a href="${mailtoUrl}" class="spatial-btn-glass" style="padding:0.45rem 0.9rem; font-size:0.8rem; text-decoration:none; display:inline-flex; align-items:center; gap:5px;">
+                    📬 Outlook / App
+                </a>
+                <a href="${waUrl}" target="_blank" class="spatial-btn-glass" style="padding:0.45rem 0.9rem; font-size:0.8rem; text-decoration:none; display:inline-flex; align-items:center; gap:5px; color:#25D366;">
+                    💬 WhatsApp
+                </a>
+                <button type="button" onclick="copyAlertToClipboard('${basin}', '${threat}')" class="spatial-btn-glass" style="padding:0.45rem 0.9rem; font-size:0.8rem;">
+                    📋 Copy Text
+                </button>
+            </div>
+        </div>
+    `;
+
+    if (typeof playSuccessChime === 'function') playSuccessChime();
+
     setTimeout(() => {
-        clearInterval(anim);
-
-        const subject = encodeURIComponent(`🚨 EMERGENCY FLOOD ALERT: ${basin} [${threat}]`);
-        const body = encodeURIComponent(
-            `🚨 HYDROSENTINEL AI™ — CRITICAL FLOOD ALERT\n` +
-            `═══════════════════════════════════════\n\n` +
-            `📍 BASIN:        ${basin}\n` +
-            `⚠️  THREAT LEVEL: ${threat}\n` +
-            `🌧️  PRECIP RATE:  88.0 mm/h\n` +
-            `⏱️  LEAD TIME:    3.8 Hours\n` +
-            `🤖 AI CONF.:     98.58% R²\n\n` +
-            `FIELD DIRECTIVES:\n` +
-            `Immediate civilian evacuation advisory.\n` +
-            `Move to designated Highland Safe Shelters (>2,200m).\n\n` +
-            `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
-            `🌐 Live 3D Digital Twin:\n` +
-            `https://hydrosentinel.onrender.com/dashboard\n\n` +
-            `Powered by Team Quantum Minds | HydroSentinel AI™`
-        );
-
-        // Use Gmail compose URL for best experience
-        const gmailUrl = `https://mail.google.com/mail/?view=cm&to=${encodeURIComponent(recipient)}&su=${subject}&body=${body}`;
-        const mailtoUrl = `mailto:${recipient}?subject=${subject}&body=${body}`;
-
-        // Try Gmail web first, fallback to mailto
-        const win = window.open(gmailUrl, '_blank');
-        if (!win) window.location.href = mailtoUrl;
-
-        // Show success UI
-        btn.innerText = '✅ Alert Dispatched!';
-        feedback.style.display = 'block';
-        feedback.style.background = 'rgba(16,185,129,0.15)';
-        feedback.style.border = '1px solid rgba(16,185,129,0.4)';
-        feedback.style.color = '#34d399';
-        feedback.innerHTML = `✅ <strong>EMERGENCY ALERT DISPATCHED!</strong> Gmail opened for <u>${recipient}</u><br>
-            <span style="font-size:0.78rem;color:#34d399;">Pre-filled alert ready — click Send in Gmail to deliver.</span>`;
-
-        if (typeof playSuccessChime === 'function') playSuccessChime();
-        setTimeout(() => { btn.disabled = false; btn.innerText = originalText; }, 4000);
-    }, 1500);
+        btn.disabled = false;
+        btn.innerText = origText;
+    }, 2000);
 }
-
 </script>
 
 

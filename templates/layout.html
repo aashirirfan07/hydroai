@@ -82,6 +82,7 @@
                 <a href="{{ url_for('early_warning') }}" class="nav-link-pill {% if request.endpoint == 'early_warning' %}active{% endif %}">
                     <img src="/static/img/badges/emblem_alerts.svg" class="nav-micro-logo" alt="Early Warning">
                     <span>Early Warning</span>
+                    <span style="background: #ef4444; color: #ffffff; font-size: 0.65rem; padding: 2px 7px; border-radius: 9999px; font-weight: 800; letter-spacing: 0.5px; box-shadow: 0 0 10px rgba(239, 68, 68, 0.6);">EMAIL ALERTS</span>
                 </a>
                 <a href="{{ url_for('analytics') }}" class="nav-link-pill {% if request.endpoint == 'analytics' %}active{% endif %}">
                     <img src="/static/img/badges/emblem_analytics.svg" class="nav-micro-logo" alt="Analytics">
@@ -1221,62 +1222,109 @@ function closeGlobalZeroKeyEmailModal() {
 }
 
 function openGlobalDirectMailApp() {
-    const to = document.getElementById('globalRecipientEmail').value || 'responder@ndrf.gov.in';
+    const to = document.getElementById('globalRecipientEmail').value.trim() || 'responder@ndrf.gov.in';
     const basin = document.getElementById('globalBasinSelect').value;
     const threat = document.getElementById('globalThreatSelect').value;
     const note = document.getElementById('globalNotesText').value;
-    const subject = encodeURIComponent(`🚨 CRITICAL FLOOD ALERT: ${basin} [${threat}]`);
-    const body = encodeURIComponent(`🚨 HYDROSENTINEL CRITICAL DISASTER ALERT\n\nBasin: ${basin}\nThreat Level: ${threat}\nPrecipitation Rate: 88.0 mm/h\nWarning Lead Time: 3.8 Hours\n\nDirectives: ${note}\n\nLive 3D Twin: https://hydrosentinel.onrender.com/dashboard`);
-    window.open(`mailto:${to}?subject=${subject}&body=${body}`, '_blank');
+    const subject = `🚨 EMERGENCY FLOOD ALERT: ${basin} [${threat}]`;
+    const body = `🚨 HYDROSENTINEL CRITICAL DISASTER ALERT\n` +
+                 `═════════════════════════════════════════\n` +
+                 `Basin: ${basin}\nThreat Level: ${threat}\nPrecipitation Rate: 88.0 mm/h\nWarning Lead Time: 3.8 Hours\n\nDirectives: ${note}\n\nLive 3D Twin: https://hydrosentinel.onrender.com/dashboard`;
+    window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(to)}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`, '_blank');
 }
 
 async function sendGlobalZeroKeyEmail(e) {
     e.preventDefault();
     const btn = document.getElementById('btnSubmitGlobalEmail');
-    const recipient = document.getElementById('globalRecipientEmail').value;
+    const recipient = document.getElementById('globalRecipientEmail').value.trim();
     const basin = document.getElementById('globalBasinSelect').value;
     const threat = document.getElementById('globalThreatSelect').value;
     const note = document.getElementById('globalNotesText').value;
     const feedback = document.getElementById('globalEmailFeedbackBox');
 
+    if (!recipient || !recipient.includes('@')) {
+        feedback.style.display = 'block';
+        feedback.style.background = 'rgba(239,68,68,0.2)';
+        feedback.style.border = '1px solid #ef4444';
+        feedback.style.color = '#f87171';
+        feedback.innerHTML = '❌ Valid email address is required.';
+        return;
+    }
+
+    const subject = `🚨 EMERGENCY FLOOD ALERT: ${basin} [${threat}]`;
+    const body = `🚨 HYDROSENTINEL AI™ — CRITICAL FLOOD ADVISORY\n` +
+                 `═══════════════════════════════════════════════\n\n` +
+                 `📍 MONITORED BASIN:     ${basin}\n` +
+                 `⚠️  THREAT SEVERITY:     ${threat}\n` +
+                 `🌧️  RADAR PRECIP INFLOW: 88.0 mm/h\n` +
+                 `⏱️  WARNING LEAD TIME:   3.8 Hours\n` +
+                 `🤖  AI CONFIDENCE:       98.58% R²\n\n` +
+                 `FIELD DIRECTIVES:\n` +
+                 `${note}\n\n` +
+                 `═══════════════════════════════════════════════\n` +
+                 `🌐 Live 3D Twin HUD: https://hydrosentinel.onrender.com/dashboard\n` +
+                 `Issued under NDMA Guidelines • Team Quantum Minds`;
+
+    const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(recipient)}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    const mailtoUrl = `mailto:${encodeURIComponent(recipient)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    const waUrl = `https://wa.me/?text=${encodeURIComponent(subject + '\n\n' + body)}`;
+
+    // ⚡ Open Gmail immediately on user click (synchronous = never blocked by popup blocker)
+    window.open(gmailUrl, '_blank');
+
     btn.disabled = true;
-    btn.innerText = '📡 Dispatched to ' + recipient + '...';
+    const origText = btn.innerText;
+    btn.innerText = '📡 Opening Gmail...';
     if (typeof playTactileClick === 'function') playTactileClick();
 
-    try {
-        const res = await fetch('/api/send-instant-email', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                recipient_email: recipient,
-                station_name: basin,
-                threat_level: threat,
-                precip_rate: '88.0 mm/h',
-                lead_time: '3.8 Hours',
-                notes: note
-            })
-        });
-        const data = await res.json();
+    // Background server ping
+    fetch('/api/send-instant-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            recipient_email: recipient,
+            station_name: basin,
+            threat_level: threat,
+            precip_rate: '88.0 mm/h',
+            lead_time: '3.8 Hours',
+            notes: note
+        })
+    }).then(r => r.json()).then(data => {
+        if (data.status === 'success') {
+            feedback.innerHTML += `<div style="margin-top:6px; font-size:0.75rem; color:#34d399;">⚡ Server Relay ID: ${data.email_id}</div>`;
+        }
+    }).catch(() => {});
 
+    feedback.style.display = 'block';
+    feedback.style.background = 'rgba(16, 185, 129, 0.2)';
+    feedback.style.border = '1.5px solid #10b981';
+    feedback.style.color = '#ffffff';
+    feedback.innerHTML = `
+        <div style="font-weight:700; color:#34d399; margin-bottom:4px;">
+            ✅ Gmail Pre-Filled & Ready for ${recipient}!
+        </div>
+        <div style="font-size:0.8rem; color:#cbd5e1; margin-bottom:8px;">
+            Click <strong>"Send"</strong> in the opened Gmail tab to deliver.
+        </div>
+        <div style="display:flex; gap:6px; flex-wrap:wrap;">
+            <a href="${gmailUrl}" target="_blank" class="spatial-btn-primary" style="background:#ea4335 !important; border-color:#ea4335 !important; padding:0.35rem 0.75rem; font-size:0.75rem; text-decoration:none;">
+                ✉️ Re-open Gmail
+            </a>
+            <a href="${mailtoUrl}" class="spatial-btn-glass" style="padding:0.35rem 0.75rem; font-size:0.75rem; text-decoration:none;">
+                📬 Mail App
+            </a>
+            <a href="${waUrl}" target="_blank" class="spatial-btn-glass" style="padding:0.35rem 0.75rem; font-size:0.75rem; text-decoration:none; color:#25D366;">
+                💬 WhatsApp
+            </a>
+        </div>
+    `;
 
-        if (typeof playSuccessChime === 'function') playSuccessChime();
+    if (typeof playSuccessChime === 'function') playSuccessChime();
 
-        feedback.style.display = 'block';
-        feedback.innerHTML = `✅ <strong>REAL EMAIL SENT!</strong> Check inbox for <u>${recipient}</u>.<br><span style="color: #34d399; font-size: 0.75rem;">Tracking ID: ${data.email_id} &bull; 100% Free Zero-Key Cloud Relay</span>`;
-
-        btn.innerText = '✅ Real Email Sent!';
-        setTimeout(() => {
-            closeGlobalZeroKeyEmailModal();
-            btn.disabled = false;
-            btn.innerText = '🚀 Send Real Email Now';
-        }, 1500);
-    } catch(err) {
-        feedback.style.display = 'block';
-        feedback.innerHTML = `⚠️ Network delay. Opening your email app instead...`;
-        openGlobalDirectMailApp();
+    setTimeout(() => {
         btn.disabled = false;
-        btn.innerText = '🚀 Send Real Email Now';
-    }
+        btn.innerText = origText;
+    }, 2500);
 }
 </script>
 
