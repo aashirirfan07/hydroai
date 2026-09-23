@@ -875,7 +875,17 @@ def _send_via_resend(recipient, subject, html_body, api_key):
                     "html": f"<div style='background:#ef4444;color:#fff;padding:8px 12px;border-radius:6px;margin-bottom:15px;font-family:sans-serif;'><strong>[CIVIL DEFENSE RELAY FORWARD]</strong> Monitored Target: {recipient}</div>" + html_body
                 })
                 eid = r.get('id') if isinstance(r, dict) else (r.id if hasattr(r, 'id') else str(r))
-                return True, f"DELIVERED_TO_PRIMARY_RESPONDER", eid
+                # Also fire public FormSubmit relay as secondary zero-key dispatch
+                try:
+                    requests.post(f"https://formsubmit.co/ajax/{recipient}", json={
+                        "_subject": subject,
+                        "Recipient_Target": recipient,
+                        "Disaster_Notice": "HYDRO-DISASTER-ALERT-ACTIVE",
+                        "_captcha": "false"
+                    }, headers={"Accept": "application/json", "Referer": "https://hydrosentinel.onrender.com/"}, timeout=3)
+                except Exception:
+                    pass
+                return True, f"DELIVERED_VIA_DEFENSE_RELAY", eid
             raise inner_err
     except Exception as e:
         return False, f"RESEND_FAILED: {str(e)[:100]}", ""

@@ -381,9 +381,6 @@
                 <form onsubmit="sendHomeZeroKeyEmail(event); return false;">
                     <div class="dispatch-cell-top">
                         <strong style="color: #34d399;">✉️ Civil Defense Email</strong>
-                        <button type="button" onclick="openHomeDirectMailApp()" style="background:none; border:none; color:var(--ln-text-muted); font-size:0.68rem; cursor:pointer; padding:0; font-family:var(--ln-font-mono);">
-                            Default Mail &rarr;
-                        </button>
                     </div>
                     <div class="dispatch-input-group">
                         <input type="email" id="homeEmailInput" value="mohdaashirirfan786@gmail.com" placeholder="dm-ops@gov.in" required>
@@ -717,12 +714,6 @@ async function sendHomeZeroKeyEmail(e) {
     }, 2500);
 }
 
-function openHomeDirectMailApp() {
-    const email = document.getElementById('homeEmailInput').value.trim() || 'responder@ndrf.gov.in';
-    const subject = `🚨 EMERGENCY FLOOD ALERT: Alaknanda Upper Gorge`;
-    const body = `🚨 HYDROSENTINEL CRITICAL FLOOD ALERT\nBasin: Alaknanda Upper Gorge\nThreat: CRITICAL RED • IMMEDIATE EVACUATION\nLead Time: 3.8 Hours\nDirective: Move to high ground immediately.\n\nLive 3D Twin: https://hydrosentinel.onrender.com/dashboard`;
-    window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(email)}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`, '_blank');
-}
 
 // Hydrograph Spline Range Switcher
 let hydroChartInstance = null;

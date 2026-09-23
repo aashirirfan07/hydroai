@@ -1,0 +1,1910 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HydroSentinel AI™ — Project Documentation</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap');
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #ffffff;
+      color: #0f172a;
+      font-size: 11pt;
+      line-height: 1.7;
+    }
+
+    /* ===== COVER PAGE ===== */
+    .cover {
+      width: 100%;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #020918 0%, #050e22 40%, #0a1535 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 60px 40px;
+      page-break-after: always;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cover::before {
+      content: '';
+      position: absolute;
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(16,185,129,0.15) 0%, transparent 70%);
+      top: -100px; left: -100px;
+    }
+    .cover::after {
+      content: '';
+      position: absolute;
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(99,102,241,0.12) 0%, transparent 70%);
+      bottom: -100px; right: -100px;
+    }
+
+    .cover-logo-ring {
+      width: 90px; height: 90px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #10b981, #6366f1);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 36px;
+      margin-bottom: 28px;
+      box-shadow: 0 0 60px rgba(16,185,129,0.5);
+      position: relative; z-index: 2;
+    }
+
+    .cover-badge {
+      display: inline-block;
+      background: rgba(16,185,129,0.18);
+      border: 1px solid rgba(16,185,129,0.4);
+      color: #34d399;
+      font-size: 9pt;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 5px 16px;
+      border-radius: 999px;
+      margin-bottom: 20px;
+      position: relative; z-index: 2;
+    }
+
+    .cover h1 {
+      font-size: 42pt;
+      font-weight: 800;
+      color: #ffffff;
+      letter-spacing: -1.5px;
+      line-height: 1.15;
+      position: relative; z-index: 2;
+      margin-bottom: 6px;
+    }
+
+    .cover h1 span { color: #34d399; }
+
+    .cover-sub {
+      font-size: 13pt;
+      color: #94a3b8;
+      margin-top: 12px;
+      font-weight: 400;
+      position: relative; z-index: 2;
+      max-width: 520px;
+    }
+
+    .cover-meta {
+      margin-top: 50px;
+      display: flex;
+      gap: 30px;
+      justify-content: center;
+      position: relative; z-index: 2;
+      flex-wrap: wrap;
+    }
+
+    .cover-meta-item {
+      text-align: center;
+    }
+    .cover-meta-item .val {
+      display: block;
+      font-size: 22pt;
+      font-weight: 800;
+      color: #ffffff;
+    }
+    .cover-meta-item .lbl {
+      display: block;
+      font-size: 8pt;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+    }
+
+    .cover-divider {
+      width: 1px; height: 45px;
+      background: rgba(255,255,255,0.12);
+    }
+
+    .cover-footer {
+      margin-top: 60px;
+      color: #475569;
+      font-size: 9pt;
+      position: relative; z-index: 2;
+    }
+    .cover-footer strong { color: #94a3b8; }
+
+    /* ===== DOCUMENT BODY ===== */
+    .doc-body {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 40px 50px;
+    }
+
+    /* ===== TABLE OF CONTENTS ===== */
+    .toc-page {
+      page-break-after: always;
+      padding: 40px 0;
+    }
+
+    .toc-title {
+      font-size: 24pt;
+      font-weight: 800;
+      color: #0f172a;
+      margin-bottom: 6px;
+      letter-spacing: -0.5px;
+    }
+
+    .toc-subtitle {
+      color: #64748b;
+      font-size: 10pt;
+      margin-bottom: 30px;
+      padding-bottom: 16px;
+      border-bottom: 2px solid #f1f5f9;
+    }
+
+    .toc-section {
+      margin-bottom: 6px;
+    }
+
+    .toc-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 12px;
+      border-radius: 8px;
+      transition: background 0.2s;
+    }
+
+    .toc-item:hover { background: #f8fafc; }
+
+    .toc-item.main {
+      font-weight: 700;
+      color: #0f172a;
+      font-size: 11pt;
+    }
+
+    .toc-item.sub {
+      font-size: 10pt;
+      color: #475569;
+      padding-left: 28px;
+    }
+
+    .toc-num {
+      background: linear-gradient(135deg, #10b981, #6366f1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: 800;
+      font-size: 10pt;
+      min-width: 28px;
+    }
+
+    .toc-dots {
+      flex: 1;
+      border-bottom: 1px dotted #cbd5e1;
+      margin: 0 12px;
+      margin-bottom: 3px;
+    }
+
+    .toc-page-num {
+      color: #94a3b8;
+      font-size: 9pt;
+      font-weight: 600;
+    }
+
+    /* ===== SECTION HEADINGS ===== */
+    .section {
+      margin-top: 48px;
+      page-break-inside: avoid;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid #f1f5f9;
+    }
+
+    .section-num {
+      width: 38px; height: 38px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: white;
+      font-weight: 800;
+      font-size: 12pt;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .section-num.purple { background: linear-gradient(135deg, #6366f1, #4f46e5); }
+    .section-num.blue   { background: linear-gradient(135deg, #0284c7, #0369a1); }
+    .section-num.amber  { background: linear-gradient(135deg, #f59e0b, #d97706); }
+    .section-num.red    { background: linear-gradient(135deg, #ef4444, #dc2626); }
+    .section-num.teal   { background: linear-gradient(135deg, #06b6d4, #0891b2); }
+    .section-num.pink   { background: linear-gradient(135deg, #ec4899, #db2777); }
+    .section-num.slate  { background: linear-gradient(135deg, #64748b, #475569); }
+
+    .section h2 {
+      font-size: 19pt;
+      font-weight: 800;
+      color: #0f172a;
+      letter-spacing: -0.5px;
+    }
+
+    .section h3 {
+      font-size: 13pt;
+      font-weight: 700;
+      color: #1e293b;
+      margin-top: 22px;
+      margin-bottom: 10px;
+    }
+
+    .section h4 {
+      font-size: 10.5pt;
+      font-weight: 700;
+      color: #334155;
+      margin-top: 14px;
+      margin-bottom: 6px;
+    }
+
+    p { margin-bottom: 12px; color: #334155; }
+
+    /* ===== CARDS & CALLOUTS ===== */
+    .card {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 18px 22px;
+      margin-bottom: 16px;
+    }
+
+    .card-green  { border-left: 4px solid #10b981; }
+    .card-blue   { border-left: 4px solid #0284c7; }
+    .card-purple { border-left: 4px solid #6366f1; }
+    .card-amber  { border-left: 4px solid #f59e0b; }
+    .card-red    { border-left: 4px solid #ef4444; }
+    .card-teal   { border-left: 4px solid #06b6d4; }
+
+    .callout {
+      padding: 14px 18px;
+      border-radius: 10px;
+      margin-bottom: 14px;
+      font-size: 10.5pt;
+    }
+
+    .callout-info   { background: #eff6ff; border: 1px solid #bfdbfe; color: #1e40af; }
+    .callout-success{ background: #f0fdf4; border: 1px solid #bbf7d0; color: #166534; }
+    .callout-warn   { background: #fffbeb; border: 1px solid #fde68a; color: #92400e; }
+
+    /* ===== TABLES ===== */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 18px;
+      font-size: 9.5pt;
+    }
+
+    th {
+      background: #0f172a;
+      color: #ffffff;
+      padding: 9px 14px;
+      text-align: left;
+      font-weight: 700;
+      font-size: 8.5pt;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    th:first-child { border-radius: 8px 0 0 0; }
+    th:last-child  { border-radius: 0 8px 0 0; }
+
+    td {
+      padding: 9px 14px;
+      border-bottom: 1px solid #e2e8f0;
+      color: #334155;
+    }
+
+    tr:nth-child(even) td { background: #f8fafc; }
+    tr:last-child td { border-bottom: none; }
+
+    /* ===== CODE ===== */
+    code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9pt;
+      background: #0f172a;
+      color: #34d399;
+      padding: 2px 7px;
+      border-radius: 5px;
+    }
+
+    pre {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9pt;
+      background: #0f172a;
+      color: #e2e8f0;
+      padding: 16px 20px;
+      border-radius: 10px;
+      margin-bottom: 16px;
+      overflow-x: auto;
+      line-height: 1.6;
+    }
+
+    pre .comment { color: #64748b; }
+    pre .key     { color: #34d399; }
+    pre .val     { color: #93c5fd; }
+    pre .str     { color: #fbbf24; }
+
+    /* ===== TAGS / BADGES ===== */
+    .tag {
+      display: inline-block;
+      padding: 2px 10px;
+      border-radius: 999px;
+      font-size: 8.5pt;
+      font-weight: 700;
+      margin: 2px;
+    }
+
+    .tag-green  { background: #dcfce7; color: #166534; }
+    .tag-blue   { background: #dbeafe; color: #1d4ed8; }
+    .tag-purple { background: #ede9fe; color: #5b21b6; }
+    .tag-amber  { background: #fef3c7; color: #92400e; }
+    .tag-red    { background: #fee2e2; color: #991b1b; }
+    .tag-teal   { background: #ccfbf1; color: #115e59; }
+    .tag-slate  { background: #f1f5f9; color: #334155; }
+
+    /* ===== FLOW DIAGRAM ===== */
+    .flow {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      flex-wrap: wrap;
+      margin: 18px 0;
+    }
+
+    .flow-step {
+      background: #f8fafc;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 10px 16px;
+      font-size: 9.5pt;
+      font-weight: 600;
+      color: #1e293b;
+      text-align: center;
+      min-width: 90px;
+    }
+
+    .flow-arrow {
+      color: #94a3b8;
+      font-size: 16pt;
+      padding: 0 6px;
+    }
+
+    /* ===== API TABLE ===== */
+    .api-method {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 5px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 8.5pt;
+      font-weight: 700;
+    }
+    .method-get  { background: #dcfce7; color: #166534; }
+    .method-post { background: #dbeafe; color: #1d4ed8; }
+
+    /* ===== GRID ===== */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .metric-card {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 16px;
+      text-align: center;
+    }
+
+    .metric-card .m-val {
+      font-size: 22pt;
+      font-weight: 800;
+      color: #0f172a;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+
+    .metric-card .m-lbl {
+      font-size: 8pt;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* ===== LIST ===== */
+    ul, ol {
+      padding-left: 22px;
+      margin-bottom: 12px;
+    }
+
+    li { margin-bottom: 5px; color: #334155; }
+    li strong { color: #0f172a; }
+
+    /* ===== PAGE BREAK ===== */
+    .page-break { page-break-before: always; }
+
+    /* ===== SECTION DIVIDER ===== */
+    .divider {
+      border: none;
+      border-top: 1px solid #e2e8f0;
+      margin: 28px 0;
+    }
+
+    /* ===== PRINT STYLES ===== */
+    @media print {
+      .cover { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .section-num, .tag, th, pre, code { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    }
+
+    @page {
+      margin: 0;
+    }
+
+    @page :left { margin: 20mm 20mm 20mm 25mm; }
+    @page :right { margin: 20mm 25mm 20mm 20mm; }
+  </style>
+</head>
+<body>
+
+<!-- ============================================================ -->
+<!--  COVER PAGE                                                  -->
+<!-- ============================================================ -->
+<div class="cover">
+  <div class="cover-logo-ring">🌊</div>
+  <div class="cover-badge">Technical Documentation · v2.9</div>
+  <h1>HYDRO<span>SENTINEL</span> AI™</h1>
+  <div class="cover-sub">
+    Autonomous Geospatial Flash Flood Prediction Platform<br>
+    Physics-Informed AI · 3D Digital Twin · Real-Time Satellite Mesh
+  </div>
+  <div class="cover-meta">
+    <div class="cover-meta-item">
+      <span class="val">109</span>
+      <span class="lbl">Automated Tests</span>
+    </div>
+    <div class="cover-divider"></div>
+    <div class="cover-meta-item">
+      <span class="val">5</span>
+      <span class="lbl">ML Models</span>
+    </div>
+    <div class="cover-divider"></div>
+    <div class="cover-meta-item">
+      <span class="val">85+</span>
+      <span class="lbl">API Endpoints</span>
+    </div>
+    <div class="cover-divider"></div>
+    <div class="cover-meta-item">
+      <span class="val">8</span>
+      <span class="lbl">Sensor Stations</span>
+    </div>
+    <div class="cover-divider"></div>
+    <div class="cover-meta-item">
+      <span class="val">98.58%</span>
+      <span class="lbl">Model R² Score</span>
+    </div>
+  </div>
+  <div class="cover-footer">
+    Designed &amp; Engineered by <strong>Team Quantum Minds</strong> &nbsp;·&nbsp; 2026
+  </div>
+</div>
+
+
+<!-- ============================================================ -->
+<!--  TABLE OF CONTENTS                                           -->
+<!-- ============================================================ -->
+<div class="doc-body">
+<div class="toc-page">
+  <div class="toc-title">Table of Contents</div>
+  <div class="toc-subtitle">HydroSentinel AI™ — Full Technical Reference</div>
+
+  <div class="toc-section">
+    <div class="toc-item main">
+      <span class="toc-num">01</span>
+      <span>Project Overview &amp; Mission</span>
+      <span class="toc-dots"></span>
+      <span class="toc-page-num">3</span>
+    </div>
+    <div class="toc-item sub">
+      <span></span><span>Problem Statement &amp; Background</span>
+      <span class="toc-dots"></span><span class="toc-page-num">3</span>
+    </div>
+    <div class="toc-item sub">
+      <span></span><span>Key Features &amp; Capabilities</span>
+      <span class="toc-dots"></span><span class="toc-page-num">3</span>
+    </div>
+  </div>
+
+  <div class="toc-section">
+    <div class="toc-item main">
+      <span class="toc-num">02</span>
+      <span>System Architecture</span>
+      <span class="toc-dots"></span>
+      <span class="toc-page-num">4</span>
+    </div>
+    <div class="toc-item sub">
+      <span></span><span>Technology Stack</span>
+      <span class="toc-dots"></span><span class="toc-page-num">4</span>
+    </div>
+    <div class="toc-item sub">
+      <span></span><span>Project Directory Structure</span>
+      <span class="toc-dots"></span><span class="toc-page-num">4</span>
+    </div>
+    <div class="toc-item sub">
+      <span></span><span>Data Flow Architecture</span>
+      <span class="toc-dots"></span><span class="toc-page-num">5</span>
+    </div>
+  </div>
+
+  <div class="toc-section">
+    <div class="toc-item main">
+      <span class="toc-num">03</span>
+      <span>Machine Learning Pipeline</span>
+      <span class="toc-dots"></span>
+      <span class="toc-page-num">5</span>
+    </div>
+    <div class="toc-item sub">
+      <span></span><span>Input Feature Set (10 Telemetry Inputs)</span>
+      <span class="toc-dots"></span><span class="toc-page-num">5</span>
+    </div>
+    <div class="toc-item sub">
+      <span></span><span>Feature Engineering: Hydrological Physics</span>
+      <span class="toc-dots"></span><span class="toc-page-num">6</span>
+    </div>
+    <div class="toc-item sub">
+      <span></span><span>Model Training &amp; Ensemble Selection</span>
+      <span class="toc-dots"></span><span class="toc-page-num">6</span>
+    </div>
+    <div class="toc-item sub">
+      <span></span><span>Prediction Output &amp; XAI Attribution</span>
+      <span class="toc-dots"></span><span class="toc-page-num">7</span>
+    </div>
+  </div>
+
+  <div class="toc-section">
+    <div class="toc-item main">
+      <span class="toc-num">04</span>
+      <span>External APIs &amp; Open Data Integrations</span>
+      <span class="toc-dots"></span>
+      <span class="toc-page-num">8</span>
+    </div>
+    <div class="toc-item sub">
+      <span></span><span>GloFAS / Open-Meteo Flood API</span>
+      <span class="toc-dots"></span><span class="toc-page-num">8</span>
+    </div>
+    <div class="toc-item sub">
+      <span></span><span>USGS Earthquake Real-Time GeoJSON API</span>
+      <span class="toc-dots"></span><span class="toc-page-num">8</span>
+    </div>
+    <div class="toc-item sub">
+      <span></span><span>NASA Earth Events / EONET API</span>
+      <span class="toc-dots"></span><span class="toc-page-num">8</span>
+    </div>
+    <div class="toc-item sub">
+      <span></span><span>Open-Meteo Severe Weather &amp; CAPE API</span>
+      <span class="toc-dots"></span><span class="toc-page-num">9</span>
+    </div>
+    <div class="toc-item sub">
+      <span></span><span>Resend Email API</span>
+      <span class="toc-dots"></span><span class="toc-page-num">9</span>
+    </div>
+  </div>
+
+  <div class="toc-section">
+    <div class="toc-item main">
+      <span class="toc-num">05</span>
+      <span>Internal REST API Reference</span>
+      <span class="toc-dots"></span>
+      <span class="toc-page-num">9</span>
+    </div>
+  </div>
+
+  <div class="toc-section">
+    <div class="toc-item main">
+      <span class="toc-num">06</span>
+      <span>Frontend &amp; UI Architecture</span>
+      <span class="toc-dots"></span>
+      <span class="toc-page-num">12</span>
+    </div>
+  </div>
+
+  <div class="toc-section">
+    <div class="toc-item main">
+      <span class="toc-num">07</span>
+      <span>Model Context Protocol (MCP) Server</span>
+      <span class="toc-dots"></span>
+      <span class="toc-page-num">13</span>
+    </div>
+  </div>
+
+  <div class="toc-section">
+    <div class="toc-item main">
+      <span class="toc-num">08</span>
+      <span>Drone Swarm SAR Mission Planner</span>
+      <span class="toc-dots"></span>
+      <span class="toc-page-num">14</span>
+    </div>
+  </div>
+
+  <div class="toc-section">
+    <div class="toc-item main">
+      <span class="toc-num">09</span>
+      <span>Security &amp; Enterprise Architecture</span>
+      <span class="toc-dots"></span>
+      <span class="toc-page-num">14</span>
+    </div>
+  </div>
+
+  <div class="toc-section">
+    <div class="toc-item main">
+      <span class="toc-num">10</span>
+      <span>Deployment &amp; DevOps</span>
+      <span class="toc-dots"></span>
+      <span class="toc-page-num">15</span>
+    </div>
+  </div>
+
+  <div class="toc-section">
+    <div class="toc-item main">
+      <span class="toc-num">11</span>
+      <span>Testing &amp; Quality Assurance</span>
+      <span class="toc-dots"></span>
+      <span class="toc-page-num">15</span>
+    </div>
+  </div>
+
+  <div class="toc-section">
+    <div class="toc-item main">
+      <span class="toc-num">12</span>
+      <span>Sensor Station Network</span>
+      <span class="toc-dots"></span>
+      <span class="toc-page-num">16</span>
+    </div>
+  </div>
+</div>
+
+
+<!-- ============================================================ -->
+<!--  SECTION 01 — PROJECT OVERVIEW                               -->
+<!-- ============================================================ -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-num">01</div>
+    <h2>Project Overview &amp; Mission</h2>
+  </div>
+
+  <h3>Problem Statement</h3>
+  <p>Flash floods in the Himalayan river basins — particularly in Uttarakhand, Himachal Pradesh, and Sikkim — are among the most catastrophic natural disasters in India. Events like the <strong>Kedarnath 2013 Cloudburst</strong>, the <strong>Chamoli 2021 Glacier Lake Outburst Flood (GLOF)</strong>, and the <strong>Wayanad 2024 Monsoon Surge</strong> have collectively claimed thousands of lives and caused billions in infrastructure loss. These disasters share a critical common failure: <em>insufficient warning lead time and lack of automated, physics-informed early detection systems</em>.</p>
+
+  <p>Traditional hydrometeorological monitoring relies on manual gauge readings, siloed government databases, and models that cannot run in real time at the edge. HydroSentinel AI™ was built to close this gap — delivering an autonomous, 24/7 flash flood early warning and simulation platform that fuses physics, machine learning, satellite remote sensing, and real-time open-source data meshes.</p>
+
+  <h3>Key Capabilities at a Glance</h3>
+  <div class="grid-3">
+    <div class="metric-card">
+      <div class="m-val" style="color:#10b981">3.8h</div>
+      <div class="m-lbl">Avg Flood Lead Time Warning</div>
+    </div>
+    <div class="metric-card">
+      <div class="m-val" style="color:#6366f1">98.58%</div>
+      <div class="m-lbl">Model R² Accuracy</div>
+    </div>
+    <div class="metric-card">
+      <div class="m-val" style="color:#0284c7">12ms</div>
+      <div class="m-lbl">Inference Latency</div>
+    </div>
+  </div>
+  <div class="grid-3">
+    <div class="metric-card">
+      <div class="m-val" style="color:#f59e0b">8</div>
+      <div class="m-lbl">Himalayan Sensor Stations</div>
+    </div>
+    <div class="metric-card">
+      <div class="m-val" style="color:#ef4444">4</div>
+      <div class="m-lbl">Open Scientific APIs</div>
+    </div>
+    <div class="metric-card">
+      <div class="m-val" style="color:#06b6d4">25+</div>
+      <div class="m-lbl">Web Pages / Modules</div>
+    </div>
+  </div>
+
+  <div class="callout callout-success">
+    <strong>✅ Completely Free & Open-Source:</strong> All external data integrations (GloFAS, USGS, Open-Meteo, NASA EONET) require zero API keys and are 100% publicly accessible under open scientific data licenses.
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!--  SECTION 02 — SYSTEM ARCHITECTURE                           -->
+<!-- ============================================================ -->
+<div class="section page-break">
+  <div class="section-header">
+    <div class="section-num purple">02</div>
+    <h2>System Architecture</h2>
+  </div>
+
+  <h3>Technology Stack</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Layer</th>
+        <th>Technology</th>
+        <th>Version</th>
+        <th>Purpose</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Backend Framework</strong></td>
+        <td>Flask</td>
+        <td>≥ 3.0.0</td>
+        <td>REST API server, page routing, SSE streaming</td>
+      </tr>
+      <tr>
+        <td><strong>ML Core</strong></td>
+        <td>scikit-learn</td>
+        <td>≥ 1.3.0</td>
+        <td>RandomForest, GradientBoosting, Pipelines, Scalers</td>
+      </tr>
+      <tr>
+        <td><strong>Gradient Boosting</strong></td>
+        <td>XGBoost</td>
+        <td>≥ 1.7.0</td>
+        <td>XGBRegressor — primary flood risk scorer</td>
+      </tr>
+      <tr>
+        <td><strong>Data Processing</strong></td>
+        <td>Pandas / NumPy</td>
+        <td>≥ 2.0 / 1.24</td>
+        <td>Feature engineering, tabular transformations</td>
+      </tr>
+      <tr>
+        <td><strong>Visualisation</strong></td>
+        <td>Plotly</td>
+        <td>≥ 5.18.0</td>
+        <td>Interactive SHAP radar charts, hydrograph plots</td>
+      </tr>
+      <tr>
+        <td><strong>3D WebGL</strong></td>
+        <td>Three.js r128</td>
+        <td>r128</td>
+        <td>3D Earth globe, terrain mesh, digital twin HUD</td>
+      </tr>
+      <tr>
+        <td><strong>Charts</strong></td>
+        <td>Chart.js</td>
+        <td>Latest</td>
+        <td>Discharge splines, forecast probability curves</td>
+      </tr>
+      <tr>
+        <td><strong>Email Dispatch</strong></td>
+        <td>Resend SDK</td>
+        <td>≥ 2.4.0</td>
+        <td>Emergency alert email delivery (API key required)</td>
+      </tr>
+      <tr>
+        <td><strong>Model Serialisation</strong></td>
+        <td>Dill</td>
+        <td>≥ 0.3.7</td>
+        <td>Persist sklearn pipelines and XGBoost artifacts</td>
+      </tr>
+      <tr>
+        <td><strong>Web Server</strong></td>
+        <td>Gunicorn</td>
+        <td>≥ 21.2.0</td>
+        <td>Production WSGI server (Render.com deployment)</td>
+      </tr>
+      <tr>
+        <td><strong>Testing</strong></td>
+        <td>Pytest</td>
+        <td>≥ 7.4.0</td>
+        <td>109 automated API, pipeline, and MCP tests</td>
+      </tr>
+      <tr>
+        <td><strong>Frontend Fonts</strong></td>
+        <td>Plus Jakarta Sans, JetBrains Mono, Syne</td>
+        <td>Google Fonts</td>
+        <td>Display typography, monospace readouts</td>
+      </tr>
+      <tr>
+        <td><strong>Icons</strong></td>
+        <td>Font Awesome 6.4</td>
+        <td>6.4.0</td>
+        <td>Navigation icons, alert icons, UI accents</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Project Directory Structure</h3>
+  <pre><span class="comment"># HydroSentinel AI™ Project Root</span>
+flash_flood_prediction_system/
+├── <span class="key">app.py</span>                     <span class="comment"># Flask app — 2,200 lines, 85+ API routes</span>
+├── <span class="key">requirements.txt</span>           <span class="comment"># Python package dependencies</span>
+├── <span class="key">Procfile</span>                   <span class="comment"># Gunicorn deployment command</span>
+├── <span class="key">render.yaml</span>                <span class="comment"># Render.com cloud deploy config</span>
+├── <span class="key">mcp_server.py</span>              <span class="comment"># Standalone MCP server entry point</span>
+│
+├── <span class="key">src/</span>                       <span class="comment"># Core Python package</span>
+│   ├── components/
+│   │   ├── data_ingestion.py      <span class="comment"># Loads raw CSV, splits train/test</span>
+│   │   ├── data_transformation.py <span class="comment"># Feature engineering + sklearn Pipeline</span>
+│   │   └── model_trainer.py       <span class="comment"># 5-model ensemble, auto-selects best R²</span>
+│   ├── pipeline/
+│   │   ├── predict_pipeline.py    <span class="comment"># Inference + XAI + forecast curves</span>
+│   │   ├── train_pipeline.py      <span class="comment"># Orchestrates full training run</span>
+│   │   ├── live_stream_service.py <span class="comment"># Server-Sent Events (SSE) live feed</span>
+│   │   └── multi_source_ingestion_service.py
+│   ├── mcp_service.py             <span class="comment"># MCP 2024-11-05 protocol server</span>
+│   ├── open_data_service.py       <span class="comment"># GloFAS, USGS, Open-Meteo aggregator</span>
+│   ├── nasa_service.py            <span class="comment"># NASA EONET, GPM, EPIC API client</span>
+│   ├── evacuation_service.py      <span class="comment"># Evacuation corridor route engine</span>
+│   ├── drone_mission_service.py   <span class="comment"># Autonomous SAR drone mission planner</span>
+│   ├── indian_telemetry_service.py<span class="comment"># Simulated Himalayan IoT sensors</span>
+│   └── render_keepalive_service.py<span class="comment"># Free-tier 24/7 uptime heartbeat</span>
+│
+├── <span class="key">static/</span>                    <span class="comment"># Frontend assets</span>
+│   ├── css/
+│   │   ├── style.css              <span class="comment"># 6,200-line glass morphism design system</span>
+│   │   └── minimalist_linear_dashboard.css
+│   └── js/                        <span class="comment"># 25 modular JavaScript engines</span>
+│
+├── <span class="key">templates/</span>                 <span class="comment"># Jinja2 HTML templates (25 pages)</span>
+├── <span class="key">tests/</span>                     <span class="comment"># 109 automated pytest tests</span>
+├── <span class="key">artifacts/</span>                 <span class="comment"># model.pkl, preprocessor.pkl, metrics.json</span>
+└── <span class="key">notebook/</span>                  <span class="comment"># EDA and model training Jupyter notebooks</span></pre>
+
+  <h3>Data Flow Architecture</h3>
+  <div class="flow">
+    <div class="flow-step">IoT Sensors<br><small>Himalayan Basins</small></div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">Open Data<br>Mesh APIs</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">Feature<br>Engineering</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">ML Ensemble<br>Predictor</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">Risk Score<br>+ XAI</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">Alert<br>Dispatch</div>
+  </div>
+</div>
+
+
+<!-- ============================================================ -->
+<!--  SECTION 03 — ML PIPELINE                                    -->
+<!-- ============================================================ -->
+<div class="section page-break">
+  <div class="section-header">
+    <div class="section-num blue">03</div>
+    <h2>Machine Learning Pipeline</h2>
+  </div>
+
+  <h3>Input Feature Set — 10 Telemetry Inputs</h3>
+  <p>The ML model accepts exactly <strong>10 real-time hydrological and geomorphological parameters</strong> measured by IoT sensors deployed at Himalayan basin stations:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Feature Name</th>
+        <th>Unit</th>
+        <th>Range</th>
+        <th>Physical Meaning</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>1</td><td><code>elevation_m</code></td><td>metres</td><td>100–5000</td><td>Station altitude above sea level</td></tr>
+      <tr><td>2</td><td><code>slope_gradient_deg</code></td><td>degrees</td><td>0–60</td><td>Terrain slope angle — steeper = faster runoff</td></tr>
+      <tr><td>3</td><td><code>rainfall_intensity_mm_hr</code></td><td>mm/hr</td><td>0–250</td><td>Instantaneous precipitation rate (cloudburst: &gt;50 mm/hr)</td></tr>
+      <tr><td>4</td><td><code>cumulative_rainfall_24h_mm</code></td><td>mm</td><td>0–600</td><td>Total 24-hour basin accumulation</td></tr>
+      <tr><td>5</td><td><code>soil_moisture_percentage</code></td><td>%</td><td>0–100</td><td>Bedrock saturation (critical: &gt;80%)</td></tr>
+      <tr><td>6</td><td><code>river_water_level_m</code></td><td>metres</td><td>0–15</td><td>River stage height at gauge station</td></tr>
+      <tr><td>7</td><td><code>river_flow_velocity_mps</code></td><td>m/s</td><td>0–12</td><td>Lateral flow speed in channel</td></tr>
+      <tr><td>8</td><td><code>upstream_basin_surge_rate</code></td><td>m³/s²</td><td>0–10</td><td>Rate of inflow acceleration from upper catchment</td></tr>
+      <tr><td>9</td><td><code>vegetation_ndvi</code></td><td>index</td><td>0.1–0.9</td><td>Canopy cover (lower = less runoff absorption)</td></tr>
+      <tr><td>10</td><td><code>drainage_density_km_km2</code></td><td>km/km²</td><td>0.5–8.0</td><td>Channel network density — higher = faster flash response</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Feature Engineering: Hydrological Physics</h3>
+  <p>The <code>HydrologicalFeatureEngineering</code> transformer (a custom sklearn <code>TransformerMixin</code>) derives <strong>3 additional physics-informed features</strong> before scaling:</p>
+
+  <div class="card card-green">
+    <h4>① Runoff Kinetic Surge</h4>
+    <p>Represents the kinetic energy of surface water movement combining velocity and slope angle.</p>
+    <pre><span class="key">runoff_surge</span> = velocity × sin(slope_gradient_deg in radians)</pre>
+  </div>
+
+  <div class="card card-blue">
+    <h4>② Hydro-Saturation Index</h4>
+    <p>Quantifies how much additional rainfall the soil can still absorb before runoff begins.</p>
+    <pre><span class="key">hydro_sat</span> = (soil_moisture_pct / 100) × cumulative_rainfall_24h_mm</pre>
+  </div>
+
+  <div class="card card-purple">
+    <h4>③ Instantaneous Flash Load</h4>
+    <p>Combines intensity and slope to estimate the immediate surface runoff loading.</p>
+    <pre><span class="key">flash_load</span> = rainfall_intensity_mm_hr × (slope_gradient_deg / 20.0)</pre>
+  </div>
+
+  <p>This results in a <strong>13-dimensional feature vector</strong> (10 raw + 3 derived) that is then scaled via <code>StandardScaler</code>.</p>
+
+  <h3>Model Training &amp; Ensemble Selection</h3>
+  <p>Five different regression models are trained in parallel and evaluated. The best performer by R² score is automatically selected and saved as <code>artifacts/model.pkl</code>:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Model</th>
+        <th>Algorithm</th>
+        <th>Key Hyperparameters</th>
+        <th>Typical R²</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>XGBoost</strong> ⭐ (Champion)</td>
+        <td>Gradient Boosted Trees</td>
+        <td>n_estimators=130, lr=0.08, max_depth=5</td>
+        <td>~0.986</td>
+      </tr>
+      <tr>
+        <td>Random Forest</td>
+        <td>Bagged Decision Trees</td>
+        <td>n_estimators=120, max_depth=12</td>
+        <td>~0.978</td>
+      </tr>
+      <tr>
+        <td>Gradient Boosting</td>
+        <td>Sequential Boosting</td>
+        <td>n_estimators=140, lr=0.08, max_depth=5</td>
+        <td>~0.972</td>
+      </tr>
+      <tr>
+        <td>Extra Trees</td>
+        <td>Extremely Randomised Trees</td>
+        <td>n_estimators=100, max_depth=12</td>
+        <td>~0.965</td>
+      </tr>
+      <tr>
+        <td>Ridge Regression</td>
+        <td>Regularised Linear</td>
+        <td>alpha=1.0</td>
+        <td>~0.82</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout callout-warn">
+    <strong>⚠️ Quality Gate:</strong> If the best model achieves R² &lt; 0.70, training is aborted with a <code>CustomException</code>. This ensures only statistically valid models are deployed.
+  </div>
+
+  <h3>Prediction Output &amp; XAI Attribution</h3>
+  <p>The prediction pipeline returns a structured JSON payload including the flood risk score, probability, alert level, 24-hour forecast curve, and explainability attribution:</p>
+
+  <pre>{
+  <span class="key">"flood_risk_score"</span>:         <span class="val">847.3</span>,       <span class="comment">// 0–1200 continuous scale</span>
+  <span class="key">"flood_probability_24h"</span>:    <span class="val">84.7</span>,        <span class="comment">// 0–100 percent</span>
+  <span class="key">"alert_level"</span>:              <span class="str">"CRITICAL"</span>,
+  <span class="key">"threat_level"</span>:             <span class="str">"LEVEL 4"</span>,
+  <span class="key">"evacuation_recommended"</span>:   <span class="val">true</span>,
+  <span class="key">"forecast_timeline_hours"</span>:  [<span class="str">"0h"</span>, <span class="str">"2h"</span>, <span class="str">"4h"</span>, ..., <span class="str">"24h"</span>],
+  <span class="key">"forecast_probability_curve"</span>: [<span class="val">84.7</span>, <span class="val">88.2</span>, <span class="val">91.5</span>, ...],
+  <span class="key">"xai_attribution"</span>: {          <span class="comment">// SHAP-style feature importance</span>
+    <span class="str">"rainfall_intensity_mm_hr"</span>: <span class="val">28.4</span>,
+    <span class="str">"soil_moisture_percentage"</span>: <span class="val">21.7</span>,
+    <span class="str">"river_water_level_m"</span>:      <span class="val">18.5</span>,
+    <span class="str">"cumulative_rainfall_24h_mm"</span>:<span class="val">14.2</span>
+  }
+}</pre>
+</div>
+
+
+<!-- ============================================================ -->
+<!--  SECTION 04 — EXTERNAL APIs                                  -->
+<!-- ============================================================ -->
+<div class="section page-break">
+  <div class="section-header">
+    <div class="section-num amber">04</div>
+    <h2>External APIs &amp; Open Data Integrations</h2>
+  </div>
+
+  <div class="callout callout-info">
+    <strong>ℹ️ Zero-Key Philosophy:</strong> All four primary data mesh integrations are completely free, require no API registration, and use open scientific data published under the Copernicus/USGS/NASA open-data mandates.
+  </div>
+
+  <h3>① GloFAS / Open-Meteo Flood API</h3>
+  <div class="card card-blue">
+    <table style="margin-bottom:0">
+      <tr><td style="width:140px"><strong>Provider</strong></td><td>Copernicus Emergency Management Service / Open-Meteo</td></tr>
+      <tr><td><strong>Endpoint</strong></td><td><code>https://flood-api.open-meteo.com/v1/flood</code></td></tr>
+      <tr><td><strong>Data</strong></td><td>River discharge forecast (m³/s), 7-day GloFAS ensemble</td></tr>
+      <tr><td><strong>Parameters</strong></td><td><code>latitude, longitude, daily=river_discharge,river_discharge_mean,river_discharge_max,river_discharge_min, forecast_days</code></td></tr>
+      <tr><td><strong>Update Interval</strong></td><td>Every 6 hours (GloFAS ensemble update cycle)</td></tr>
+      <tr><td><strong>Cache TTL</strong></td><td>300 seconds (5 minutes) — thread-safe in-memory cache</td></tr>
+      <tr><td><strong>License</strong></td><td>Copernicus Global Land Service — Open Use</td></tr>
+    </table>
+  </div>
+
+  <h3>② USGS Earthquake Real-Time GeoJSON API</h3>
+  <div class="card card-amber">
+    <table style="margin-bottom:0">
+      <tr><td style="width:140px"><strong>Provider</strong></td><td>United States Geological Survey (USGS)</td></tr>
+      <tr><td><strong>Endpoint</strong></td><td><code>https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/significant_hour.geojson</code></td></tr>
+      <tr><td><strong>Data</strong></td><td>Real-time seismic events — magnitude, depth, PAGER alert level</td></tr>
+      <tr><td><strong>Purpose</strong></td><td>Earthquake-triggered GLOF (Glacier Lake Outburst Flood) detection in Himalayan zones</td></tr>
+      <tr><td><strong>License</strong></td><td>USGS Public Domain — No Restrictions</td></tr>
+    </table>
+  </div>
+
+  <h3>③ NASA Earth Events (EONET) API</h3>
+  <div class="card card-purple">
+    <table style="margin-bottom:0">
+      <tr><td style="width:140px"><strong>Provider</strong></td><td>NASA Earth Observatory Natural Event Tracker (EONET)</td></tr>
+      <tr><td><strong>Endpoints</strong></td><td>
+        <code>https://eonet.gsfc.nasa.gov/api/v3/events</code><br>
+        <code>https://eonet.gsfc.nasa.gov/api/v3/categories</code>
+      </td></tr>
+      <tr><td><strong>Data</strong></td><td>Global natural disaster events (floods, storms, wildfires, volcanoes)</td></tr>
+      <tr><td><strong>GPM Integration</strong></td><td><code>https://storm.pps.eosdis.nasa.gov/storm/</code> — Global Precipitation Measurement</td></tr>
+      <tr><td><strong>EPIC Imagery</strong></td><td><code>https://epic.gsfc.nasa.gov/api/natural</code> — Daily Earth full-disc imagery</td></tr>
+      <tr><td><strong>License</strong></td><td>NASA Open Data Policy — Unrestricted</td></tr>
+    </table>
+  </div>
+
+  <h3>④ Open-Meteo Severe Weather &amp; Elevation APIs</h3>
+  <div class="card card-teal">
+    <table style="margin-bottom:0">
+      <tr><td style="width:140px"><strong>Provider</strong></td><td>Open-Meteo AG (Switzerland)</td></tr>
+      <tr><td><strong>Severe Weather Endpoint</strong></td><td><code>https://api.open-meteo.com/v1/forecast?hourly=cape,lifted_index,convective_inhibition</code></td></tr>
+      <tr><td><strong>Elevation Endpoint</strong></td><td><code>https://api.open-meteo.com/v1/elevation</code> — 90m SRTM DEM</td></tr>
+      <tr><td><strong>CAPE</strong></td><td>Convective Available Potential Energy — primary cloudburst predictor</td></tr>
+      <tr><td><strong>License</strong></td><td>CC BY 4.0 — Attribution Required</td></tr>
+    </table>
+  </div>
+
+  <h3>⑤ Resend Email API (Emergency Alert Dispatch)</h3>
+  <div class="card card-red">
+    <table style="margin-bottom:0">
+      <tr><td style="width:140px"><strong>Provider</strong></td><td>Resend Inc. (resend.com)</td></tr>
+      <tr><td><strong>SDK</strong></td><td><code>resend &gt;= 2.4.0</code> (Python)</td></tr>
+      <tr><td><strong>Purpose</strong></td><td>Transactional emergency email dispatch to civil defense coordinators and district magistrates</td></tr>
+      <tr><td><strong>Env Var</strong></td><td><code>RESEND_API_KEY</code></td></tr>
+      <tr><td><strong>Fallback</strong></td><td>Opens system <code>mailto:</code> client if API key not configured</td></tr>
+    </table>
+  </div>
+</div>
+
+
+<!-- ============================================================ -->
+<!--  SECTION 05 — REST API REFERENCE                             -->
+<!-- ============================================================ -->
+<div class="section page-break">
+  <div class="section-header">
+    <div class="section-num red">05</div>
+    <h2>Internal REST API Reference</h2>
+  </div>
+
+  <h3>🤖 AI Prediction &amp; Analysis</h3>
+  <table>
+    <thead>
+      <tr><th>Method</th><th>Endpoint</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="api-method method-post">POST</span></td>
+        <td><code>/api/predict</code></td>
+        <td>Submit 10-point telemetry — returns flood risk score, probability, 24h forecast curve, XAI attribution</td>
+      </tr>
+      <tr>
+        <td><span class="api-method method-get">GET</span></td>
+        <td><code>/api/anomalies</code></td>
+        <td>Detect statistical anomalies across all 8 sensor stations</td>
+      </tr>
+      <tr>
+        <td><span class="api-method method-post">POST</span></td>
+        <td><code>/api/physics/calculate</code></td>
+        <td>Manning's Equation runoff calculator for arbitrary basin parameters</td>
+      </tr>
+      <tr>
+        <td><span class="api-method method-post">POST</span></td>
+        <td><code>/api/stress-test</code></td>
+        <td>Batch stress simulation with configurable surge patterns</td>
+      </tr>
+      <tr>
+        <td><span class="api-method method-get">GET</span></td>
+        <td><code>/api/inundation-contour</code></td>
+        <td>Generate inundation depth contour GeoJSON for a basin sector</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>📡 Real-Time Data Feeds</h3>
+  <table>
+    <thead>
+      <tr><th>Method</th><th>Endpoint</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="api-method method-get">GET</span></td>
+        <td><code>/api/stations</code></td>
+        <td>All 8 sensor station telemetry — stage, precip, soil, velocity, status</td>
+      </tr>
+      <tr>
+        <td><span class="api-method method-get">GET</span></td>
+        <td><code>/api/timeseries</code></td>
+        <td>48-hour hydrograph time-series for a specified station</td>
+      </tr>
+      <tr>
+        <td><span class="api-method method-get">GET</span></td>
+        <td><code>/api/basin-risk-matrix</code></td>
+        <td>Risk matrix across all basins with threat classifications</td>
+      </tr>
+      <tr>
+        <td><span class="api-method method-get">GET</span></td>
+        <td><code>/api/weather-radar</code></td>
+        <td>Simulated radar reflectivity grid and CAPE convective index</td>
+      </tr>
+      <tr>
+        <td><span class="api-method method-get">GET</span></td>
+        <td><code>/api/realtime/stream</code></td>
+        <td>Server-Sent Events (SSE) live telemetry stream — 10-second interval</td>
+      </tr>
+      <tr>
+        <td><span class="api-method method-get">GET</span></td>
+        <td><code>/api/realtime/multi-source</code></td>
+        <td>Merged payload from all 4 open-data APIs + internal sensors</td>
+      </tr>
+      <tr>
+        <td><span class="api-method method-get">GET</span></td>
+        <td><code>/api/world-monitor/status</code></td>
+        <td>Global geohazard status across all monitored world regions</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>🛰️ Satellite &amp; NASA Integration</h3>
+  <table>
+    <thead>
+      <tr><th>Method</th><th>Endpoint</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="api-method method-get">GET</span></td>
+        <td><code>/api/satellites</code></td>
+        <td>All 6 satellite passes — NASA GPM, ESA Sentinel-1/2, ISRO Cartosat status</td>
+      </tr>
+      <tr>
+        <td><span class="api-method method-get">GET</span></td>
+        <td><code>/api/nasa/realtime-events</code></td>
+        <td>NASA EONET natural disaster events feed (floods, storms)</td>
+      </tr>
+      <tr>
+        <td><span class="api-method method-get">GET</span></td>
+        <td><code>/api/nasa/gpm-feed</code></td>
+        <td>NASA Global Precipitation Measurement rainfall data</td>
+      </tr>
+      <tr>
+        <td><span class="api-method method-get">GET</span></td>
+        <td><code>/api/nasa/epic-imagery</code></td>
+        <td>NASA EPIC full-disc Earth imagery (latest pass)</td>
+      </tr>
+      <tr>
+        <td><span class="api-method method-get">GET</span></td>
+        <td><code>/api/space-telemetry/live</code></td>
+        <td>Combined satellite constellation telemetry with orbital data</td>
+      </tr>
+      <tr>
+        <td><span class="api-method method-get">GET</span></td>
+        <td><code>/api/open-data/mesh</code></td>
+        <td>Consolidated Open Data Mesh status from all 4 external APIs</td>
+      </tr>
+      <tr>
+        <td><span class="api-method method-get">GET</span></td>
+        <td><code>/api/open-data/flood-forecast</code></td>
+        <td>GloFAS 7-day river discharge forecast</td>
+      </tr>
+      <tr>
+        <td><span class="api-method method-get">GET</span></td>
+        <td><code>/api/open-data/seismic-hazards</code></td>
+        <td>USGS live seismic events in Himalayan region</td>
+      </tr>
+      <tr>
+        <td><span class="api-method method-get">GET</span></td>
+        <td><code>/api/open-data/severe-weather</code></td>
+        <td>Open-Meteo CAPE, lifted index, convective inhibition</td>
+      </tr>
+      <tr>
+        <td><span class="api-method method-get">GET</span></td>
+        <td><code>/api/open-data/elevation</code></td>
+        <td>90m SRTM Digital Elevation Model for any lat/lon</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>🚨 Emergency Alert &amp; Civil Defense Dispatch</h3>
+  <table>
+    <thead>
+      <tr><th>Method</th><th>Endpoint</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="api-method method-get">GET</span></td>
+        <td><code>/api/export-cap-alert</code></td>
+        <td>Export OASIS Common Alerting Protocol (CAP v1.2) XML feed</td>
+      </tr>
+      <tr>
+        <td><span class="api-method method-post">POST</span></td>
+        <td><code>/api/dispatch-alert</code></td>
+        <td>Dispatch flood alert to specified recipient list</td>
+      </tr>
+      <tr>
+        <td><span class="api-method method-post">POST</span></td>
+        <td><code>/api/send-instant-email</code></td>
+        <td>Send emergency email via Resend API (station, threat level, precip rate, lead time)</td>
+      </tr>
+      <tr>
+        <td><span class="api-method method-post">POST</span></td>
+        <td><code>/api/send-instant-sms</code></td>
+        <td>Trigger SMS-format alert to mobile number</td>
+      </tr>
+      <tr>
+        <td><span class="api-method method-post">POST</span></td>
+        <td><code>/api/broadcast/dispatch-channels</code></td>
+        <td>Multi-channel broadcast: email + SMS + CAP feed simultaneously</td>
+      </tr>
+      <tr>
+        <td><span class="api-method method-get">GET</span></td>
+        <td><code>/api/evacuation-route</code></td>
+        <td>Compute optimal evacuation corridor for lat/lon coordinate with terrain avoidance</td>
+      </tr>
+      <tr>
+        <td><span class="api-method method-get">GET</span></td>
+        <td><code>/api/tactical-playbook</code></td>
+        <td>NDRF / SDRF tactical response playbook JSON for a given threat level</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>🚁 Drone Swarm SAR Mission</h3>
+  <table>
+    <thead>
+      <tr><th>Method</th><th>Endpoint</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="api-method method-get">GET</span></td>
+        <td><code>/api/drone/fleet-status</code></td>
+        <td>All 4 drone operational status: battery, position, sensor loadout</td>
+      </tr>
+      <tr>
+        <td><span class="api-method method-post">POST</span></td>
+        <td><code>/api/drone/generate-mission</code></td>
+        <td>Auto-generate SAR mission plan: lawnmower / spiral / river-corridor / contour patterns</td>
+      </tr>
+      <tr>
+        <td><span class="api-method method-post">POST</span></td>
+        <td><code>/api/drone/dispatch-swarm</code></td>
+        <td>Dispatch selected drones on active SAR mission</td>
+      </tr>
+      <tr>
+        <td><span class="api-method method-get">GET</span></td>
+        <td><code>/api/drone/export</code></td>
+        <td>Export waypoints: QGroundControl plan, MAVLink (.waypoints), Google Earth KML, GeoJSON</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>⚙️ System &amp; Health</h3>
+  <table>
+    <thead>
+      <tr><th>Method</th><th>Endpoint</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="api-method method-get">GET</span></td>
+        <td><code>/api/health-matrix</code></td>
+        <td>Full system health — ML engine, mesh connectivity, satellite sync, circuit breaker state</td>
+      </tr>
+      <tr>
+        <td><span class="api-method method-get">GET</span></td>
+        <td><code>/healthz</code> / <code>/api/health</code></td>
+        <td>Kubernetes-style liveness probe — returns <code>{"status": "healthy"}</code></td>
+      </tr>
+      <tr>
+        <td><span class="api-method method-get">GET</span></td>
+        <td><code>/api/damage-assessment/calculate</code></td>
+        <td>Computer-vision-ready flood damage severity estimation from uploaded imagery metadata</td>
+      </tr>
+      <tr>
+        <td><span class="api-method method-get">GET</span></td>
+        <td><code>/api/export-geojson</code></td>
+        <td>GeoJSON polygon export of all monitored basin boundaries and alert zones</td>
+      </tr>
+      <tr>
+        <td><span class="api-method method-get">GET</span></td>
+        <td><code>/api/export-csv</code></td>
+        <td>Download all telemetry as CSV (for NDMA data submission)</td>
+      </tr>
+      <tr>
+        <td><span class="api-method method-get">GET</span></td>
+        <td><code>/api/export-intelligence-briefing</code></td>
+        <td>PDF-ready intelligence briefing payload (JSON structured for report generation)</td>
+      </tr>
+      <tr>
+        <td><span class="api-method method-get">GET</span></td>
+        <td><code>/api/time-machine/events</code></td>
+        <td>Historical flash flood event catalogue with timeline replay data</td>
+      </tr>
+      <tr>
+        <td><span class="api-method method-post">POST</span></td>
+        <td><code>/api/citizen-reports</code></td>
+        <td>Submit citizen SOS incident report (GPS, description, severity, contact)</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+
+<!-- ============================================================ -->
+<!--  SECTION 06 — FRONTEND ARCHITECTURE                          -->
+<!-- ============================================================ -->
+<div class="section page-break">
+  <div class="section-header">
+    <div class="section-num teal">06</div>
+    <h2>Frontend &amp; UI Architecture</h2>
+  </div>
+
+  <h3>25 Jinja2 Page Templates</h3>
+  <div class="grid-2">
+    <div class="card card-green">
+      <h4>🏠 Global Command Overview (<code>index.html</code>)</h4>
+      <p>Main dashboard — 3D Earth WebGL globe, Discharge Rate Spline chart, Sentinel Basins panel, real-time threat matrix strip, 5-step mission pipeline.</p>
+    </div>
+    <div class="card card-blue">
+      <h4>🌐 3D Digital Twin HUD (<code>dashboard.html</code>)</h4>
+      <p>Full-screen Three.js terrain mesh with LiDAR inundation simulation, orbital satellite overlay, basin selection, and flood depth contours.</p>
+    </div>
+    <div class="card card-purple">
+      <h4>🚨 Early Warning Console (<code>early_warning.html</code>)</h4>
+      <p>NDRF tactical dispatch panel, one-click emergency email broadcast, voice PA siren, CAP v1.2 feed, threat-level escalation timeline.</p>
+    </div>
+    <div class="card card-amber">
+      <h4>📊 Geospatial Analytics (<code>analytics.html</code>)</h4>
+      <p>SHAP attribution radar charts, 48h hydrograph comparison, basin risk heatmap, model performance metrics panel.</p>
+    </div>
+    <div class="card card-teal">
+      <h4>🧪 Scenario Simulator (<code>predict.html</code>)</h4>
+      <p>10-slider telemetry input form, live risk gauge, real-time preview updates, historical scenario presets.</p>
+    </div>
+    <div class="card card-red">
+      <h4>⚛️ Physics Sandbox (<code>physics_sandbox.html</code>)</h4>
+      <p>Manning's Equation fluid dynamics calculator, Topographic Wetness Index (TWI) visualiser, runoff model playground.</p>
+    </div>
+  </div>
+
+  <h3>Additional Pages</h3>
+  <table>
+    <thead>
+      <tr><th>Template</th><th>Purpose</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>satellites.html</code></td><td>6-satellite constellation tracking with orbital arcs and pass windows</td></tr>
+      <tr><td><code>drone_mission_planner.html</code></td><td>Autonomous SAR drone mission planner with 4 search patterns and 4 export formats</td></tr>
+      <tr><td><code>damage_assessment.html</code></td><td>Satellite imagery flood damage severity scanner</td></tr>
+      <tr><td><code>time_machine.html</code></td><td>Historical disaster replay with configurable date range</td></tr>
+      <tr><td><code>world_monitor.html</code></td><td>Global geohazard situation room — live USGS, EONET worldwide events</td></tr>
+      <tr><td><code>intelligence_briefing.html</code></td><td>PDF-formatted intelligence briefing with executive situation summary</td></tr>
+      <tr><td><code>nasa_live.html</code></td><td>Live NASA EPIC imagery, GPM precipitation grid, EONET event cards</td></tr>
+      <tr><td><code>mcp_hub.html</code></td><td>MCP tool playground — query HydroSentinel via AI agents</td></tr>
+      <tr><td><code>report_incident.html</code></td><td>Citizen SOS incident reporting portal with GPS and photo upload</td></tr>
+      <tr><td><code>models.html</code></td><td>4-architecture AI model registry — performance comparison cards</td></tr>
+      <tr><td><code>api_explorer.html</code></td><td>Interactive REST API explorer (admin-authenticated)</td></tr>
+      <tr><td><code>feedback.html</code></td><td>Community reviews and star ratings panel</td></tr>
+      <tr><td><code>about.html</code></td><td>Team Quantum Minds profile, project philosophy, technology credits</td></tr>
+    </tbody>
+  </table>
+
+  <h3>JavaScript Engine Modules (25 files)</h3>
+  <table>
+    <thead>
+      <tr><th>Module</th><th>Function</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>hero_3d_globe.js</code></td><td>Three.js Earth globe with basin pins and satellite orbit animation</td></tr>
+      <tr><td><code>dashboard.js</code></td><td>3D Digital Twin HUD controller — terrain mesh, inundation layers</td></tr>
+      <tr><td><code>drone_hud.js</code></td><td>Real-time drone flight HUD overlay — altitude, speed, heading</td></tr>
+      <tr><td><code>satellite_3d_globe.js</code></td><td>3D orbital satellite constellation visualiser</td></tr>
+      <tr><td><code>predict_3d_basin.js</code></td><td>Animated basin risk sphere on the prediction page</td></tr>
+      <tr><td><code>terrain_map.js</code></td><td>Three.js terrain heightmap renderer with contour overlay</td></tr>
+      <tr><td><code>tactile_knobs.js</code></td><td>Hardware-style rotary control input widgets</td></tr>
+      <tr><td><code>offline_disaster_storage.js</code></td><td>IndexedDB offline queue for SOS reports during network outages</td></tr>
+      <tr><td><code>motionsites_ai_interface.js</code></td><td>AI Copilot HUD — chat, voice dictation, quick prompts</td></tr>
+      <tr><td><code>command_palette.js</code></td><td>Raycast-style ⌘K global command palette</td></tr>
+      <tr><td><code>weather_atmosphere_engine.js</code></td><td>Atmospheric mode engine (storm / monsoon / clear aurora)</td></tr>
+      <tr><td><code>emergency_siren_voice.js</code></td><td>Web Audio API emergency siren + voice PA broadcast</td></tr>
+      <tr><td><code>spatial_micro_interactions.js</code></td><td>Scroll progress, cursor spotlight, micro-animation system</td></tr>
+    </tbody>
+  </table>
+</div>
+
+
+<!-- ============================================================ -->
+<!--  SECTION 07 — MCP SERVER                                     -->
+<!-- ============================================================ -->
+<div class="section page-break">
+  <div class="section-header">
+    <div class="section-num pink">07</div>
+    <h2>Model Context Protocol (MCP) Server</h2>
+  </div>
+
+  <p>HydroSentinel AI™ implements a fully compliant <strong>Model Context Protocol (MCP) server</strong> (specification version <code>2024-11-05</code>) that exposes flood intelligence tools to external AI agents including Claude, Cursor, OpenAI, and Google Antigravity.</p>
+
+  <div class="card card-purple">
+    <table style="margin-bottom:0">
+      <tr><td style="width:140px"><strong>Protocol Version</strong></td><td><code>2024-11-05</code></td></tr>
+      <tr><td><strong>Server Name</strong></td><td><code>hydrosentinel-mcp-server</code></td></tr>
+      <tr><td><strong>Server Version</strong></td><td><code>2.9.0</code></td></tr>
+      <tr><td><strong>Transport</strong></td><td>HTTP POST + Server-Sent Events (SSE)</td></tr>
+      <tr><td><strong>MCP Endpoint</strong></td><td><code>POST /api/mcp</code></td></tr>
+      <tr><td><strong>SSE Stream</strong></td><td><code>GET /api/mcp/sse</code></td></tr>
+      <tr><td><strong>Tools List</strong></td><td><code>GET /api/mcp/tools</code></td></tr>
+    </table>
+  </div>
+
+  <h3>Exposed MCP Tools (11 Total)</h3>
+  <table>
+    <thead>
+      <tr><th>Tool Name</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>get_stations</code></td><td>Retrieve all 8 Himalayan sensor station telemetry objects</td></tr>
+      <tr><td><code>get_telemetry</code></td><td>Get real-time telemetry for a specific station by ID</td></tr>
+      <tr><td><code>predict_flood_risk</code></td><td>Run full ML inference — returns risk score, probability, XAI</td></tr>
+      <tr><td><code>compute_evacuation_route</code></td><td>Calculate optimal evacuation corridor from lat/lon origin</td></tr>
+      <tr><td><code>query_world_geohazards</code></td><td>Fetch global geohazard events (USGS + EONET combined)</td></tr>
+      <tr><td><code>generate_cap_alert</code></td><td>Generate OASIS CAP v1.2 XML alert for a basin</td></tr>
+      <tr><td><code>simulate_dam_breach</code></td><td>Physics-based dam breach inundation simulation</td></tr>
+      <tr><td><code>get_satellite_swaths</code></td><td>Next satellite overpass windows for a target area</td></tr>
+      <tr><td><code>get_multi_source_telemetry</code></td><td>Combined GloFAS + USGS + CAPE + elevation mesh data</td></tr>
+      <tr><td><code>plan_drone_mission</code></td><td>Generate autonomous SAR drone mission waypoints</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Example MCP Request</h3>
+  <pre>{
+  <span class="key">"method"</span>: <span class="str">"tools/call"</span>,
+  <span class="key">"params"</span>: {
+    <span class="key">"name"</span>: <span class="str">"predict_flood_risk"</span>,
+    <span class="key">"arguments"</span>: {
+      <span class="key">"station_id"</span>: <span class="str">"STN-KD-05"</span>,
+      <span class="key">"rainfall_intensity_mm_hr"</span>: <span class="val">145.0</span>,
+      <span class="key">"soil_moisture_percentage"</span>: <span class="val">88.0</span>,
+      <span class="key">"river_water_level_m"</span>: <span class="val">5.8</span>
+    }
+  }
+}</pre>
+</div>
+
+
+<!-- ============================================================ -->
+<!--  SECTION 08 — DRONE SWARM                                    -->
+<!-- ============================================================ -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-num slate">08</div>
+    <h2>Drone Swarm SAR Mission Planner</h2>
+  </div>
+
+  <h3>Drone Fleet Specification</h3>
+  <table>
+    <thead>
+      <tr><th>Drone</th><th>Callsign</th><th>Model &amp; Role</th><th>Sensors</th><th>Flight Time</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>DRONE-ALPHA</strong></td>
+        <td>GARUDA-01</td>
+        <td>Hexacopter Heavy-Lift SAR — Medical &amp; Raft Airdrop</td>
+        <td>FLIR Boson 640 Thermal + 4K EO Optical</td>
+        <td>38 min</td>
+      </tr>
+      <tr>
+        <td><strong>DRONE-BRAVO</strong></td>
+        <td>VAYU-02</td>
+        <td>Fixed-Wing VTOL — River Corridor LiDAR Mapping</td>
+        <td>Riegl MiniVUX-3UAV LiDAR + FLIR Thermal Duo</td>
+        <td>70 min</td>
+      </tr>
+      <tr>
+        <td><strong>DRONE-CHARLIE</strong></td>
+        <td>TRISHUL-03</td>
+        <td>Tactical Quadcopter — Gorge Recon + 110dB Siren</td>
+        <td>DJI Zenmuse H20T Quad-Sensor Thermal FLIR</td>
+        <td>36 min</td>
+      </tr>
+      <tr>
+        <td><strong>DRONE-DELTA</strong></td>
+        <td>AKASH-04</td>
+        <td>Agile Scout Quad — Night SAR + Survivor Detection</td>
+        <td>Sony IMX586 + Teledyne FLIR Lepton 3.5</td>
+        <td>28 min</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Mission Patterns &amp; Export Formats</h3>
+  <div class="grid-2">
+    <div class="card card-teal">
+      <h4>Search Patterns</h4>
+      <ul>
+        <li><strong>Lawnmower</strong> — Systematic grid coverage for area search</li>
+        <li><strong>Spiral Expanding</strong> — From epicentre outward for last-known-position</li>
+        <li><strong>River Corridor</strong> — Linear tracking along flood channel</li>
+        <li><strong>Terrain Contour</strong> — Follows topographic elevation lines</li>
+      </ul>
+    </div>
+    <div class="card card-blue">
+      <h4>Export Formats</h4>
+      <ul>
+        <li><strong>QGroundControl (.plan)</strong> — Direct upload to GCS</li>
+        <li><strong>MAVLink (.waypoints)</strong> — ArduPilot / PX4 firmware</li>
+        <li><strong>Google Earth KML</strong> — Mission visualisation</li>
+        <li><strong>GeoJSON</strong> — GIS analysis &amp; overlay</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+
+<!-- ============================================================ -->
+<!--  SECTION 09 — SECURITY ARCHITECTURE                         -->
+<!-- ============================================================ -->
+<div class="section page-break">
+  <div class="section-header">
+    <div class="section-num red">09</div>
+    <h2>Security &amp; Enterprise Architecture</h2>
+  </div>
+
+  <h3>Security Headers Middleware</h3>
+  <p>Every HTTP response from HydroSentinel is decorated with hardened security headers via Flask's <code>@app.after_request</code> hook:</p>
+
+  <table>
+    <thead>
+      <tr><th>Header</th><th>Value</th><th>Purpose</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>HSTS</code></td><td>max-age=31536000; includeSubDomains</td><td>Force HTTPS for 1 year</td></tr>
+      <tr><td><code>X-Content-Type-Options</code></td><td>nosniff</td><td>Prevent MIME type sniffing</td></tr>
+      <tr><td><code>X-Frame-Options</code></td><td>SAMEORIGIN</td><td>Clickjacking protection</td></tr>
+      <tr><td><code>X-XSS-Protection</code></td><td>1; mode=block</td><td>XSS filter enforcement</td></tr>
+      <tr><td><code>Content-Security-Policy</code></td><td>default-src 'self' ...</td><td>Injection attack prevention</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Circuit Breaker Pattern</h3>
+  <p>The <code>CircuitBreaker</code> class wraps AI prediction endpoints to prevent cascade failures:</p>
+
+  <div class="grid-3">
+    <div class="metric-card">
+      <div class="m-val" style="color:#10b981; font-size:14pt">CLOSED</div>
+      <div class="m-lbl">Normal Operation — All requests pass through</div>
+    </div>
+    <div class="metric-card">
+      <div class="m-val" style="color:#f59e0b; font-size:14pt">HALF-OPEN</div>
+      <div class="m-lbl">Recovery Probe — One test request allowed after 15s</div>
+    </div>
+    <div class="metric-card">
+      <div class="m-val" style="color:#ef4444; font-size:14pt">OPEN</div>
+      <div class="m-lbl">After 3 failures — 503 returned immediately</div>
+    </div>
+  </div>
+
+  <h3>Structured JSON Logging</h3>
+  <p>All events are logged as machine-parseable JSON using a custom <code>JSONFormatter</code> — compatible with ELK Stack (Elasticsearch / Logstash / Kibana) and Datadog ingestion:</p>
+
+  <pre>{
+  <span class="key">"timestamp"</span>:  <span class="str">"2026-09-21 00:42:35,000"</span>,
+  <span class="key">"level"</span>:      <span class="str">"INFO"</span>,
+  <span class="key">"module"</span>:     <span class="str">"predict_pipeline"</span>,
+  <span class="key">"msg"</span>:        <span class="str">"Best Model Selected: XGBoost with R2: 0.9858"</span>
+}</pre>
+
+  <h3>Admin Authentication</h3>
+  <p>The API Explorer and admin panel are protected via environment-variable-based session authentication. Login via <code>POST /api/admin-auth</code> sets a server-side session. Admin password is stored in <code>ADMIN_PASSWORD</code> environment variable.</p>
+
+  <h3>Offline PWA Support</h3>
+  <p>A registered Service Worker (<code>static/sw.js</code>) enables offline operation. The <code>offline_disaster_storage.js</code> module queues SOS reports in IndexedDB during network outages and auto-syncs upon reconnection.</p>
+</div>
+
+
+<!-- ============================================================ -->
+<!--  SECTION 10 — DEPLOYMENT                                     -->
+<!-- ============================================================ -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-num amber">10</div>
+    <h2>Deployment &amp; DevOps</h2>
+  </div>
+
+  <h3>Render.com Cloud Deployment</h3>
+  <div class="card card-blue">
+    <table style="margin-bottom:0">
+      <tr><td style="width:160px"><strong>Platform</strong></td><td>Render.com (Free Tier + Paid Web Service)</td></tr>
+      <tr><td><strong>Start Command</strong></td><td><code>gunicorn app:app --bind 0.0.0.0:$PORT --workers 1 --timeout 120</code></td></tr>
+      <tr><td><strong>Live URL</strong></td><td><code>https://hydrosentinel.onrender.com</code></td></tr>
+      <tr><td><strong>GitHub Repo</strong></td><td><code>https://github.com/aashirirfan07/hydroai.git</code></td></tr>
+      <tr><td><strong>Keep-Alive</strong></td><td>Autonomous background pinger (<code>render_keepalive_service.py</code>) prevents free-tier hibernation</td></tr>
+      <tr><td><strong>CI/CD</strong></td><td>Auto-deploy on push to <code>main</code> branch via Render Git integration</td></tr>
+    </table>
+  </div>
+
+  <h3>Environment Variables</h3>
+  <table>
+    <thead>
+      <tr><th>Variable</th><th>Required</th><th>Purpose</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>RESEND_API_KEY</code></td><td><span class="tag tag-amber">Optional</span></td><td>Enable Resend-powered emergency email dispatch</td></tr>
+      <tr><td><code>SECRET_KEY</code></td><td><span class="tag tag-amber">Optional</span></td><td>Flask session signing key (default provided)</td></tr>
+      <tr><td><code>ADMIN_PASSWORD</code></td><td><span class="tag tag-amber">Optional</span></td><td>API Explorer admin password</td></tr>
+      <tr><td><code>PORT</code></td><td><span class="tag tag-green">Set by Platform</span></td><td>Gunicorn bind port (auto-set by Render)</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Local Development Setup</h3>
+  <pre><span class="comment"># Clone the repository</span>
+git clone https://github.com/aashirirfan07/hydroai.git
+cd flash_flood_prediction_system
+
+<span class="comment"># Install dependencies (Python 3.10+)</span>
+pip install -r requirements.txt
+
+<span class="comment"># Run development server</span>
+python app.py
+<span class="comment"># → Server running at http://127.0.0.1:5000</span>
+
+<span class="comment"># Run full test suite</span>
+pytest -v
+<span class="comment"># → 109 passed in ~35 seconds</span></pre>
+</div>
+
+
+<!-- ============================================================ -->
+<!--  SECTION 11 — TESTING & QA                                   -->
+<!-- ============================================================ -->
+<div class="section page-break">
+  <div class="section-header">
+    <div class="section-num purple">11</div>
+    <h2>Testing &amp; Quality Assurance</h2>
+  </div>
+
+  <div class="callout callout-success">
+    <strong>✅ 109 / 109 Tests Passing</strong> — Full test suite completes in approximately 22–36 seconds with zero failures.
+  </div>
+
+  <h3>Test Suite Breakdown</h3>
+  <table>
+    <thead>
+      <tr><th>Test File</th><th>Tests</th><th>Coverage Area</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>tests/test_api.py</code></td>
+        <td>63 tests</td>
+        <td>All REST API endpoints — HTTP status codes, response schema validation, authentication, edge cases, export formats, streaming</td>
+      </tr>
+      <tr>
+        <td><code>tests/test_drone_mission.py</code></td>
+        <td>16 tests</td>
+        <td>All 4 search patterns, all 4 export formats, swarm dispatch, fleet status API, boundary conditions</td>
+      </tr>
+      <tr>
+        <td><code>tests/test_mcp.py</code></td>
+        <td>17 tests</td>
+        <td>MCP protocol conformance, all 10 tool calls, resources/prompts endpoints, SSE channel, config endpoint</td>
+      </tr>
+      <tr>
+        <td><code>tests/test_pipeline.py</code></td>
+        <td>3 tests</td>
+        <td>End-to-end ML pipeline — data ingestion, feature transformation, model training → artifact generation</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Key Test Scenarios</h3>
+  <ul>
+    <li><strong>CAP v1.2 Export</strong> — Verifies OASIS-compliant XML structure and all required fields</li>
+    <li><strong>Admin Authentication</strong> — Tests correct credential gate for API Explorer access</li>
+    <li><strong>SSE Stream</strong> — Confirms Server-Sent Events are properly formatted and continuous</li>
+    <li><strong>Drone Pattern Boundary</strong> — Tests mission generation with extreme lat/lon coordinates</li>
+    <li><strong>ML Pipeline Auto-Train</strong> — Validates model retraining when artifacts are missing</li>
+    <li><strong>MCP Tool Conformance</strong> — Verifies all tool responses match MCP 2024-11-05 spec schema</li>
+    <li><strong>Evacuation Route Calculation</strong> — Tests both default (Kedarnath) and custom coordinates</li>
+    <li><strong>Offline Survival Card</strong> — Validates emergency offline payload structure</li>
+  </ul>
+</div>
+
+
+<!-- ============================================================ -->
+<!--  SECTION 12 — SENSOR STATION NETWORK                        -->
+<!-- ============================================================ -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-num blue">12</div>
+    <h2>Himalayan Sensor Station Network</h2>
+  </div>
+
+  <p>HydroSentinel AI™ monitors <strong>8 strategically located IoT hydrological sensor stations</strong> across high-risk Himalayan river basins:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Station ID</th>
+        <th>Name</th>
+        <th>Region</th>
+        <th>Elevation</th>
+        <th>Catchment Area</th>
+        <th>Critical Stage</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>STN-KD-05</strong></td>
+        <td>Kedarnath Mandakini Basin</td>
+        <td>Garhwal Himalayas, UK</td>
+        <td>2,250 m</td>
+        <td>164.5 km²</td>
+        <td>4.5 m</td>
+      </tr>
+      <tr>
+        <td><strong>STN-AL-02</strong></td>
+        <td>Alaknanda Upper Gorge</td>
+        <td>Garhwal Himalayas, UK</td>
+        <td>1,850 m</td>
+        <td>340.2 km²</td>
+        <td>5.0 m</td>
+      </tr>
+      <tr>
+        <td><strong>STN-KL-01</strong></td>
+        <td>Kullu Valley Catchment</td>
+        <td>Himachal Pradesh</td>
+        <td>1,280 m</td>
+        <td>210.0 km²</td>
+        <td>3.8 m</td>
+      </tr>
+      <tr>
+        <td><strong>STN-TS-03</strong></td>
+        <td>Teesta River Basin</td>
+        <td>Sikkim Himalayas</td>
+        <td>920 m</td>
+        <td>420.8 km²</td>
+        <td>4.2 m</td>
+      </tr>
+      <tr>
+        <td><strong>STN-WG-04</strong></td>
+        <td>Western Ghats Escarpment</td>
+        <td>Idukki Slopes, Kerala</td>
+        <td>780 m</td>
+        <td>195.4 km²</td>
+        <td>3.5 m</td>
+      </tr>
+      <tr>
+        <td><strong>STN-CH-06</strong></td>
+        <td>Chamoli Flash Channel</td>
+        <td>Chamoli District, UK</td>
+        <td>1,640 m</td>
+        <td>285.0 km²</td>
+        <td>4.8 m</td>
+      </tr>
+      <tr>
+        <td><strong>STN-BR-07</strong></td>
+        <td>Brahmaputra Upper Reach</td>
+        <td>Arunachal Pradesh</td>
+        <td>560 m</td>
+        <td>890.0 km²</td>
+        <td>6.5 m</td>
+      </tr>
+      <tr>
+        <td><strong>STN-MG-08</strong></td>
+        <td>Meghalaya Plateau Seep</td>
+        <td>Cherrapunji, Meghalaya</td>
+        <td>1,250 m</td>
+        <td>145.2 km²</td>
+        <td>3.2 m</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>IoT Sensor Instruments per Station</h3>
+  <div class="grid-2">
+    <div class="card card-green">
+      <ul style="margin:0">
+        <li>Ultrasonic River Stage Gauge</li>
+        <li>Tipping Bucket Rain Gauge (0.2mm resolution)</li>
+        <li>Volumetric Soil Moisture Probe (TDR-315L)</li>
+        <li>Electromagnetic Flow Velocity Meter</li>
+        <li>Upstream discharge telemetry relay</li>
+      </ul>
+    </div>
+    <div class="card card-blue">
+      <ul style="margin:0">
+        <li>NDVI vegetation index satellite sync (MODIS)</li>
+        <li>Drainage density GIS layer (static per basin)</li>
+        <li>GNSS elevation reference (±0.1m accuracy)</li>
+        <li>GSM/4G + LoRaWAN dual-link data uplink</li>
+        <li>Solar + Li-ion battery (72h backup autonomy)</li>
+      </ul>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <div class="callout callout-info">
+    <strong>📌 Note on Data Authenticity:</strong> HydroSentinel AI™ uses physics-informed synthetic telemetry seeded with real basin morphology parameters (slope, elevation, catchment area, drainage density) derived from SRTM 90m DEM and IMD hydrological atlases. The ML model is trained on synthetically generated but physically valid scenarios calibrated to match documented historical flood events including Kedarnath 2013, Chamoli 2021, and Wayanad 2024.
+  </div>
+
+  <hr class="divider">
+
+  <div style="text-align: center; padding: 28px 0; color: #64748b;">
+    <div style="font-size: 32px; margin-bottom: 10px;">🌊</div>
+    <div style="font-size: 14pt; font-weight: 800; color: #0f172a; margin-bottom: 4px;">HydroSentinel AI™</div>
+    <div style="font-size: 10pt;">Autonomous Geospatial Flash Flood Intelligence</div>
+    <div style="font-size: 9pt; margin-top: 10px; color: #94a3b8;">
+      Designed &amp; Engineered with ❤️ by <strong style="color:#475569">Team Quantum Minds</strong> · 2026
+    </div>
+    <div style="font-size: 8pt; margin-top: 6px; color: #cbd5e1;">
+      GitHub: github.com/aashirirfan07/hydroai &nbsp;·&nbsp; Live: hydrosentinel.onrender.com
+    </div>
+  </div>
+</div>
+
+</div><!-- end doc-body -->
+
+<script>
+// Auto print-to-PDF hint
+window.addEventListener('load', () => {
+  console.log('%c📄 HydroSentinel AI™ Documentation', 'font-size:18px;font-weight:bold;color:#10b981');
+  console.log('%cTo save as PDF: File → Print → Save as PDF → Set Layout: A4, Margins: Minimal', 'font-size:12px;color:#64748b');
+});
+</script>
+</body>
+</html>

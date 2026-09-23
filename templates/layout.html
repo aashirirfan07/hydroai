@@ -1124,17 +1124,11 @@
                 <textarea id="globalNotesText" rows="2" style="width: 100%; border-radius: 12px; padding: 0.6rem; background: rgba(0,0,0,0.5); border: 1.5px solid rgba(52, 211, 153, 0.4); color: #ffffff; font-size: 0.82rem;">Immediate civilian evacuation advisory. Move to designated Highland Safe Shelters (>2,200m).</textarea>
             </div>
 
-            <div class="d-flex justify-content-between align-items-center mt-4">
-                <button type="button" class="spatial-btn-glass" onclick="openGlobalDirectMailApp()" style="font-size: 0.78rem;">
-                    ✉️ Open in Gmail/Outlook
+            <div class="d-flex justify-content-end align-items-center gap-2 mt-4">
+                <button type="button" class="spatial-btn-glass" onclick="closeGlobalZeroKeyEmailModal()">Cancel</button>
+                <button type="submit" id="btnSubmitGlobalEmail" class="spatial-btn-primary" style="background: linear-gradient(135deg, #10b981, #059669) !important; padding: 0.65rem 1.6rem; border-color: #34d399 !important; font-weight: 800; box-shadow: 0 0 20px rgba(16, 185, 129, 0.5);">
+                    🚀 Send Real Email Now
                 </button>
-
-                <div class="d-flex gap-2">
-                    <button type="button" class="spatial-btn-glass" onclick="closeGlobalZeroKeyEmailModal()">Cancel</button>
-                    <button type="submit" id="btnSubmitGlobalEmail" class="spatial-btn-primary" style="background: linear-gradient(135deg, #10b981, #059669) !important; padding: 0.65rem 1.4rem; border-color: #34d399 !important; font-weight: 800; box-shadow: 0 0 20px rgba(16, 185, 129, 0.5);">
-                        🚀 Send Real Email Now
-                    </button>
-                </div>
             </div>
         </form>
 
@@ -1221,17 +1215,6 @@ function closeGlobalZeroKeyEmailModal() {
     document.getElementById('globalZeroKeyEmailModal').style.display = 'none';
 }
 
-function openGlobalDirectMailApp() {
-    const to = document.getElementById('globalRecipientEmail').value.trim() || 'responder@ndrf.gov.in';
-    const basin = document.getElementById('globalBasinSelect').value;
-    const threat = document.getElementById('globalThreatSelect').value;
-    const note = document.getElementById('globalNotesText').value;
-    const subject = `🚨 EMERGENCY FLOOD ALERT: ${basin} [${threat}]`;
-    const body = `🚨 HYDROSENTINEL CRITICAL DISASTER ALERT\n` +
-                 `═════════════════════════════════════════\n` +
-                 `Basin: ${basin}\nThreat Level: ${threat}\nPrecipitation Rate: 88.0 mm/h\nWarning Lead Time: 3.8 Hours\n\nDirectives: ${note}\n\nLive 3D Twin: https://hydrosentinel.onrender.com/dashboard`;
-    window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(to)}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`, '_blank');
-}
 
 async function sendGlobalZeroKeyEmail(e) {
     e.preventDefault();

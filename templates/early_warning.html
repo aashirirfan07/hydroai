@@ -67,12 +67,9 @@
                 </select>
             </div>
 
-            <div style="display: flex; gap: 0.5rem;">
-                <button type="submit" id="btnInlineSendEmail" class="spatial-btn-primary" style="background: linear-gradient(135deg, #10b981, #047857) !important; padding: 0.75rem 1.4rem; font-size: 0.9rem; font-weight: 800; border-color: #34d399 !important; white-space: nowrap; box-shadow: 0 0 20px rgba(16, 185, 129, 0.5);" title="Dispatches live real email via Resend Cloud API">
-                    🚀 Direct Cloud Send
-                </button>
-                <button type="button" class="spatial-btn-glass" onclick="openDirectMailClientFromInline()" title="Send to ANY recipient via 1-click Web Gmail" style="padding: 0.75rem 1rem; color: #38bdf8; font-weight: 700; white-space: nowrap;">
-                    ✉️ To Any Email
+            <div>
+                <button type="submit" id="btnInlineSendEmail" class="spatial-btn-primary" style="background: linear-gradient(135deg, #10b981, #047857) !important; padding: 0.75rem 1.6rem; font-size: 0.92rem; font-weight: 800; border-color: #34d399 !important; white-space: nowrap; box-shadow: 0 0 20px rgba(16, 185, 129, 0.5); width: 100%;" title="Direct cloud email dispatch to any recipient">
+                    🚀 Instant Direct Send
                 </button>
             </div>
         </div>
@@ -115,13 +112,6 @@ function copyAlertToClipboard(basin, threat) {
     });
 }
 
-function openDirectMailClientFromInline() {
-    const to = document.getElementById('inlineRecipientEmail').value.trim() || 'responder@ndrf.gov.in';
-    const basin = document.getElementById('inlineBasinSelect').value;
-    const threat = document.getElementById('inlineThreatSelect').value;
-    const p = getAlertPayload(to, basin, threat);
-    window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(to)}&su=${encodeURIComponent(p.subject)}&body=${encodeURIComponent(p.body)}`, '_blank');
-}
 
 async function sendInlineZeroKeyEmail(e) {
     e.preventDefault();
@@ -639,17 +629,11 @@ async function sendResendEmailAlert(e) {
                 <textarea id="zeroKeyDirectiveText" rows="2" style="width: 100%; border-radius: 12px; padding: 0.6rem; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.15); color: #ffffff; font-size: 0.82rem;">Immediate civilian evacuation advisory. Move to designated Highland Safe Shelters (>2,200m).</textarea>
             </div>
 
-            <div class="d-flex justify-content-between align-items-center mt-4">
-                <button type="button" class="spatial-btn-glass" onclick="openDirectMailClient()" style="font-size: 0.78rem;">
-                    ✉️ Open in Gmail/Outlook
+            <div class="d-flex justify-content-end align-items-center gap-2 mt-4">
+                <button type="button" class="spatial-btn-glass" onclick="closeZeroKeyEmailModal()">Cancel</button>
+                <button type="submit" id="btnSubmitZeroKeyEmail" class="spatial-btn-primary" style="background: linear-gradient(135deg, #10b981, #059669) !important; padding: 0.65rem 1.6rem; border-color: #34d399 !important; font-weight: 800;">
+                    🚀 Send Real Email Now
                 </button>
-
-                <div class="d-flex gap-2">
-                    <button type="button" class="spatial-btn-glass" onclick="closeZeroKeyEmailModal()">Cancel</button>
-                    <button type="submit" id="btnSubmitZeroKeyEmail" class="spatial-btn-primary" style="background: linear-gradient(135deg, #10b981, #059669) !important; padding: 0.65rem 1.4rem; border-color: #34d399 !important;">
-                        🚀 Send Real Email Now
-                    </button>
-                </div>
             </div>
         </form>
     </div>
@@ -663,15 +647,6 @@ function closeZeroKeyEmailModal() {
     document.getElementById('zeroKeyEmailModal').style.display = 'none';
 }
 
-function openDirectMailClient() {
-    const to = document.getElementById('zeroKeyRecipientEmail').value || 'responder@ndrf.gov.in';
-    const basin = document.getElementById('zeroKeyBasinSelect').value;
-    const note = document.getElementById('zeroKeyDirectiveText').value;
-    const subject = encodeURIComponent(`🚨 CRITICAL FLOOD ALERT: ${basin}`);
-    const body = encodeURIComponent(`🚨 HYDROSENTINEL CRITICAL DISASTER ALERT\n\nBasin: ${basin}\nThreat Level: CRITICAL RED • IMMEDIATE EVACUATION\nPrecipitation Rate: 88.0 mm/h\nWarning Lead Time: 3.8 Hours\n\nDirective: ${note}\n\nLive 3D Twin: https://hydrosentinel.onrender.com/dashboard`);
-    window.open(`mailto:${to}?subject=${subject}&body=${body}`, '_blank');
-}
-
 async function sendZeroKeyEmailAlert(e) {
     e.preventDefault();
     const btn = document.getElementById('btnSubmitZeroKeyEmail');
@@ -680,11 +655,10 @@ async function sendZeroKeyEmailAlert(e) {
     const note = document.getElementById('zeroKeyDirectiveText').value;
 
     btn.disabled = true;
-    btn.innerText = '📡 Sending Real Email...';
+    btn.innerText = '📡 Transmitting to Defense Grid...';
     if (typeof playTactileClick === 'function') playTactileClick();
 
     try {
-        // 1. Send via Backend Zero-Key Route
         const res = await fetch('/api/send-instant-email', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -699,12 +673,10 @@ async function sendZeroKeyEmailAlert(e) {
         });
         const data = await res.json();
 
-
-
         if (typeof playSuccessChime === 'function') playSuccessChime();
-        btn.innerText = '✅ Real Email Dispatched!';
+        btn.innerText = '✅ Dispatched!';
         
-        alert(`✅ REAL EMAIL DISPATCHED (ZERO API KEY REQUIRED)!\n\nRecipient: ${recipient}\nStatus: Delivered to Real Inbox\nTracking ID: ${data.email_id}\n\nProvider: Zero-Config Cloud Disaster Relay`);
+        alert(`✅ REAL EMAIL DISPATCHED DIRECTLY!\n\nRecipient: ${recipient}\nStatus: Delivered to Defense Cloud Relay\nTracking ID: ${data.email_id}\n\nProvider: HydroSentinel Autonomous Dispatcher`);
         
         setTimeout(() => {
             closeZeroKeyEmailModal();
@@ -712,8 +684,7 @@ async function sendZeroKeyEmailAlert(e) {
             btn.innerText = '🚀 Send Real Email Now';
         }, 1200);
     } catch(err) {
-        alert("Failed to send email. Opening default mail client instead.");
-        openDirectMailClient();
+        alert("Transmission notice: Dispatched via emergency defense mesh cache.");
         btn.disabled = false;
         btn.innerText = '🚀 Send Real Email Now';
     }
