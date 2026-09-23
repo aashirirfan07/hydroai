@@ -52,8 +52,10 @@ function initAndroidWebGLGuards() {
 window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault();
     deferredInstallPrompt = e;
-    const banner = document.getElementById('androidInstallBanner');
-    if (banner) banner.style.display = 'flex';
+    const pwaBtn = document.getElementById('pwaInstallBtn');
+    if (pwaBtn) {
+        pwaBtn.classList.add('pwa-ready');
+    }
 });
 
 function triggerAndroidPWAInstall() {
@@ -61,8 +63,6 @@ function triggerAndroidPWAInstall() {
         deferredInstallPrompt.prompt();
         deferredInstallPrompt.userChoice.then(() => {
             deferredInstallPrompt = null;
-            const banner = document.getElementById('androidInstallBanner');
-            if (banner) banner.style.display = 'none';
         });
     }
 }

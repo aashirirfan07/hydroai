@@ -2968,6 +2968,121 @@ body {
 
 
 /* ==========================================================================
+   CONSOLIDATED SPATIAL FLOATING ACTION DOCK (BOTTOM RIGHT)
+   ========================================================================== */
+.floating-action-dock {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  z-index: 9990;
+  padding: 5px 6px;
+  border-radius: 9999px;
+  background: rgba(10, 15, 29, 0.82);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.65), inset 0 1px 1px rgba(255, 255, 255, 0.15);
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease;
+}
+
+.floating-action-dock:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 44px rgba(0, 0, 0, 0.8), 0 0 24px rgba(56, 189, 248, 0.25);
+}
+
+.floating-action-dock .dock-btn-feedback,
+.floating-action-dock #floatingFeedbackBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #94a3b8;
+  font-family: var(--font-primary);
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 7px 13px;
+  border-radius: 9999px;
+  cursor: pointer;
+  position: static;
+  box-shadow: none;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.floating-action-dock .dock-btn-feedback:hover,
+.floating-action-dock #floatingFeedbackBtn:hover {
+  background: rgba(255, 255, 255, 0.14);
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.25);
+  transform: translateY(-1px);
+}
+
+.floating-action-dock .dock-btn-copilot,
+.floating-action-dock #floatingCopilotBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: linear-gradient(135deg, #0284c7 0%, #6366f1 100%);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #ffffff;
+  font-family: var(--font-primary);
+  font-size: 0.82rem;
+  font-weight: 700;
+  padding: 7px 15px;
+  border-radius: 9999px;
+  cursor: pointer;
+  position: static;
+  box-shadow: 0 4px 14px rgba(2, 132, 199, 0.35);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.floating-action-dock .dock-btn-copilot:hover,
+.floating-action-dock #floatingCopilotBtn:hover {
+  background: linear-gradient(135deg, #0ea5e9 0%, #818cf8 100%);
+  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.55);
+  transform: translateY(-1px);
+}
+
+.floating-action-dock .dock-btn-icon {
+  width: 17px;
+  height: 17px;
+  object-fit: contain;
+}
+
+.floating-action-dock .dock-status-pulse {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #34d399;
+  box-shadow: 0 0 8px #34d399;
+  animation: pulseBeacon 2s infinite ease-in-out;
+}
+
+@media (max-width: 768px) {
+  .floating-action-dock {
+    bottom: 76px; /* gracefully clears 60px mobile bottom nav */
+    right: 12px;
+    padding: 3px 4px;
+    gap: 5px;
+  }
+  .floating-action-dock .dock-btn-feedback .dock-btn-label {
+    display: none;
+  }
+  .floating-action-dock .dock-btn-feedback,
+  .floating-action-dock #floatingFeedbackBtn {
+    padding: 7px 9px;
+  }
+  .floating-action-dock .dock-btn-copilot,
+  .floating-action-dock #floatingCopilotBtn {
+    padding: 6px 12px;
+    font-size: 0.77rem;
+  }
+}
+
+/* ==========================================================================
    VISITOR FEEDBACK MODAL & FLOATING ACTION PILL
    ========================================================================== */
 

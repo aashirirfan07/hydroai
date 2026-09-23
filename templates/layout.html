@@ -37,24 +37,16 @@
         <span id="offlineQueueBadge" class="badge-queue" style="display: none;">📦 0 Queued</span>
     </div>
 
-    <div id="globalLightningFlash" class="lightning-screen-veil"></div>
-    <!-- Unbelievable Holographic Page Veil & Cursor Ripple Canvas -->
-    <div id="unbelievableTransitionVeil"></div>
-    <canvas id="cursorRippleCanvas"></canvas>
     <!-- Scroll Progress Bar & Cursor Spotlight -->
     <div id="scrollProgressBar"></div>
     <div id="cursorSpotlight"></div>
-    <!-- Luminous Aurora Atmosphere Orbs -->
+    <!-- Luminous Aurora Atmosphere Orbs (GPU Accelerated) -->
     <div class="aurora-orb-container">
         <div class="aurora-orb orb-1"></div>
         <div class="aurora-orb orb-2"></div>
         <div class="aurora-orb orb-3"></div>
     </div>
-
-    <!-- 3D Fluid Topography Mesh & Digital Grid -->
-    <div id="ambient3DCanvas" class="ambient-3d-bg"></div>
     <div class="cyber-grid-backdrop"></div>
-    <div class="scanline-overlay"></div>
 
     
     <!-- Floating Liquid Glass Navbar -->
@@ -569,11 +561,7 @@
     </div>
 
 
-    <!-- Floating Visitor Feedback Pill Button with Aesthetic SVG Emblem -->
-    <button id="floatingFeedbackBtn" class="floating-feedback-pill" onclick="openFeedbackModal()" title="Share Feedback & Suggestions">
-        <img src="/static/img/badges/emblem_reviews.svg" class="pill-logo-icon" alt="Feedback">
-        <span>Feedback</span>
-    </button>
+
 
     <!-- Interactive Visitor Feedback Modal -->
     <div id="feedbackModalBackdrop" class="feedback-modal-backdrop" style="display: none;">
@@ -650,11 +638,18 @@
     </div>
 
     
-    <!-- Floating AI Disaster Copilot Action Button -->
-    <button id="floatingCopilotBtn" class="floating-copilot-pill" onclick="toggleCopilotHUD()" title="Ask AI Disaster Copilot">
-        <img src="/static/img/hydrosentinel_logo.svg" class="pill-logo-icon" alt="Logo">
-        <span>AI Copilot</span>
-    </button>
+    <!-- Consolidated Spatial Floating Action Dock (Bottom Right) -->
+    <div class="floating-action-dock" id="floatingActionDock">
+        <button id="floatingFeedbackBtn" class="dock-btn-feedback" onclick="openFeedbackModal()" title="Share Feedback & Suggestions" aria-label="Share Feedback">
+            <img src="/static/img/badges/emblem_reviews.svg" class="dock-btn-icon" alt="Feedback">
+            <span class="dock-btn-label">Feedback</span>
+        </button>
+        <button id="floatingCopilotBtn" class="dock-btn-copilot" onclick="toggleCopilotHUD()" title="Ask AI Disaster Copilot" aria-label="AI Disaster Copilot">
+            <img src="/static/img/hydrosentinel_logo.svg" class="dock-btn-icon" alt="Logo">
+            <span class="dock-btn-label">AI Copilot</span>
+            <span class="dock-status-pulse"></span>
+        </button>
+    </div>
 
     <!-- AI Disaster Copilot HUD Drawer / Modal -->
     <div id="copilotModalBackdrop" class="copilot-hud-backdrop" style="display: none;">
@@ -710,57 +705,9 @@
     </div>
 
     
-    <!-- Android Native PWA Install Banner -->
-    <div id="androidInstallBanner" class="android-install-banner" style="display: none;">
-        <div style="display: flex; align-items: center; gap: 0.6rem;">
-            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="HydroSentinel AI" style="width: 32px; height: 32px; border-radius: 8px;">
-            <div>
-                <strong style="color: #ffffff; font-size: 0.85rem;">Install HydroSentinel AI App</strong>
-                <div style="font-size: 0.7rem; color: #94a3b8;">Fast, offline-ready 3D flood monitoring</div>
-            </div>
-        </div>
-        <div style="display: flex; gap: 0.4rem;">
-            <button class="btn btn-sm btn-primary" onclick="triggerAndroidPWAInstall()"> Install</button>
-            <button class="btn btn-sm btn-outline" onclick="document.getElementById('androidInstallBanner').style.display='none'"></button>
-        </div>
-    </div>
+
 
     
-    <!-- Smart Mobile Feedback Popup Card (Slides up on Phone after 15s) -->
-    <div id="mobileFeedbackPromptCard" class="mobile-feedback-prompt-card" style="display: none;">
-        <div class="d-flex justify-content-between align-items-start mb-2">
-            <div class="d-flex align-items-center gap-2">
-                <img src="/static/img/badges/emblem_reviews.svg" style="width: 24px; height: 24px;" alt="Review">
-                <strong style="color: #ffffff; font-size: 0.85rem;">How is your experience?</strong>
-            </div>
-            <button class="btn-prompt-close" onclick="dismissMobileFeedbackPrompt()"></button>
-        </div>
-        <p style="font-size: 0.76rem; color: #94a3b8; margin-bottom: 0.6rem;">Help Team Quantum Minds refine flash flood early warning simulations with quick feedback.</p>
-        <div class="d-flex gap-2">
-            <button class="btn btn-sm btn-primary flex-1" onclick="openFeedbackFromPrompt(5)"> Rate 5 Stars (10s)</button>
-            <button class="btn btn-sm btn-outline" onclick="openFeedbackModal()">Share Ideas</button>
-        </div>
-    </div>
-
-    <footer class="app-footer">
-        <div class="footer-top-brand">
-            <div class="quantum-mind-branding-card liquid-glass">
-                <div class="qm-badge"><span class="qm-badge-text">Core Engineering & AI Research</span></div>
-                <h3 class="qm-title"><span class="powered-by-quantum-minds">Powered by Team Quantum Minds</span></h3>
-                <p class="qm-subtitle">Pioneering next-generation deep learning, geospatial physics simulations, and autonomous disaster mitigation technologies.</p>
-            </div>
-        </div>
-        <div class="footer-bottom-bar">
-            <div><p><strong>HydroSentinel AI™</strong> | ISO-14001 & WMO Compliant</p><small>&copy; 2026 <span class="powered-by-quantum-minds-inline">Powered by Team Quantum Minds</span>. All Rights Reserved.</small></div>
-            <div class="footer-links">
-                <span> OASIS CAP v1.2</span>
-                <span> 98.58% Accuracy</span>
-                <span> 12ms Inference</span>
-            </div>
-        </div>
-    </footer>
-
-    <script src="{{ url_for('static', filename='js/ambient_3d_background.js?v=VISIONOS_SUITE_1788212247') }}"></script>
     {% block scripts %}{% endblock %}
     <script src="{{ url_for('static', filename='js/text_scramble.js?v=VISIONOS_SUITE_1788212247') }}"></script>
     <script src="{{ url_for('static', filename='js/command_palette.js?v=VISIONOS_SUITE_1788212247') }}"></script>
@@ -769,7 +716,6 @@
     <script src="{{ url_for('static', filename='js/motionsites_counters.js?v=VISIONOS_SUITE_1788212247') }}"></script>
     <script src="{{ url_for('static', filename='js/mobile_advanced_suite.js?v=VISIONOS_SUITE_1788212247') }}"></script>
     <script src="{{ url_for('static', filename='js/android_native_suite.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/unbelievable_transitions.js?v=VISIONOS_SUITE_1788212247') }}"></script>
     <script>
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
@@ -1017,40 +963,7 @@
     </script>
 
 
-    <script>
-    // Smart Mobile Feedback Prompt Engine
-    document.addEventListener('DOMContentLoaded', () => {
-        if (window.innerWidth <= 768) {
-            const hasSeen = sessionStorage.getItem('feedback_prompt_shown');
-            if (!hasSeen) {
-                setTimeout(() => {
-                    const prompt = document.getElementById('mobileFeedbackPromptCard');
-                    if (prompt) {
-                        prompt.style.display = 'block';
-                        sessionStorage.setItem('feedback_prompt_shown', 'true');
-                        if (typeof triggerHaptic === 'function') triggerHaptic('light');
-                    }
-                }, 12000); // 12 seconds engagement delay
-            }
-        }
-    });
 
-    function dismissMobileFeedbackPrompt() {
-        const prompt = document.getElementById('mobileFeedbackPromptCard');
-        if (prompt) prompt.style.display = 'none';
-    }
-
-    function openFeedbackFromPrompt(stars = 5) {
-        dismissMobileFeedbackPrompt();
-        openFeedbackModal();
-        const slider = document.getElementById('fbRating');
-        if (slider) {
-            slider.value = stars;
-            const starText = document.getElementById('fbRatingVal');
-            if (starText) starText.innerText = '⭐'.repeat(stars);
-        }
-    }
-    </script>
     
 <script src="{{ url_for('static', filename='js/spatial_micro_interactions.js') }}"></script>
 
@@ -1345,24 +1258,6 @@ async function sendGlobalZeroKeyEmail(e) {
         });
         const data = await res.json();
 
-        // Also browser-level FormSubmit relay
-        try {
-            fetch(`https://formsubmit.co/ajax/${recipient}`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-                body: JSON.stringify({
-                    _subject: `🚨 EMERGENCY FLOOD ALERT: ${basin}`,
-                    Basin: basin,
-                    Threat_Level: threat,
-                    Radar_Inflow: "88.0 mm/h",
-                    Warning_Lead_Time: "3.8 Hours",
-                    Directives: note,
-                    Live_3D_Twin: "https://hydrosentinel.onrender.com/dashboard",
-                    _template: "table",
-                    _captcha: "false"
-                })
-            }).catch(e => console.log(e));
-        } catch(ignore) {}
 
         if (typeof playSuccessChime === 'function') playSuccessChime();
 

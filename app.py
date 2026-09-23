@@ -927,7 +927,7 @@ def api_send_instant_sms():
 
 @app.route('/api/send-instant-email', methods=['POST'])
 def api_send_instant_email():
-    '''Sends real emergency emails to any inbox without requiring any API key or account.'''
+    '''Sends real emergency emails via Resend API (onboarding@resend.dev sender works without custom domain).'''
     data = request.get_json() or {}
     recipient = data.get('recipient_email', '').strip()
     station_name = data.get('station_name', 'Kedarnath Mandakini Gorge')
@@ -935,48 +935,86 @@ def api_send_instant_email():
     precip_rate = data.get('precip_rate', '88.0 mm/h')
     lead_time = data.get('lead_time', '3.8 Hours')
     notes = data.get('notes', 'Autonomous flash flood early warning broadcast.')
-    
+
     if not recipient or '@' not in recipient:
         return jsonify({'status': 'error', 'message': 'Valid recipient email address is required.'}), 400
 
+    api_key = os.environ.get('RESEND_API_KEY')
+    email_id = f"INSTANT-{int(time.time())}-{random.randint(1000, 9999)}"
     subject = f"🚨 EMERGENCY FLOOD ALERT: {station_name} [{threat_level}]"
-    
-    # Try public zero-key relay (FormSubmit AJAX)
-    relay_status = "SENT_VIA_ZERO_KEY_RELAY"
-    try:
-        payload = {
-            "_subject": subject,
-            "Basin_Sector": station_name,
-            "Threat_Level": threat_level,
-            "Precipitation_Inflow": precip_rate,
-            "Warning_Lead_Time": lead_time,
-            "Field_Directives": notes,
-            "Live_3D_Twin": "https://hydrosentinel.onrender.com/dashboard",
-            "_template": "table",
-            "_captcha": "false"
-        }
-        headers = {
-            "Content-Type": "application/json",
-            "Accept": "application/json",
-            "User-Agent": "HydroSentinel-AI-Disaster-Relay"
-        }
-        res = requests.post(f"https://formsubmit.co/ajax/{recipient}", json=payload, headers=headers, timeout=6)
-        if res.status_code == 200:
-            relay_status = "DELIVERED_REAL_INBOX"
-    except Exception as e:
-        relay_status = f"RELAY_DISPATCHED ({str(e)[:25]})"
 
-    email_id = f"ZERO-KEY-{int(time.time())}-{random.randint(1000, 9999)}"
-    
+    html_content = f'''
+    <div style="font-family: Arial, sans-serif; background-color: #030712; color: #ffffff; padding: 30px; border-radius: 12px; max-width: 600px; margin: auto;">
+        <div style="border-bottom: 2px solid #ef4444; padding-bottom: 15px; margin-bottom: 20px;">
+            <span style="background: #ef4444; color: white; padding: 4px 10px; border-radius: 9999px; font-size: 11px; font-weight: bold; text-transform: uppercase;">EMERGENCY BROADCAST</span>
+            <h2 style="color: #ffffff; margin: 10px 0 0 0;">HydroSentinel AI™ &bull; National Disaster Alert</h2>
+        </div>
+        <p style="color: #94a3b8; font-size: 14px;">Official emergency situation advisory issued by the Autonomous Flash Flood Defense Network:</p>
+        <div style="background: rgba(239, 68, 68, 0.15); border: 1px solid #ef4444; border-radius: 8px; padding: 15px; margin: 20px 0;">
+            <div style="font-size: 13px; color: #f87171; font-weight: bold;">MONITORED BASIN:</div>
+            <div style="font-size: 18px; color: #ffffff; font-weight: bold; margin-bottom: 10px;">{station_name}</div>
+            <table style="width:100%; font-size: 13px; border-collapse: collapse;">
+                <tr><td style="padding: 4px 0;"><strong>THREAT LEVEL:</strong></td><td style="color: #ef4444;">{threat_level}</td></tr>
+                <tr><td style="padding: 4px 0;"><strong>RADAR INFLOW:</strong></td><td>{precip_rate}</td></tr>
+                <tr><td style="padding: 4px 0;"><strong>WARNING LEAD TIME:</strong></td><td style="color: #fbbf24;">{lead_time}</td></tr>
+                <tr><td style="padding: 4px 0;"><strong>AI CONFIDENCE:</strong></td><td>98.58% R²</td></tr>
+            </table>
+        </div>
+        <p style="font-size: 13px; color: #cbd5e1; line-height: 1.5;"><strong>Field Directives:</strong> {notes}</p>
+        <div style="text-align: center; margin-top: 30px;">
+            <a href="https://hydrosentinel.onrender.com/dashboard" style="background: #0284c7; color: #ffffff; padding: 12px 24px; border-radius: 9999px; text-decoration: none; font-weight: bold; font-size: 14px; display: inline-block;">
+                Launch 3D Digital Twin Command &rarr;
+            </a>
+        </div>
+        <div style="border-top: 1px solid rgba(255,255,255,0.1); margin-top: 30px; padding-top: 15px; font-size: 11px; color: #64748b; text-align: center;">
+            Issued in accordance with NDMA guidelines &bull; Powered by Team Quantum Minds &bull; HydroSentinel AI™
+        </div>
+    </div>
+    '''
+
+    send_status = "SIMULATED (No RESEND_API_KEY set)"
+    if api_key and RESEND_AVAILABLE:
+        try:
+            import resend as _resend
+            _resend.api_key = api_key
+            r = _resend.Emails.send({
+                "from": "HydroSentinel Alerts <onboarding@resend.dev>",
+                "to": [recipient],
+                "subject": subject,
+                "html": html_content
+            })
+            email_id = r.get('id', email_id)
+            send_status = "DELIVERED_LIVE_RESEND"
+        except Exception as e:
+            send_status = f"FAILED: {str(e)[:80]}"
+            return jsonify({
+                "status": "error",
+                "delivery_status": send_status,
+                "email_id": email_id,
+                "recipient": recipient,
+                "timestamp": datetime.now(timezone.utc).isoformat(),
+                "message": f"Email delivery failed: {str(e)}"
+            }), 500
+    else:
+        # No API key — return helpful error so frontend can fallback to mailto
+        return jsonify({
+            "status": "no_api_key",
+            "delivery_status": send_status,
+            "email_id": email_id,
+            "recipient": recipient,
+            "subject": subject,
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "message": "RESEND_API_KEY not configured. Set it in environment variables to enable live email dispatch."
+        }), 200
+
     return jsonify({
         "status": "success",
-        "delivery_status": relay_status,
+        "delivery_status": send_status,
         "email_id": email_id,
         "recipient": recipient,
         "subject": subject,
-        "requires_api_key": False,
         "timestamp": datetime.now(timezone.utc).isoformat(),
-        "message": f"Real disaster alert email successfully dispatched to {recipient} with ZERO API key required!"
+        "message": f"Disaster alert email successfully dispatched to {recipient} via Resend API!"
     }), 200
 
 @app.route('/api/send-alert-email', methods=['POST'])
@@ -1031,12 +1069,13 @@ def api_send_alert_email():
     </div>
     '''
     
-    send_status = "DELIVERED_SIMULATED"
+    send_status = "SIMULATED (No RESEND_API_KEY set)"
     if api_key and RESEND_AVAILABLE:
         try:
-            resend.api_key = api_key
-            r = resend.Emails.send({
-                "from": "HydroSentinel Alerts <alerts@hydrosentinel.ai>",
+            import resend as _resend
+            _resend.api_key = api_key
+            r = _resend.Emails.send({
+                "from": "HydroSentinel Alerts <onboarding@resend.dev>",
                 "to": [recipient],
                 "subject": f"🚨 CRITICAL FLOOD ALERT: {station_name} [{threat_level}]",
                 "html": html_content
@@ -1044,8 +1083,27 @@ def api_send_alert_email():
             email_id = r.get('id', email_id)
             send_status = "DELIVERED_LIVE_RESEND"
         except Exception as e:
-            send_status = f"SIMULATED_FALLBACK (API Key: {str(e)[:40]})"
-            
+            send_status = f"FAILED: {str(e)[:80]}"
+            return jsonify({
+                "status": "error",
+                "delivery_status": send_status,
+                "email_id": email_id,
+                "recipient": recipient,
+                "timestamp": datetime.now(timezone.utc).isoformat(),
+                "provider": "Resend Cloud API (https://resend.com)",
+                "message": f"Email delivery failed: {str(e)}"
+            }), 500
+    else:
+        return jsonify({
+            "status": "no_api_key",
+            "delivery_status": send_status,
+            "email_id": email_id,
+            "recipient": recipient,
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "provider": "Resend Cloud API (https://resend.com)",
+            "message": "RESEND_API_KEY environment variable not set. Add it to send live emails."
+        }), 200
+
     return jsonify({
         "status": "success",
         "delivery_status": send_status,
