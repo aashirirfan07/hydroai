@@ -686,14 +686,13 @@ async function sendHomeZeroKeyEmail(e) {
     const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(email)}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
     const mailtoUrl = `mailto:${encodeURIComponent(email)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 
-    // ⚡ Open Gmail immediately on user click (never blocked)
-    window.open(gmailUrl, '_blank');
-
     btn.disabled = true;
-    btn.innerHTML = '<span>📡 Opening...</span>';
+    btn.innerHTML = '<span>📡 Dispatching...</span>';
     if (typeof playTactileClick === 'function') playTactileClick();
 
-    // Background server call
+    fb.style.display = 'block';
+    fb.innerHTML = `<span style="color:#38bdf8; font-size:0.75rem;">📡 Transmitting direct email via server...</span>`;
+
     fetch('/api/send-instant-email', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -703,25 +702,17 @@ async function sendHomeZeroKeyEmail(e) {
             threat_level: 'CRITICAL RED • IMMEDIATE EVACUATION',
             lead_time: '3.8 Hours'
         })
-    }).catch(() => {});
-
-    fb.style.display = 'block';
-    fb.innerHTML = `
-        <div style="font-size:0.78rem; color:#34d399; font-weight:700; margin-bottom:4px;">
-            ✅ Gmail Compose tab opened for ${email}!
-        </div>
-        <div style="font-size:0.7rem; color:#cbd5e1; margin-bottom:6px;">
-            Click <strong>"Send"</strong> in Gmail to deliver immediately.
-        </div>
-        <div style="display:flex; gap:6px;">
-            <a href="${gmailUrl}" target="_blank" style="color:#ea4335; text-decoration:underline; font-size:0.7rem; font-weight:bold;">Re-open Gmail</a>
-            <span style="color:#64748b;">•</span>
-            <a href="${mailtoUrl}" style="color:#38bdf8; text-decoration:underline; font-size:0.7rem;">Open Mail App</a>
-        </div>
-    `;
-
-    if (typeof playSuccessChime === 'function') playSuccessChime();
-    showHudToast(`<strong>GMAIL COMPOSE LAUNCHED:</strong> Pre-filled for ${email}`, 'normal');
+    }).then(r => r.json()).then(data => {
+        if (data.status === 'success') {
+            if (typeof playSuccessChime === 'function') playSuccessChime();
+            fb.innerHTML = `✅ <strong style="color:#34d399;">DIRECT EMAIL SENT!</strong> Delivered to <u>${email}</u>.`;
+            showHudToast(`<strong>CAP v1.2 EMAIL DISPATCHED:</strong> Delivered to ${email}`, 'normal');
+        } else {
+            fb.innerHTML = `⚠️ <span style="color:#f87171;">Sender not configured on server.</span> <a href="${gmailUrl}" target="_blank" style="color:#38bdf8; text-decoration:underline;">Send via Gmail</a>`;
+        }
+    }).catch(() => {
+        fb.innerHTML = `❌ Connection error.`;
+    });
 
     setTimeout(() => {
         btn.disabled = false;

@@ -1252,80 +1252,80 @@ async function sendGlobalZeroKeyEmail(e) {
     }
 
     const subject = `🚨 EMERGENCY FLOOD ALERT: ${basin} [${threat}]`;
-    const body = `🚨 HYDROSENTINEL AI™ — CRITICAL FLOOD ADVISORY\n` +
-                 `═══════════════════════════════════════════════\n\n` +
-                 `📍 MONITORED BASIN:     ${basin}\n` +
-                 `⚠️  THREAT SEVERITY:     ${threat}\n` +
-                 `🌧️  RADAR PRECIP INFLOW: 88.0 mm/h\n` +
-                 `⏱️  WARNING LEAD TIME:   3.8 Hours\n` +
-                 `🤖  AI CONFIDENCE:       98.58% R²\n\n` +
-                 `FIELD DIRECTIVES:\n` +
-                 `${note}\n\n` +
-                 `═══════════════════════════════════════════════\n` +
-                 `🌐 Live 3D Twin HUD: https://hydrosentinel.onrender.com/dashboard\n` +
-                 `Issued under NDMA Guidelines • Team Quantum Minds`;
-
-    const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(recipient)}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    const mailtoUrl = `mailto:${encodeURIComponent(recipient)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    const waUrl = `https://wa.me/?text=${encodeURIComponent(subject + '\n\n' + body)}`;
-
-    // ⚡ Open Gmail immediately on user click (synchronous = never blocked by popup blocker)
-    window.open(gmailUrl, '_blank');
+    const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(recipient)}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(note)}`;
 
     btn.disabled = true;
     const origText = btn.innerText;
-    btn.innerText = '📡 Opening Gmail...';
+    btn.innerText = '📡 Dispatching from Server...';
     if (typeof playTactileClick === 'function') playTactileClick();
 
-    // Background server ping
-    fetch('/api/send-instant-email', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            recipient_email: recipient,
-            station_name: basin,
-            threat_level: threat,
-            precip_rate: '88.0 mm/h',
-            lead_time: '3.8 Hours',
-            notes: note
-        })
-    }).then(r => r.json()).then(data => {
-        if (data.status === 'success') {
-            feedback.innerHTML += `<div style="margin-top:6px; font-size:0.75rem; color:#34d399;">⚡ Server Relay ID: ${data.email_id}</div>`;
-        }
-    }).catch(() => {});
-
     feedback.style.display = 'block';
-    feedback.style.background = 'rgba(16, 185, 129, 0.2)';
-    feedback.style.border = '1.5px solid #10b981';
+    feedback.style.background = 'rgba(56, 189, 248, 0.15)';
+    feedback.style.border = '1.5px solid #38bdf8';
     feedback.style.color = '#ffffff';
-    feedback.innerHTML = `
-        <div style="font-weight:700; color:#34d399; margin-bottom:4px;">
-            ✅ Gmail Pre-Filled & Ready for ${recipient}!
-        </div>
-        <div style="font-size:0.8rem; color:#cbd5e1; margin-bottom:8px;">
-            Click <strong>"Send"</strong> in the opened Gmail tab to deliver.
-        </div>
-        <div style="display:flex; gap:6px; flex-wrap:wrap;">
-            <a href="${gmailUrl}" target="_blank" class="spatial-btn-primary" style="background:#ea4335 !important; border-color:#ea4335 !important; padding:0.35rem 0.75rem; font-size:0.75rem; text-decoration:none;">
-                ✉️ Re-open Gmail
-            </a>
-            <a href="${mailtoUrl}" class="spatial-btn-glass" style="padding:0.35rem 0.75rem; font-size:0.75rem; text-decoration:none;">
-                📬 Mail App
-            </a>
-            <a href="${waUrl}" target="_blank" class="spatial-btn-glass" style="padding:0.35rem 0.75rem; font-size:0.75rem; text-decoration:none; color:#25D366;">
-                💬 WhatsApp
-            </a>
-        </div>
-    `;
+    feedback.innerHTML = `📡 <strong>Transmitting direct email via server...</strong>`;
 
-    if (typeof playSuccessChime === 'function') playSuccessChime();
+    try {
+        const res = await fetch('/api/send-instant-email', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                recipient_email: recipient,
+                station_name: basin,
+                threat_level: threat,
+                precip_rate: '88.0 mm/h',
+                lead_time: '3.8 Hours',
+                notes: note
+            })
+        });
+        const data = await res.json();
+
+        if (data.status === 'success') {
+            if (typeof playSuccessChime === 'function') playSuccessChime();
+            feedback.style.background = 'rgba(16, 185, 129, 0.2)';
+            feedback.style.border = '1.5px solid #10b981';
+            feedback.innerHTML = `
+                <div style="font-weight:700; color:#34d399; margin-bottom:4px;">
+                    ✅ DIRECT EMAIL DISPATCHED!
+                </div>
+                <div style="font-size:0.8rem; color:#cbd5e1;">
+                    Alert delivered to <strong>${recipient}</strong>.<br>
+                    <span style="font-size:0.75rem; color:#34d399;">ID: ${data.email_id} &bull; Relay: ${data.method || 'Cloud SMTP'}</span>
+                </div>
+            `;
+            btn.innerText = '✅ Dispatched!';
+            setTimeout(() => {
+                closeGlobalZeroKeyEmailModal();
+            }, 3000);
+        } else {
+            feedback.style.background = 'rgba(239, 68, 68, 0.2)';
+            feedback.style.border = '1.5px solid #ef4444';
+            feedback.innerHTML = `
+                <div style="font-weight:700; color:#f87171; margin-bottom:4px;">
+                    ⚠️ Sender Credentials Required on Server
+                </div>
+                <div style="font-size:0.8rem; color:#cbd5e1; margin-bottom:6px;">
+                    ${data.message || 'Configure server email sender to dispatch directly.'}
+                </div>
+                <div style="font-size:0.75rem;">
+                    <a href="${gmailUrl}" target="_blank" style="color:#38bdf8; text-decoration:underline;">Send via Web Gmail</a>
+                </div>
+            `;
+            btn.innerText = '⚠️ Sender Needed';
+        }
+    } catch(err) {
+        feedback.style.background = 'rgba(239, 68, 68, 0.2)';
+        feedback.style.border = '1.5px solid #ef4444';
+        feedback.innerHTML = `❌ Connection error while contacting server.`;
+        btn.innerText = '❌ Failed';
+    }
 
     setTimeout(() => {
         btn.disabled = false;
         btn.innerText = origText;
-    }, 2500);
+    }, 3500);
 }
+
 </script>
 
 

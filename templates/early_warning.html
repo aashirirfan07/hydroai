@@ -142,73 +142,76 @@ async function sendInlineZeroKeyEmail(e) {
 
     const { subject, body } = getAlertPayload(recipient, basin, threat);
     const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(recipient)}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    const mailtoUrl = `mailto:${encodeURIComponent(recipient)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    const waUrl = `https://wa.me/?text=${encodeURIComponent(subject + '\n\n' + body)}`;
-
-    // ⚡ Open Gmail immediately on user click (synchronous = never blocked by browser popup blockers!)
-    const win = window.open(gmailUrl, '_blank');
 
     btn.disabled = true;
     const origText = btn.innerText;
-    btn.innerText = '📡 Opening Gmail...';
+    btn.innerText = '📡 Dispatching from Server...';
     if (typeof playTactileClick === 'function') playTactileClick();
 
-    // Background call to server dispatch (if Render has API keys configured)
-    fetch('/api/send-instant-email', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            recipient_email: recipient,
-            station_name: basin,
-            threat_level: threat,
-            precip_rate: '88.0 mm/h',
-            lead_time: '3.8 Hours',
-            notes: 'Immediate civilian evacuation advisory. Move to designated Highland Safe Shelters (>2,200m).'
-        })
-    }).then(r => r.json()).then(data => {
-        if (data.status === 'success') {
-            feedback.innerHTML += `<div style="margin-top:8px; font-size:0.75rem; color:#34d399;">⚡ Server Cloud Relay also dispatched live (ID: ${data.email_id})</div>`;
-        }
-    }).catch(() => {});
-
     feedback.style.display = 'block';
-    feedback.style.background = 'rgba(16, 185, 129, 0.15)';
-    feedback.style.border = '1.5px solid #10b981';
+    feedback.style.background = 'rgba(56, 189, 248, 0.15)';
+    feedback.style.border = '1.5px solid #38bdf8';
     feedback.style.color = '#ffffff';
-    feedback.innerHTML = `
-        <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:12px;">
-            <div>
-                <div style="font-size:1.05rem; font-weight:800; color:#34d399; margin-bottom:4px;">
-                    ✅ Gmail Pre-Filled & Ready for ${recipient}!
-                </div>
-                <div style="font-size:0.85rem; color:#cbd5e1; line-height:1.4;">
-                    Subject, basin threat data & NDMA evacuation directives are pre-populated. Simply hit <strong>"Send"</strong> in the opened Gmail tab.
-                </div>
-            </div>
-            <div style="display:flex; gap:8px; flex-wrap:wrap;">
-                <a href="${gmailUrl}" target="_blank" class="spatial-btn-primary" style="background:#ea4335 !important; border-color:#ea4335 !important; padding:0.45rem 0.9rem; font-size:0.8rem; text-decoration:none; display:inline-flex; align-items:center; gap:5px;">
-                    ✉️ Re-open Gmail
-                </a>
-                <a href="${mailtoUrl}" class="spatial-btn-glass" style="padding:0.45rem 0.9rem; font-size:0.8rem; text-decoration:none; display:inline-flex; align-items:center; gap:5px;">
-                    📬 Outlook / App
-                </a>
-                <a href="${waUrl}" target="_blank" class="spatial-btn-glass" style="padding:0.45rem 0.9rem; font-size:0.8rem; text-decoration:none; display:inline-flex; align-items:center; gap:5px; color:#25D366;">
-                    💬 WhatsApp
-                </a>
-                <button type="button" onclick="copyAlertToClipboard('${basin}', '${threat}')" class="spatial-btn-glass" style="padding:0.45rem 0.9rem; font-size:0.8rem;">
-                    📋 Copy Text
-                </button>
-            </div>
-        </div>
-    `;
+    feedback.innerHTML = `📡 <strong>Transmitting direct email via server...</strong>`;
 
-    if (typeof playSuccessChime === 'function') playSuccessChime();
+    try {
+        const res = await fetch('/api/send-instant-email', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                recipient_email: recipient,
+                station_name: basin,
+                threat_level: threat,
+                precip_rate: '88.0 mm/h',
+                lead_time: '3.8 Hours',
+                notes: 'Immediate civilian evacuation advisory. Move to designated Highland Safe Shelters (>2,200m).'
+            })
+        });
+        const data = await res.json();
+
+        if (data.status === 'success') {
+            if (typeof playSuccessChime === 'function') playSuccessChime();
+            feedback.style.background = 'rgba(16, 185, 129, 0.15)';
+            feedback.style.border = '1.5px solid #10b981';
+            feedback.innerHTML = `
+                <div style="font-size:1.05rem; font-weight:800; color:#34d399; margin-bottom:4px;">
+                    ✅ DIRECT EMAIL DISPATCHED!
+                </div>
+                <div style="font-size:0.85rem; color:#cbd5e1;">
+                    Emergency flood situation advisory delivered to <strong>${recipient}</strong>.<br>
+                    <span style="font-size:0.75rem; color:#34d399;">Tracking ID: ${data.email_id} &bull; Relay: ${data.method || 'Cloud SMTP'}</span>
+                </div>
+            `;
+            btn.innerText = '✅ Dispatched!';
+        } else {
+            feedback.style.background = 'rgba(239, 68, 68, 0.15)';
+            feedback.style.border = '1.5px solid #ef4444';
+            feedback.innerHTML = `
+                <div style="font-weight:700; color:#f87171; margin-bottom:4px;">
+                    ⚠️ Direct Server Dispatch Needs Sender Credentials
+                </div>
+                <div style="font-size:0.82rem; color:#cbd5e1; margin-bottom:8px;">
+                    ${data.message || 'Server sender email not configured yet.'}
+                </div>
+                <div style="font-size:0.8rem; color:#94a3b8;">
+                    Optional manual option: <a href="${gmailUrl}" target="_blank" style="color:#38bdf8; text-decoration:underline;">Send via Web Gmail</a>
+                </div>
+            `;
+            btn.innerText = '⚠️ Sender Needed';
+        }
+    } catch(err) {
+        feedback.style.background = 'rgba(239, 68, 68, 0.15)';
+        feedback.style.border = '1.5px solid #ef4444';
+        feedback.innerHTML = `❌ Connection error while contacting dispatch server.`;
+        btn.innerText = '❌ Failed';
+    }
 
     setTimeout(() => {
         btn.disabled = false;
         btn.innerText = origText;
-    }, 2000);
+    }, 3500);
 }
+
 </script>
 
 
